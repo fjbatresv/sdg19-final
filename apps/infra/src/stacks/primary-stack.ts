@@ -20,8 +20,9 @@ import {
   BillingMode,
   TableEncryption,
   ProjectionType,
+  StreamViewType,
 } from 'aws-cdk-lib/aws-dynamodb';
-import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { Topic } from 'aws-cdk-lib/aws-sns';
 import {
   UserPool,
   UserPoolClient,
@@ -40,7 +41,8 @@ import {
 import { HttpJwtAuthorizer } from 'aws-cdk-lib/aws-apigatewayv2-authorizers';
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import { AccessLogFormat } from 'aws-cdk-lib/aws-apigateway';
-import { Function, Runtime, Code } from 'aws-cdk-lib/aws-lambda';
+import { Function, Runtime, Code, StartingPosition } from 'aws-cdk-lib/aws-lambda';
+import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import {
   PublicHostedZone,
@@ -117,6 +119,7 @@ export class PrimaryStack extends Stack {
       billingMode: BillingMode.PAY_PER_REQUEST,
       encryption: TableEncryption.CUSTOMER_MANAGED,
       encryptionKey: dataKey,
+      stream: StreamViewType.NEW_IMAGE,
       pointInTimeRecoverySpecification: {
         pointInTimeRecoveryEnabled: true,
       },
@@ -130,17 +133,7 @@ export class PrimaryStack extends Stack {
       projectionType: ProjectionType.ALL,
     });
 
-    const ordersDlq = new Queue(this, 'OrdersDlq', {
-      retentionPeriod: Duration.days(14),
-    });
-
-    const ordersQueue = new Queue(this, 'OrdersQueue', {
-      visibilityTimeout: Duration.seconds(30),
-      deadLetterQueue: {
-        queue: ordersDlq,
-        maxReceiveCount: 3,
-      },
-    });
+    const ordersTopic = new Topic(this, 'OrdersTopic');
 
     const userPool = new UserPool(this, 'UserPool', {
       selfSignUpEnabled: true,
@@ -246,7 +239,6 @@ export class PrimaryStack extends Stack {
       timeout: Duration.seconds(10),
       environment: {
         TABLE_NAME: table.tableName,
-        ORDERS_QUEUE_URL: ordersQueue.queueUrl,
       },
     });
 
@@ -260,9 +252,27 @@ export class PrimaryStack extends Stack {
       },
     });
 
+    const orderStreamFn = new Function(this, 'OrderStreamFn', {
+      runtime: Runtime.NODEJS_20_X,
+      handler: 'main.orderStreamHandler',
+      code: backendCode,
+      timeout: Duration.seconds(10),
+      environment: {
+        ORDERS_TOPIC_ARN: ordersTopic.topicArn,
+      },
+    });
+
+    orderStreamFn.addEventSource(
+      new DynamoEventSource(table, {
+        startingPosition: StartingPosition.LATEST,
+        batchSize: 10,
+      })
+    );
+
     table.grantReadWriteData(createOrderFn);
     table.grantReadData(listOrdersFn);
-    ordersQueue.grantSendMessages(createOrderFn);
+    table.grantStreamRead(orderStreamFn);
+    ordersTopic.grantPublish(orderStreamFn);
 
     registerFn.addToRolePolicy(
       new PolicyStatement({
