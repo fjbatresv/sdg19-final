@@ -74,8 +74,14 @@ export class PrimaryStack extends Stack {
   constructor(scope: Construct, id: string, props: PrimaryStackProps) {
     super(scope, id, props);
 
-    const domainName =
-      this.node.tryGetContext('domainName') ?? 'sdg19final.link';
+    const rootDomainName =
+      this.node.tryGetContext('rootDomainName') ?? 'javierba3.com';
+    const apiDomainName =
+      this.node.tryGetContext('apiDomainName') ??
+      `finalapi.${rootDomainName}`;
+    const webDomainName =
+      this.node.tryGetContext('webDomainName') ??
+      `finalweb.${rootDomainName}`;
     const hostedZoneId = this.node.tryGetContext('hostedZoneId') as
       | string
       | undefined;
@@ -86,7 +92,7 @@ export class PrimaryStack extends Stack {
     let hostedZone: IHostedZone;
     if (createHostedZone) {
       hostedZone = new PublicHostedZone(this, 'HostedZone', {
-        zoneName: domainName,
+        zoneName: rootDomainName,
       });
     } else {
       if (!hostedZoneId) {
@@ -96,7 +102,7 @@ export class PrimaryStack extends Stack {
       }
       hostedZone = HostedZone.fromHostedZoneAttributes(this, 'HostedZone', {
         hostedZoneId,
-        zoneName: domainName,
+        zoneName: rootDomainName,
       });
     }
 
@@ -225,6 +231,16 @@ export class PrimaryStack extends Stack {
       },
     });
 
+    const refreshFn = new Function(this, 'RefreshFn', {
+      runtime: Runtime.NODEJS_20_X,
+      handler: 'main.refreshHandler',
+      code: backendCode,
+      timeout: Duration.seconds(10),
+      environment: {
+        USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
+      },
+    });
+
     const productsFn = new Function(this, 'ProductsFn', {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.productsHandler',
@@ -288,6 +304,13 @@ export class PrimaryStack extends Stack {
       })
     );
 
+    refreshFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['cognito-idp:InitiateAuth'],
+        resources: [userPool.userPoolArn],
+      })
+    );
+
     api.addRoutes({
       path: '/auth/register',
       methods: [HttpMethod.POST],
@@ -298,6 +321,12 @@ export class PrimaryStack extends Stack {
       path: '/auth/login',
       methods: [HttpMethod.POST],
       integration: new HttpLambdaIntegration('LoginIntegration', loginFn),
+    });
+
+    api.addRoutes({
+      path: '/auth/refresh',
+      methods: [HttpMethod.POST],
+      integration: new HttpLambdaIntegration('RefreshIntegration', refreshFn),
     });
 
     api.addRoutes({
@@ -327,13 +356,13 @@ export class PrimaryStack extends Stack {
     });
 
     const certificate = new Certificate(this, 'Certificate', {
-      domainName,
-      subjectAlternativeNames: [`api.${domainName}`],
+      domainName: webDomainName,
+      subjectAlternativeNames: [apiDomainName],
       validation: CertificateValidation.fromDns(hostedZone),
     });
 
     const apiDomain = new DomainName(this, 'ApiDomainName', {
-      domainName: `api.${domainName}`,
+      domainName: apiDomainName,
       certificate,
     });
 
@@ -345,7 +374,7 @@ export class PrimaryStack extends Stack {
 
     new ARecord(this, 'ApiAliasRecord', {
       zone: hostedZone,
-      recordName: `api.${domainName}`,
+      recordName: apiDomainName,
       target: RecordTarget.fromAlias(
         new ApiGatewayv2DomainProperties(
           apiDomain.regionalDomainName,
@@ -395,14 +424,14 @@ export class PrimaryStack extends Stack {
         origin: webOrigin,
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
-      domainNames: [domainName],
+      domainNames: [webDomainName],
       certificate,
       webAclId: webAcl.attrArn,
     });
 
     new ARecord(this, 'WebAliasRecord', {
       zone: hostedZone,
-      recordName: domainName,
+      recordName: webDomainName,
       target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
     });
 
@@ -504,6 +533,9 @@ export class PrimaryStack extends Stack {
     });
     new CfnOutput(this, 'WebBucketName', {
       value: webBucket.bucketName,
+    });
+    new CfnOutput(this, 'WebDistributionId', {
+      value: distribution.distributionId,
     });
     new CfnOutput(this, 'DataBucketName', {
       value: dataBucket.bucketName,

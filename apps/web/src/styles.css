@@ -1,1 +1,290 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #0b0f1a;
+  --bg-strong: #111729;
+  --panel: #151b2d;
+  --panel-strong: #1e2540;
+  --accent: #f2c46d;
+  --accent-strong: #ff9f1c;
+  --text-strong: #f5f7ff;
+  --text-muted: #a6afc6;
+  --success: #4fd1c5;
+  --danger: #ff6b6b;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+  color: var(--text-strong);
+  background: radial-gradient(circle at top left, #1a2440 0%, transparent 45%),
+    radial-gradient(circle at 15% 60%, #2a1248 0%, transparent 45%),
+    radial-gradient(circle at 80% 20%, #1f3a3d 0%, transparent 40%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+}
+
+input,
+button {
+  font-family: inherit;
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.85rem;
+  border: 1px solid var(--border);
+  background: rgba(10, 12, 20, 0.75);
+  color: var(--text-strong);
+}
+
+label {
+  display: grid;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+button,
+.primary,
+.ghost {
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 0.65rem 1.2rem;
+  border: none;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #1b1300;
+  font-weight: 600;
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-strong);
+  border: 1px solid var(--border);
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.7rem;
+  color: var(--accent);
+  margin: 0;
+}
+
+.subtle {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.error {
+  color: var(--danger);
+}
+
+.success {
+  color: var(--success);
+}
+
+.pill {
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+}
+
+.auth-shell {
+  display: grid;
+  place-items: center;
+  padding: 2rem 0;
+}
+
+.auth-card {
+  width: min(420px, 100%);
+  padding: 2.2rem;
+  border-radius: 1.5rem;
+  background: rgba(15, 18, 28, 0.78);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 1.5rem;
+}
+
+.auth-card form {
+  display: grid;
+  gap: 1rem;
+}
+
+.auth-header h1 {
+  margin: 0.4rem 0 0.6rem;
+}
+
+.inline-link {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.shop-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 2rem;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.product-card {
+  padding: 1.5rem;
+  border-radius: 1.2rem;
+  background: rgba(21, 27, 45, 0.8);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 1.2rem;
+  min-height: 180px;
+}
+
+.product-card h3 {
+  margin: 0;
+}
+
+.product-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.price {
+  font-weight: 600;
+}
+
+.cart {
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background: rgba(15, 18, 28, 0.8);
+  border: 1px solid var(--border);
+  display: grid;
+  gap: 1.5rem;
+  align-self: start;
+  position: sticky;
+  top: 2rem;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cart-title {
+  margin: 0;
+  font-weight: 500;
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cart-summary {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.total {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.orders-shell {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.orders-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.order-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1.1rem;
+  background: rgba(21, 27, 45, 0.8);
+  border: 1px solid var(--border);
+}
+
+.order-id {
+  margin: 0;
+  font-weight: 600;
+}
+
+.order-meta {
+  display: grid;
+  justify-items: end;
+  gap: 0.4rem;
+}
+
+@media (max-width: 960px) {
+  .shop-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .cart {
+    position: static;
+  }
+}

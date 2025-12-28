@@ -52,3 +52,20 @@ export async function loginUser(input: {
 
   return result.AuthenticationResult ?? {};
 }
+
+export async function refreshUser(input: {
+  clientId: string;
+  refreshToken: string;
+}) {
+  const result = await cognitoClient.send(
+    new InitiateAuthCommand({
+      ClientId: input.clientId,
+      AuthFlow: 'REFRESH_TOKEN_AUTH',
+      AuthParameters: {
+        REFRESH_TOKEN: input.refreshToken,
+      },
+    })
+  );
+
+  return result.AuthenticationResult ?? {};
+}

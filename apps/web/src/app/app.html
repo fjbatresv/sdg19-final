@@ -1,2 +1,22 @@
-<app-nx-welcome></app-nx-welcome>
-<router-outlet></router-outlet>
+<div class="app-shell">
+  <header class="app-header">
+    <a class="brand" routerLink="/shop">SDG19 Final</a>
+    <nav class="nav">
+      <a routerLink="/shop">Catalogo</a>
+      <a routerLink="/orders">Ordenes</a>
+    </nav>
+    <div class="auth-actions" *ngIf="auth.session$ | async as session; else guest">
+      <span class="user-pill">{{ session.name || session.email || 'Usuario' }}</span>
+      <button class="ghost" type="button" (click)="auth.logout()">Salir</button>
+    </div>
+    <ng-template #guest>
+      <div class="auth-actions">
+        <a class="ghost" routerLink="/login">Login</a>
+        <a class="primary" routerLink="/register">Registro</a>
+      </div>
+    </ng-template>
+  </header>
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+</div>

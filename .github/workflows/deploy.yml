@@ -1,0 +1,70 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+  AWS_REGION_PRIMARY: ${{ vars.AWS_REGION_PRIMARY || 'us-east-1' }}
+  AWS_REGION_REPLICA: ${{ vars.AWS_REGION_REPLICA || 'us-east-2' }}
+  NODE_OPTIONS: --experimental-require-module
+  NX_DAEMON: 'false'
+  NX_ISOLATE_PLUGINS: 'false'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_PRIMARY }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build backend
+        run: npx nx run @org/backend:build:production
+
+      - name: Build infra
+        run: npx nx run @org/infra:build:production
+
+      - name: Build web
+        run: npx nx run web:build:production
+
+      - name: Bootstrap CDK (primary)
+        run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_PRIMARY }}
+
+      - name: Bootstrap CDK (replica)
+        run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_REPLICA }}
+
+      - name: Deploy replica stack
+        run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk deploy Sdg19ReplicaStack --require-approval never
+
+      - name: Deploy primary stack
+        run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk deploy Sdg19PrimaryStack --require-approval never
+
+      - name: Publish web to S3 and invalidate CloudFront
+        run: |
+          WEB_BUCKET=$(aws cloudformation describe-stacks \
+            --stack-name Sdg19PrimaryStack \
+            --query "Stacks[0].Outputs[?OutputKey=='WebBucketName'].OutputValue" \
+            --output text)
+          WEB_DISTRIBUTION=$(aws cloudformation describe-stacks \
+            --stack-name Sdg19PrimaryStack \
+            --query "Stacks[0].Outputs[?OutputKey=='WebDistributionId'].OutputValue" \
+            --output text)
+          aws s3 sync dist/web "s3://${WEB_BUCKET}" --delete
+          aws cloudfront create-invalidation --distribution-id "${WEB_DISTRIBUTION}" --paths "/*"

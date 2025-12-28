@@ -1,7 +1,7 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { jsonResponse } from '../lib/response';
 import { requireEnv } from '../lib/env';
-import { loginUser, registerUser } from '../lib/cognito';
+import { loginUser, refreshUser, registerUser } from '../lib/cognito';
 
 function parseBody(event: APIGatewayProxyEventV2) {
   if (!event.body) {
@@ -99,6 +99,37 @@ export async function loginHandler(event: APIGatewayProxyEventV2) {
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : 'Credenciales invalidas';
+    return jsonResponse(401, { message });
+  }
+}
+
+export async function refreshHandler(event: APIGatewayProxyEventV2) {
+  const body = parseBody(event);
+  if (!body?.refreshToken) {
+    return jsonResponse(400, { message: 'refreshToken es requerido' });
+  }
+
+  const clientId = requireEnv('USER_POOL_CLIENT_ID');
+
+  try {
+    const auth = await refreshUser({
+      clientId,
+      refreshToken: body.refreshToken,
+    });
+
+    if (!auth.AccessToken || !auth.IdToken) {
+      return jsonResponse(401, { message: 'Token invalido' });
+    }
+
+    return jsonResponse(200, {
+      accessToken: auth.AccessToken,
+      idToken: auth.IdToken,
+      refreshToken: auth.RefreshToken,
+      expiresIn: auth.ExpiresIn,
+    });
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : 'Token invalido';
     return jsonResponse(401, { message });
   }
 }

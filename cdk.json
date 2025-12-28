@@ -1,7 +1,9 @@
 {
   "app": "node apps/infra/dist/main.js",
   "context": {
-    "domainName": "sdg19final.link",
+    "rootDomainName": "javierba3.com",
+    "apiDomainName": "finalapi.javierba3.com",
+    "webDomainName": "finalweb.javierba3.com",
     "hostedZoneId": "REPLACE_WITH_HOSTED_ZONE_ID",
     "createHostedZone": "false"
   }
