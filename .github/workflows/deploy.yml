@@ -6,6 +6,7 @@ on:
       aws_account_id:
         description: AWS Account ID
         required: true
+        default: "605134457500"
       aws_region_primary:
         description: Primary region
         required: true
@@ -17,6 +18,7 @@ on:
       hosted_zone_id:
         description: Route53 Hosted Zone ID
         required: true
+        default: "Z033451412UP58MG6KXQ6"
 
 permissions:
   id-token: write
