@@ -2,6 +2,7 @@
 
 # compiled output
 dist
+apps/**/dist
 tmp
 out-tsc
 
@@ -42,3 +43,8 @@ Thumbs.db
 .nx/workspace-data
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+.angular
+cdk.out
+
+__screenshots__/

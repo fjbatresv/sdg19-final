@@ -1,5 +1,9 @@
 # Add files here to ignore them from prettier formatting
 /dist
+/apps/**/dist
 /coverage
 /.nx/cache
 /.nx/workspace-data
+.angular
+/cdk.out
+/tmp
