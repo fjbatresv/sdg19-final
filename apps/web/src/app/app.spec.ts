@@ -1,10 +1,18 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { App } from './app';
+import { API_BASE_URL } from './app.tokens';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, HttpClientTestingModule],
+      providers: [
+        {
+          provide: API_BASE_URL,
+          useValue: 'http://localhost',
+        },
+      ],
     }).compileComponents();
   });
 
