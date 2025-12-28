@@ -18,33 +18,17 @@ export class ReplicaStack extends Stack {
     const replicaKey = new Key(this, 'ReplicaBucketKey', {
       enableKeyRotation: true,
       description: 'KMS key for replica bucket encryption',
-      policy: new PolicyDocument({
-        statements: [
-          new PolicyStatement({
-            effect: Effect.ALLOW,
-            principals: [new AccountRootPrincipal()],
-            actions: ['kms:*'],
-            resources: ['*'],
-          }),
-          new PolicyStatement({
-            effect: Effect.ALLOW,
-            principals: [new AccountRootPrincipal()],
-            actions: [
-              'kms:Decrypt',
-              'kms:GenerateDataKey',
-              'kms:CreateGrant',
-              'kms:DescribeKey'
-            ],
-            resources: ['*'],
-            conditions: {
-              StringEquals: {
-                'kms:ViaService': `s3.${this.region}.amazonaws.com`
-              }
-            }
-          })
-        ],
-      }),
     });
+
+    // Grant S3 service access to the key
+    replicaKey.addToResourcePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        principals: [new AccountRootPrincipal()],
+        actions: ['kms:*'],
+        resources: ['*'],
+      })
+    );
 
     const replicaBucket = new Bucket(this, 'ReplicaBucket', {
       versioned: true,
