@@ -6,18 +6,23 @@
       <a routerLink="/orders">Ordenes</a>
     </nav>
     @if (auth.session$ | async; as session) {
-    <div class="auth-actions">
-      <span class="user-pill"
-        >{{ session.name || session.email || 'Usuario' }}</span
-      >
-      <button class="ghost" type="button" (click)="auth.logout()">Salir</button>
-    </div>
+      <div class="auth-actions">
+        <span class="user-pill">
+          {{ session.name || session.email || 'Usuario' }}
+        </span>
+        <button class="ghost" type="button" (click)="auth.logout()">
+          Salir
+        </button>
+      </div>
     } @else {
-    <div class="auth-actions">
-      <a class="ghost" routerLink="/login">Login</a>
-      <a class="primary" routerLink="/register">Registro</a>
-    </div>
+      <ng-template [ngTemplateOutlet]="guest"></ng-template>
     }
+    <ng-template #guest>
+      <div class="auth-actions">
+        <a class="ghost" routerLink="/login">Login</a>
+        <a class="primary" routerLink="/register">Registro</a>
+      </div>
+    </ng-template>
   </header>
   <main class="app-main">
     <router-outlet></router-outlet>
