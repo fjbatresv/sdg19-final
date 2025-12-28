@@ -6,6 +6,7 @@ import {
   BlockPublicAccess,
 } from 'aws-cdk-lib/aws-s3';
 import { Key } from 'aws-cdk-lib/aws-kms';
+import { PolicyStatement, Effect, AccountRootPrincipal } from 'aws-cdk-lib/aws-iam';
 
 export class ReplicaStack extends Stack {
   public readonly replicaBucket: Bucket;
@@ -16,6 +17,12 @@ export class ReplicaStack extends Stack {
 
     const replicaKey = new Key(this, 'ReplicaBucketKey', {
       enableKeyRotation: true,
+      policy: new PolicyStatement({
+        effect: Effect.ALLOW,
+        principals: [new AccountRootPrincipal()],
+        actions: ['kms:*'],
+        resources: ['*'],
+      }),
     });
 
     const replicaBucket = new Bucket(this, 'ReplicaBucket', {
