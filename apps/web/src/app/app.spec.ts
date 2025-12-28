@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
 import { API_BASE_URL } from './app.tokens';
 
@@ -8,6 +9,7 @@ describe('App', () => {
     await TestBed.configureTestingModule({
       imports: [App, HttpClientTestingModule],
       providers: [
+        provideRouter([]),
         {
           provide: API_BASE_URL,
           useValue: 'http://localhost',
