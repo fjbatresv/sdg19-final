@@ -6,7 +6,6 @@ import {
   BlockPublicAccess,
 } from 'aws-cdk-lib/aws-s3';
 import { Key } from 'aws-cdk-lib/aws-kms';
-import { PolicyDocument, PolicyStatement, Effect, AccountRootPrincipal } from 'aws-cdk-lib/aws-iam';
 
 export class ReplicaStack extends Stack {
   public readonly replicaBucket: Bucket;
