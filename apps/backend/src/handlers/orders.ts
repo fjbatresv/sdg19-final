@@ -5,7 +5,6 @@ import { jsonResponse } from '../lib/response';
 import { requireEnv } from '../lib/env';
 import { docClient } from '../lib/dynamo';
 import { products } from '../lib/products';
-import { sendOrderMessage } from '../lib/sqs';
 
 type JwtClaims = {
   sub?: string;
@@ -67,7 +66,6 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
     const orderId = randomUUID();
     const createdAt = new Date().toISOString();
     const tableName = requireEnv('TABLE_NAME');
-    const ordersQueueUrl = requireEnv('ORDERS_QUEUE_URL');
 
     const pk = `USER#${claims.sub}`;
 
@@ -90,8 +88,6 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
         Item: order,
       })
     );
-
-    await sendOrderMessage(ordersQueueUrl, order);
 
     return jsonResponse(201, {
       orderId,
