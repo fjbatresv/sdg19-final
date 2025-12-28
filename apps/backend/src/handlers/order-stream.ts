@@ -1,4 +1,5 @@
 import { DynamoDBStreamEvent } from 'aws-lambda';
+import { AttributeValue } from '@aws-sdk/client-dynamodb';
 import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { publishOrder } from '../lib/sns';
 import { requireEnv } from '../lib/env';
@@ -11,7 +12,9 @@ export async function orderStreamHandler(event: DynamoDBStreamEvent) {
       continue;
     }
 
-    const image = unmarshall(record.dynamodb.NewImage);
+    const image = unmarshall(
+      record.dynamodb.NewImage as unknown as Record<string, AttributeValue>
+    );
     if (typeof image.SK !== 'string' || !image.SK.startsWith('ORDER#')) {
       continue;
     }
