@@ -7,6 +7,7 @@ import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { API_BASE_URL } from './app.tokens';
 import { authInterceptor } from './auth.interceptor';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +16,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     {
       provide: API_BASE_URL,
-      useValue: 'https://finalapi.javierba3.com',
+      useValue: environment.apiBaseUrl,
     },
   ],
 };
