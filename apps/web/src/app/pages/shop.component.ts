@@ -93,11 +93,11 @@ type CartItem = {
           >
             {{ ordering() ? 'Enviando...' : 'Crear orden' }}
           </button>
-          @if (notice()) {
-            <p class="success">{{ notice() }}</p>
+          @if (noticeMessage) {
+            <p class="success">{{ noticeMessage }}</p>
           }
-          @if (orderError()) {
-            <p class="error">{{ orderError() }}</p>
+          @if (orderErrorMessage) {
+            <p class="error">{{ orderErrorMessage }}</p>
           }
         </div>
       </aside>
@@ -113,8 +113,8 @@ export class ShopComponent {
   loading = signal(true);
   error = signal('');
   ordering = signal(false);
-  notice = signal('');
-  orderError = signal('');
+  noticeMessage = '';
+  orderErrorMessage = '';
 
   cartCount = computed(() =>
     this.cart().reduce((sum, item) => sum + item.quantity, 0)
@@ -169,8 +169,8 @@ export class ShopComponent {
       return;
     }
     this.ordering.set(true);
-    this.notice.set('');
-    this.orderError.set('');
+    this.noticeMessage = '';
+    this.orderErrorMessage = '';
     const items = this.cart().map((item) => ({
       productId: item.product.id,
       quantity: item.quantity,
@@ -179,11 +179,12 @@ export class ShopComponent {
       next: (order) => {
         this.ordering.set(false);
         this.cart.set([]);
-        this.notice.set(`Orden ${order.orderId} creada.`);
+        this.noticeMessage = `Orden ${order.orderId} creada.`;
       },
       error: (err) => {
         this.ordering.set(false);
-        this.orderError.set(err?.error?.message ?? 'No pudimos crear la orden.');
+        this.orderErrorMessage =
+          err?.error?.message ?? 'No pudimos crear la orden.';
       },
     });
   }
