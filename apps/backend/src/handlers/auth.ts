@@ -121,12 +121,16 @@ export async function refreshHandler(event: APIGatewayProxyEventV2) {
       return jsonResponse(401, { message: 'Token invalido' });
     }
 
-    return jsonResponse(200, {
+    // Cognito does not rotate refresh tokens for REFRESH_TOKEN_AUTH.
+    const response: Record<string, unknown> = {
       accessToken: auth.AccessToken,
       idToken: auth.IdToken,
-      refreshToken: auth.RefreshToken,
       expiresIn: auth.ExpiresIn,
-    });
+    };
+    if (auth.RefreshToken) {
+      response.refreshToken = auth.RefreshToken;
+    }
+    return jsonResponse(200, response);
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : 'Token invalido';
