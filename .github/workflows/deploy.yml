@@ -2,16 +2,31 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      aws_account_id:
+        description: AWS Account ID
+        required: true
+      aws_region_primary:
+        description: Primary region
+        required: true
+        default: us-east-1
+      aws_region_replica:
+        description: Replica region
+        required: true
+        default: us-east-2
+      hosted_zone_id:
+        description: Route53 Hosted Zone ID
+        required: true
 
 permissions:
   id-token: write
   contents: read
 
 env:
-  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
-  AWS_REGION_PRIMARY: ${{ vars.AWS_REGION_PRIMARY || 'us-east-1' }}
-  AWS_REGION_REPLICA: ${{ vars.AWS_REGION_REPLICA || 'us-east-2' }}
-  HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
+  AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
+  AWS_REGION_PRIMARY: ${{ inputs.aws_region_primary }}
+  AWS_REGION_REPLICA: ${{ inputs.aws_region_replica }}
+  HOSTED_ZONE_ID: ${{ inputs.hosted_zone_id }}
   NODE_OPTIONS: --experimental-require-module
   NX_DAEMON: 'false'
   NX_ISOLATE_PLUGINS: 'false'
