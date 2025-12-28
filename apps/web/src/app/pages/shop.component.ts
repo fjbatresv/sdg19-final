@@ -24,23 +24,31 @@ type CartItem = {
           <a class="ghost" routerLink="/orders">Ver ordenes</a>
         </div>
 
-        <div class="grid" *ngIf="!loading()">
-          <article class="product-card" *ngFor="let product of products()">
-            <div class="product-body">
-              <h3>{{ product.name }}</h3>
-              <p class="subtle">{{ product.description }}</p>
-            </div>
-            <div class="product-footer">
-              <span class="price">{{ formatMoney(product.price) }}</span>
-              <button class="primary" (click)="addToCart(product)">
-                Agregar
-              </button>
-            </div>
-          </article>
-        </div>
+        @if (!loading()) {
+          <div class="grid">
+            @for (product of products(); track product.id) {
+              <article class="product-card">
+                <div class="product-body">
+                  <h3>{{ product.name }}</h3>
+                  <p class="subtle">{{ product.description }}</p>
+                </div>
+                <div class="product-footer">
+                  <span class="price">{{ formatMoney(product.price) }}</span>
+                  <button class="primary" (click)="addToCart(product)">
+                    Agregar
+                  </button>
+                </div>
+              </article>
+            }
+          </div>
+        }
 
-        <p class="subtle" *ngIf="loading()">Cargando productos...</p>
-        <p class="error" *ngIf="error()">{{ error() }}</p>
+        @if (loading()) {
+          <p class="subtle">Cargando productos...</p>
+        }
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
       </div>
 
       <aside class="cart">
@@ -48,28 +56,31 @@ type CartItem = {
           <h2>Carrito</h2>
           <span class="pill">{{ cartCount() }} items</span>
         </div>
-        <div class="cart-list" *ngIf="cart().length; else emptyCart">
-          <div class="cart-item" *ngFor="let item of cart()">
-            <div>
-              <p class="cart-title">{{ item.product.name }}</p>
-              <p class="subtle">
-                {{ formatMoney(item.product.price) }} c/u
-              </p>
-            </div>
-            <div class="qty">
-              <button class="ghost" (click)="adjustQty(item.product.id, -1)">
-                -
-              </button>
-              <span>{{ item.quantity }}</span>
-              <button class="ghost" (click)="adjustQty(item.product.id, 1)">
-                +
-              </button>
-            </div>
+        @if (cart().length) {
+          <div class="cart-list">
+            @for (item of cart(); track item.product.id) {
+              <div class="cart-item">
+                <div>
+                  <p class="cart-title">{{ item.product.name }}</p>
+                  <p class="subtle">
+                    {{ formatMoney(item.product.price) }} c/u
+                  </p>
+                </div>
+                <div class="qty">
+                  <button class="ghost" (click)="adjustQty(item.product.id, -1)">
+                    -
+                  </button>
+                  <span>{{ item.quantity }}</span>
+                  <button class="ghost" (click)="adjustQty(item.product.id, 1)">
+                    +
+                  </button>
+                </div>
+              </div>
+            }
           </div>
-        </div>
-        <ng-template #emptyCart>
+        } @else {
           <p class="subtle">Aun no hay items en el carrito.</p>
-        </ng-template>
+        }
         <div class="cart-summary">
           <div>
             <p class="subtle">Total</p>
@@ -82,8 +93,12 @@ type CartItem = {
           >
             {{ ordering() ? 'Enviando...' : 'Crear orden' }}
           </button>
-          <p class="success" *ngIf="notice()">{{ notice() }}</p>
-          <p class="error" *ngIf="orderError()">{{ orderError() }}</p>
+          @if (notice()) {
+            <p class="success">{{ notice() }}</p>
+          }
+          @if (orderError()) {
+            <p class="error">{{ orderError() }}</p>
+          }
         </div>
       </aside>
     </section>

@@ -29,14 +29,20 @@ import { AuthService } from '../services/auth.service';
             Password
             <input type="password" formControlName="password" />
           </label>
-          <button class="primary" type="submit" [disabled]="form.invalid || busy()">
+          <button
+            class="primary"
+            type="submit"
+            [disabled]="form.invalid || busy()"
+          >
             {{ busy() ? 'Ingresando...' : 'Ingresar' }}
           </button>
         </form>
         <p class="inline-link">
           No tienes cuenta? <a routerLink="/register">Crear cuenta</a>
         </p>
-        <p class="error" *ngIf="error()">{{ error() }}</p>
+        @if (error()) {
+        <p class="error">{{ error() }}</p>
+        }
       </div>
     </section>
   `,

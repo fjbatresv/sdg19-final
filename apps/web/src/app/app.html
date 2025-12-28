@@ -5,16 +5,19 @@
       <a routerLink="/shop">Catalogo</a>
       <a routerLink="/orders">Ordenes</a>
     </nav>
-    <div class="auth-actions" *ngIf="auth.session$ | async as session; else guest">
-      <span class="user-pill">{{ session.name || session.email || 'Usuario' }}</span>
+    @if (auth.session$ | async; as session) {
+    <div class="auth-actions">
+      <span class="user-pill"
+        >{{ session.name || session.email || 'Usuario' }}</span
+      >
       <button class="ghost" type="button" (click)="auth.logout()">Salir</button>
     </div>
-    <ng-template #guest>
-      <div class="auth-actions">
-        <a class="ghost" routerLink="/login">Login</a>
-        <a class="primary" routerLink="/register">Registro</a>
-      </div>
-    </ng-template>
+    } @else {
+    <div class="auth-actions">
+      <a class="ghost" routerLink="/login">Login</a>
+      <a class="primary" routerLink="/register">Registro</a>
+    </div>
+    }
   </header>
   <main class="app-main">
     <router-outlet></router-outlet>

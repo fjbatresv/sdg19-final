@@ -40,7 +40,9 @@ import { AuthService } from '../services/auth.service';
         <p class="inline-link">
           Ya tienes cuenta? <a routerLink="/login">Inicia sesion</a>
         </p>
-        <p class="error" *ngIf="error()">{{ error() }}</p>
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
       </div>
     </section>
   `,

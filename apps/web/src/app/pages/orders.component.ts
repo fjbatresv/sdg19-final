@@ -18,20 +18,25 @@ import { OrdersService, OrderSummary } from '../services/orders.service';
       </div>
 
       <div class="orders-list">
-        <article class="order-card" *ngFor="let order of orders()">
+        @for (order of orders(); track order.orderId) {
+        <article class="order-card">
           <div>
             <p class="order-id">Orden {{ order.orderId }}</p>
-            <p class="subtle">Creada {{ order.createdAt | date: 'medium' }}</p>
+            <p class="subtle">Creada {{ order.createdAt | date : 'medium' }}</p>
           </div>
           <div class="order-meta">
             <span class="pill">{{ order.status }}</span>
             <strong>{{ formatMoney(order.total) }}</strong>
           </div>
         </article>
+        }
       </div>
 
-      <p class="subtle" *ngIf="loading()">Cargando ordenes...</p>
-      <p class="error" *ngIf="error()">{{ error() }}</p>
+      @if (loading()) {
+      <p class="subtle">Cargando ordenes...</p>
+      } @if (error()) {
+      <p class="error">{{ error() }}</p>
+      }
     </section>
   `,
 })
