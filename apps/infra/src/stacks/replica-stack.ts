@@ -19,16 +19,6 @@ export class ReplicaStack extends Stack {
       description: 'KMS key for replica bucket encryption',
     });
 
-    // Grant S3 service access to the key
-    replicaKey.addToResourcePolicy(
-      new PolicyStatement({
-        effect: Effect.ALLOW,
-        principals: [new AccountRootPrincipal()],
-        actions: ['kms:*'],
-        resources: ['*'],
-      })
-    );
-
     const replicaBucket = new Bucket(this, 'ReplicaBucket', {
       versioned: true,
       encryption: BucketEncryption.KMS,
