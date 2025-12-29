@@ -4,6 +4,10 @@
     "rootDomainName": "javierba3.com",
     "apiDomainName": "finalapi.javierba3.com",
     "webDomainName": "finalweb.javierba3.com",
+    "sesTemplateName": "sdg19-order-confirmation",
+    "sesFromAddress": "noreply@javierba3.com",
+    "sesMailFromDomain": "mail.javierba3.com",
+    "enableLambdaVpc": true,
     "createHostedZone": "false"
   }
 }

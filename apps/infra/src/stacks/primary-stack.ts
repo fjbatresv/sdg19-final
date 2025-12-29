@@ -72,7 +72,12 @@ import {
   S3BucketOrigin,
 } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
+import { CfnTemplate } from 'aws-cdk-lib/aws-ses';
+import { EmailIdentity, Identity } from 'aws-cdk-lib/aws-ses';
 import { Trail } from 'aws-cdk-lib/aws-cloudtrail';
+import { Queue } from 'aws-cdk-lib/aws-sqs';
+import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
+import { SqsSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as path from 'node:path';
 
 interface PrimaryStackProps extends StackProps {
@@ -115,22 +120,32 @@ export class PrimaryStack extends Stack {
       });
     }
 
-    const vpc = new Vpc(this, 'Vpc', {
-      maxAzs: 3,
-      natGateways: 3,
-    });
+    const enableLambdaVpc =
+      this.node.tryGetContext('enableLambdaVpc') ?? true;
+    const useVpc = !(enableLambdaVpc === false || enableLambdaVpc === 'false');
 
-    const lambdaSecurityGroup = new SecurityGroup(this, 'LambdaSecurityGroup', {
-      vpc,
-      description: 'Security group for backend lambdas',
-      allowAllOutbound: true,
-    });
+    const vpc = useVpc
+      ? new Vpc(this, 'Vpc', {
+          maxAzs: 3,
+          natGateways: 3,
+        })
+      : undefined;
 
-    const lambdaVpcConfig = {
-      vpc,
-      vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
-      securityGroups: [lambdaSecurityGroup],
-    };
+    const lambdaSecurityGroup = useVpc
+      ? new SecurityGroup(this, 'LambdaSecurityGroup', {
+          vpc: vpc as Vpc,
+          description: 'Security group for backend lambdas',
+          allowAllOutbound: true,
+        })
+      : undefined;
+
+    const lambdaVpcConfig = useVpc
+      ? {
+          vpc: vpc as Vpc,
+          vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
+          securityGroups: [lambdaSecurityGroup as SecurityGroup],
+        }
+      : {};
 
     const dataKey = new Key(this, 'DataKey', {
       enableKeyRotation: true,
@@ -158,6 +173,9 @@ export class PrimaryStack extends Stack {
 
     const ordersTopic = new Topic(this, 'OrdersTopic', {
       masterKey: dataKey,
+    });
+    const ordersQueue = new Queue(this, 'OrdersQueue', {
+      visibilityTimeout: Duration.seconds(30),
     });
 
     const userPool = new UserPool(this, 'UserPool', {
@@ -320,6 +338,11 @@ export class PrimaryStack extends Stack {
     table.grantReadData(listOrdersFn);
     table.grantStreamRead(orderStreamFn);
     ordersTopic.grantPublish(orderStreamFn);
+    ordersTopic.addSubscription(
+      new SqsSubscription(ordersQueue, {
+        rawMessageDelivery: true,
+      })
+    );
 
     registerFn.addToRolePolicy(
       new PolicyStatement({
@@ -641,6 +664,69 @@ export class PrimaryStack extends Stack {
       ],
     });
 
+    const sesTemplateName =
+      this.node.tryGetContext('sesTemplateName') ??
+      'sdg19-order-confirmation';
+    const sesFromAddress =
+      this.node.tryGetContext('sesFromAddress') ?? `noreply@${rootDomainName}`;
+    const sesMailFromDomain =
+      this.node.tryGetContext('sesMailFromDomain') ??
+      `mail.${rootDomainName}`;
+
+    const sesIdentity = new EmailIdentity(this, 'SesDomainIdentity', {
+      identity: Identity.publicHostedZone(hostedZone),
+      mailFromDomain: sesMailFromDomain,
+    });
+
+    new CfnTemplate(this, 'OrderEmailTemplate', {
+      template: {
+        templateName: sesTemplateName,
+        subjectPart: 'Confirmación de orden {{orderId}}',
+        htmlPart: `
+          <html>
+            <body style="font-family: Arial, sans-serif; color: #1f2933;">
+              <h2>Gracias por tu orden</h2>
+              <p>Orden: <strong>{{orderId}}</strong></p>
+              <p>Fecha: {{createdAt}}</p>
+              <p>Estado: {{status}}</p>
+              <p>Total: {{total}}</p>
+              <p>Correo: {{email}}</p>
+            </body>
+          </html>
+        `,
+        textPart:
+          'Gracias por tu orden {{orderId}}. Fecha: {{createdAt}}. Estado: {{status}}. Total: {{total}}. Correo: {{email}}.',
+      },
+    });
+
+    const orderEmailFn = new Function(this, 'OrderEmailFn', {
+      runtime: Runtime.NODEJS_20_X,
+      handler: 'main.orderEmailHandler',
+      code: backendCode,
+      timeout: Duration.seconds(15),
+      ...lambdaVpcConfig,
+      environment: {
+        EMAILS_BUCKET_NAME: emailsBucket.bucketName,
+        SES_TEMPLATE_NAME: sesTemplateName,
+        SES_FROM_ADDRESS: sesFromAddress,
+      },
+    });
+
+    orderEmailFn.addEventSource(
+      new SqsEventSource(ordersQueue, {
+        batchSize: 10,
+      })
+    );
+
+    emailsBucket.grantPut(orderEmailFn);
+    sesIdentity.grantSendEmail(orderEmailFn);
+    orderEmailFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['ses:SendTemplatedEmail'],
+        resources: ['*'],
+      })
+    );
+
     const trailLogs = new LogGroup(this, 'CloudTrailLogs', {
       retention: RetentionDays.ONE_MONTH,
     });
@@ -678,8 +764,10 @@ export class PrimaryStack extends Stack {
     new CfnOutput(this, 'EmailsBucketName', {
       value: emailsBucket.bucketName,
     });
-    new CfnOutput(this, 'VpcId', {
-      value: vpc.vpcId,
-    });
+    if (vpc) {
+      new CfnOutput(this, 'VpcId', {
+        value: vpc.vpcId,
+      });
+    }
   }
 }
