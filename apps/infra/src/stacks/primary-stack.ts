@@ -451,6 +451,39 @@ export class PrimaryStack extends Stack {
       enableAcceptEncodingBrotli: true,
     });
 
+    const productsCachePolicy = new CachePolicy(this, 'ProductsCachePolicy', {
+      minTtl: Duration.seconds(0),
+      defaultTtl: Duration.minutes(1),
+      maxTtl: Duration.minutes(5),
+      cookieBehavior: CacheCookieBehavior.none(),
+      headerBehavior: CacheHeaderBehavior.none(),
+      queryStringBehavior: CacheQueryStringBehavior.all(),
+      enableAcceptEncodingGzip: true,
+      enableAcceptEncodingBrotli: true,
+    });
+
+    const apiCorsResponsePolicy = new ResponseHeadersPolicy(
+      this,
+      'ApiCorsResponsePolicy',
+      {
+        corsBehavior: {
+          accessControlAllowOrigins: [`https://${webDomainName}`],
+          accessControlAllowHeaders: [
+            'authorization',
+            'content-type',
+            'x-amz-date',
+            'x-api-key',
+            'x-amz-security-token',
+            'x-amz-user-agent',
+          ],
+          accessControlAllowMethods: ['GET', 'POST', 'OPTIONS'],
+          accessControlAllowCredentials: false,
+          accessControlMaxAge: Duration.hours(1),
+          originOverride: true,
+        },
+      }
+    );
+
     const distribution = new Distribution(this, 'WebDistribution', {
       defaultBehavior: {
         origin: webOrigin,
@@ -486,8 +519,7 @@ export class PrimaryStack extends Stack {
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-        responseHeadersPolicy:
-          ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
+        responseHeadersPolicy: apiCorsResponsePolicy,
       },
       additionalBehaviors: {
         '/products': {
@@ -496,11 +528,10 @@ export class PrimaryStack extends Stack {
           }),
           viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
           allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
-          cachePolicy: webCachePolicy,
+          cachePolicy: productsCachePolicy,
           originRequestPolicy:
             OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-          responseHeadersPolicy:
-            ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
+          responseHeadersPolicy: apiCorsResponsePolicy,
         },
       },
       domainNames: [apiDomainName],
