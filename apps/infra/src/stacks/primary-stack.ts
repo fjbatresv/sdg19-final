@@ -472,6 +472,7 @@ export class PrimaryStack extends Stack {
       replicationRole,
       replicationRules: [
         {
+          priority: 1,
           destination: props.replicaBucket,
           storageClass: StorageClass.INTELLIGENT_TIERING,
           deleteMarkerReplication: true,
