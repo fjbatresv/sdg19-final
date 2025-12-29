@@ -182,13 +182,20 @@ export class PrimaryStack extends Stack {
       apiName: 'sdg19-api',
       createDefaultStage: false,
       corsPreflight: {
-        allowHeaders: ['authorization', 'content-type'],
+        allowHeaders: [
+          'authorization',
+          'content-type',
+          'x-amz-date',
+          'x-api-key',
+          'x-amz-security-token',
+          'x-amz-user-agent',
+        ],
         allowMethods: [
           CorsHttpMethod.GET,
           CorsHttpMethod.POST,
           CorsHttpMethod.OPTIONS,
         ],
-        allowOrigins: ['*'],
+        allowOrigins: [`https://${webDomainName}`],
       },
     });
 
@@ -424,6 +431,18 @@ export class PrimaryStack extends Stack {
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
       defaultRootObject: 'index.html',
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+        },
+      ],
       domainNames: [webDomainName],
       certificate,
       webAclId: webAcl.attrArn,
