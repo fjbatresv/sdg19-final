@@ -66,3 +66,17 @@ AWS_REGION=<SECONDARY_REGION> npx cdk bootstrap aws://<AWS_ACCOUNT_ID>/<SECONDAR
 AWS_REGION=<SECONDARY_REGION> npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
 AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
 ```
+
+## Envio de correos (SES)
+
+El stack crea la identidad de dominio SES, DKIM y MAIL FROM usando Route53.
+Para enviar a cualquier destinatario necesitas sacar SES del sandbox.
+
+Contexto recomendado en `cdk.json`:
+- `sesTemplateName`: nombre de plantilla SES (ej: `sdg19-order-confirmation`)
+- `sesFromAddress`: remitente (ej: `noreply@tu-dominio`)
+- `sesMailFromDomain`: subdominio MAIL FROM (ej: `mail.tu-dominio`)
+
+Despues del deploy:
+1. Verifica que los registros de Route53 se creen (DKIM + MAIL FROM).
+2. Solicita salida de SES sandbox para enviar a cualquier correo.
