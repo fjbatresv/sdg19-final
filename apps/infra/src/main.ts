@@ -17,8 +17,10 @@ const replicaStack = new ReplicaStack(app, 'Sdg19ReplicaStack', {
   env: { account, region: replicaRegion },
 });
 
-new PrimaryStack(app, 'Sdg19PrimaryStack', {
+const primaryStack = new PrimaryStack(app, 'Sdg19PrimaryStack', {
   env: { account, region: primaryRegion },
   crossRegionReferences: true,
   emailsReplicaBucket: replicaStack.emailsReplicaBucket,
 });
+
+primaryStack.addDependency(replicaStack);
