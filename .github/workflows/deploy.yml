@@ -34,7 +34,7 @@ env:
   NX_ISOLATE_PLUGINS: 'false'
 
 jobs:
-  deploy:
+  bootstrap:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,26 +56,98 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build backend
-        run: npx nx run @org/backend:build:production
-
-      - name: Build infra
-        run: npx nx run @org/infra:build:production
-
-      - name: Build web
-        run: npx nx run web:build:production
-
       - name: Bootstrap CDK (primary)
         run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_PRIMARY }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
 
       - name: Bootstrap CDK (replica)
         run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_REPLICA }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
 
+  deploy_infra:
+    runs-on: ubuntu-latest
+    needs: bootstrap
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_PRIMARY }}
+          role-session-name: github-actions-deploy
+          role-duration-seconds: 3600
+          audience: sts.amazonaws.com
+
+      - name: Debug OIDC context
+        run: |
+          echo "repo=${GITHUB_REPOSITORY}"
+          echo "ref=${GITHUB_REF}"
+          echo "actor=${GITHUB_ACTOR}"
+          echo "account=${AWS_ACCOUNT_ID}"
+          echo "primary_region=${AWS_REGION_PRIMARY}"
+          echo "replica_region=${AWS_REGION_REPLICA}"
+          echo "hosted_zone_id_length=${#HOSTED_ZONE_ID}"
+
+      - name: Verify caller identity
+        run: aws sts get-caller-identity
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build backend
+        run: npx nx run @org/backend:build:production
+
+      - name: Build infra
+        run: npx nx run @org/infra:build:production
+
       - name: Deploy replica stack
         run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
 
       - name: Deploy primary stack
         run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
+
+  deploy_web:
+    runs-on: ubuntu-latest
+    needs: deploy_infra
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_PRIMARY }}
+          role-session-name: github-actions-deploy
+          role-duration-seconds: 3600
+          audience: sts.amazonaws.com
+
+      - name: Debug OIDC context
+        run: |
+          echo "repo=${GITHUB_REPOSITORY}"
+          echo "ref=${GITHUB_REF}"
+          echo "actor=${GITHUB_ACTOR}"
+          echo "account=${AWS_ACCOUNT_ID}"
+          echo "primary_region=${AWS_REGION_PRIMARY}"
+          echo "replica_region=${AWS_REGION_REPLICA}"
+          echo "hosted_zone_id_length=${#HOSTED_ZONE_ID}"
+
+      - name: Verify caller identity
+        run: aws sts get-caller-identity
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build web
+        run: npx nx run web:build:production
 
       - name: Publish web to S3 and invalidate CloudFront
         run: |

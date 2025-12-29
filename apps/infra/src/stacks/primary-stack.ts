@@ -7,7 +7,7 @@ import {
   Fn,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Vpc } from 'aws-cdk-lib/aws-ec2';
+import { Vpc, SubnetType, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import {
   Bucket,
   BucketEncryption,
@@ -59,6 +59,7 @@ import {
   CachePolicy,
   Distribution,
   PriceClass,
+  ResponseHeadersPolicy,
   OriginRequestPolicy,
   ViewerProtocolPolicy,
   OriginProtocolPolicy,
@@ -116,6 +117,18 @@ export class PrimaryStack extends Stack {
       maxAzs: 3,
       natGateways: 3,
     });
+
+    const lambdaSecurityGroup = new SecurityGroup(this, 'LambdaSecurityGroup', {
+      vpc,
+      description: 'Security group for backend lambdas',
+      allowAllOutbound: true,
+    });
+
+    const lambdaVpcConfig = {
+      vpc,
+      vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
+      securityGroups: [lambdaSecurityGroup],
+    };
 
     const dataKey = new Key(this, 'DataKey', {
       enableKeyRotation: true,
@@ -214,6 +227,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.registerHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         USER_POOL_ID: userPool.userPoolId,
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
@@ -225,6 +239,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.loginHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         USER_POOL_ID: userPool.userPoolId,
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
@@ -236,6 +251,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.refreshHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
       },
@@ -246,6 +262,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.productsHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
     });
 
     const createOrderFn = new Function(this, 'CreateOrderFn', {
@@ -253,6 +270,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.createOrderHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         TABLE_NAME: table.tableName,
       },
@@ -263,6 +281,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.listOrdersHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         TABLE_NAME: table.tableName,
       },
@@ -273,6 +292,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.orderStreamHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         ORDERS_TOPIC_ARN: ordersTopic.topicArn,
       },
@@ -420,6 +440,8 @@ export class PrimaryStack extends Stack {
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
+        responseHeadersPolicy:
+          ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
       },
       domainNames: [apiDomainName],
       certificate,
@@ -499,7 +521,7 @@ export class PrimaryStack extends Stack {
       autoDeleteObjects: true,
       lifecycleRules: [
         {
-          expiration: Duration.days(365),
+          expiration: Duration.days(30),
         },
       ],
     });
@@ -521,7 +543,12 @@ export class PrimaryStack extends Stack {
       ],
       lifecycleRules: [
         {
-          expiration: Duration.days(365),
+          transitions: [
+            {
+              storageClass: StorageClass.GLACIER,
+              transitionAfter: Duration.days(365),
+            },
+          ],
         },
       ],
     });

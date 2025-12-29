@@ -4,6 +4,7 @@ import {
   Bucket,
   BucketEncryption,
   BlockPublicAccess,
+  StorageClass,
 } from 'aws-cdk-lib/aws-s3';
 
 export class ReplicaStack extends Stack {
@@ -31,7 +32,12 @@ export class ReplicaStack extends Stack {
       autoDeleteObjects: true,
       lifecycleRules: [
         {
-          expiration: Duration.days(365),
+          transitions: [
+            {
+              storageClass: StorageClass.GLACIER,
+              transitionAfter: Duration.days(365),
+            },
+          ],
         },
       ],
     });
