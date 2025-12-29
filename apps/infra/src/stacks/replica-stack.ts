@@ -5,29 +5,20 @@ import {
   BucketEncryption,
   BlockPublicAccess,
 } from 'aws-cdk-lib/aws-s3';
-import { Key } from 'aws-cdk-lib/aws-kms';
 
 export class ReplicaStack extends Stack {
   public readonly replicaBucket: Bucket;
-  public readonly replicaBucketKey: Key;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const replicaKey = new Key(this, 'ReplicaBucketKey', {
-      enableKeyRotation: true,
-      description: 'KMS key for replica bucket encryption',
-    });
-
     const replicaBucket = new Bucket(this, 'ReplicaBucket', {
       versioned: true,
-      encryption: BucketEncryption.KMS,
-      encryptionKey: replicaKey,
+      encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
     });
 
     this.replicaBucket = replicaBucket;
-    this.replicaBucketKey = replicaKey;
 
     new CfnOutput(this, 'ReplicaBucketName', {
       value: replicaBucket.bucketName,

@@ -67,7 +67,6 @@ import * as path from 'path';
 
 interface PrimaryStackProps extends StackProps {
   replicaBucket: Bucket;
-  replicaBucketKey: Key;
 }
 
 export class PrimaryStack extends Stack {
@@ -112,10 +111,6 @@ export class PrimaryStack extends Stack {
     });
 
     const dataKey = new Key(this, 'DataKey', {
-      enableKeyRotation: true,
-    });
-
-    const logsKey = new Key(this, 'LogsKey', {
       enableKeyRotation: true,
     });
 
@@ -467,32 +462,26 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    dataKey.grantDecrypt(replicationRole);
-    props.replicaBucketKey.grantEncrypt(replicationRole);
     props.replicaBucket.grantWrite(replicationRole);
 
     const dataBucket = new Bucket(this, 'DataBucket', {
       versioned: true,
-      encryption: BucketEncryption.KMS,
-      encryptionKey: dataKey,
+      encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.RETAIN,
       replicationRole,
       replicationRules: [
         {
           destination: props.replicaBucket,
-          kmsKey: props.replicaBucketKey,
           storageClass: StorageClass.INTELLIGENT_TIERING,
           deleteMarkerReplication: true,
-          sseKmsEncryptedObjects: true,
         },
       ],
     });
 
     const logsBucket = new Bucket(this, 'LogsBucket', {
       versioned: true,
-      encryption: BucketEncryption.KMS,
-      encryptionKey: logsKey,
+      encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.RETAIN,
       lifecycleRules: [
@@ -505,10 +494,6 @@ export class PrimaryStack extends Stack {
     const trailLogs = new LogGroup(this, 'CloudTrailLogs', {
       retention: RetentionDays.ONE_YEAR,
     });
-
-    logsKey.grantEncryptDecrypt(
-      new ServicePrincipal('cloudtrail.amazonaws.com')
-    );
 
     new Trail(this, 'CloudTrail', {
       bucket: logsBucket,
