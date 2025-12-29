@@ -45,8 +45,13 @@ jobs:
           node -p "process.versions"
           node -e "const { AsyncLocalStorage } = require('node:async_hooks'); const als = new AsyncLocalStorage(); als.run({ ok: true }, () => { if (!als.getStore()?.ok) { throw new Error('AsyncLocalStorage failed'); } });"
 
-      - name: Install dependencies
+      - name: Install dependencies (workspace)
+        if: matrix.app != 'web'
         run: npm ci --workspace=apps/${{ matrix.app }}
+
+      - name: Install dependencies (root)
+        if: matrix.app == 'web'
+        run: npm ci
 
       - name: SonarCloud scan (${{ matrix.app }})
         uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838
