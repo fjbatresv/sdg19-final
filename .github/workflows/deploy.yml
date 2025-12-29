@@ -98,13 +98,13 @@ jobs:
         run: npm ci
 
       - name: Download backend dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: backend-dist
           path: apps/backend/dist
 
       - name: Download infra dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: infra-dist
           path: apps/infra/dist
@@ -152,13 +152,13 @@ jobs:
         run: npm ci
 
       - name: Download backend dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: backend-dist
           path: apps/backend/dist
 
       - name: Download infra dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: infra-dist
           path: apps/infra/dist
@@ -206,7 +206,7 @@ jobs:
         run: npm ci
 
       - name: Download web dist
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: web-dist
           path: dist/web
