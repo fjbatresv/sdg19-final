@@ -23,7 +23,7 @@ function getSubFromIdToken(idToken?: string) {
     return undefined;
   }
   try {
-    const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const payload = parts[1].replaceAll('-', '+').replaceAll('_', '/');
     const decoded = Buffer.from(payload, 'base64').toString('utf8');
     const json = JSON.parse(decoded);
     return json.sub as string | undefined;

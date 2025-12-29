@@ -38,8 +38,8 @@ const FALLBACK_PRODUCTS: Product[] = [
 
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
-  private http = inject(HttpClient);
-  private apiBase = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
+  private readonly apiBase = inject(API_BASE_URL);
 
   getProducts() {
     return this.http

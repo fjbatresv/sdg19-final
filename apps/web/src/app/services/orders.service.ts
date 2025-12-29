@@ -17,8 +17,8 @@ export type OrderSummary = {
 
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
-  private http = inject(HttpClient);
-  private apiBase = inject(API_BASE_URL);
+  private readonly http = inject(HttpClient);
+  private readonly apiBase = inject(API_BASE_URL);
 
   createOrder(items: OrderItem[]) {
     return this.http.post<OrderSummary>(`${this.apiBase}/orders`, {

@@ -105,8 +105,8 @@ type CartItem = {
   `,
 })
 export class ShopComponent {
-  private productsService = inject(ProductsService);
-  private ordersService = inject(OrdersService);
+  private readonly productsService = inject(ProductsService);
+  private readonly ordersService = inject(OrdersService);
 
   products = signal<Product[]>([]);
   cart = signal<CartItem[]>([]);

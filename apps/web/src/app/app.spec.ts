@@ -6,6 +6,16 @@ import { API_BASE_URL } from './app.tokens';
 
 describe('App', () => {
   beforeEach(async () => {
+    const storage: Storage = {
+      getItem: () => null,
+      setItem: () => undefined,
+      removeItem: () => undefined,
+      clear: () => undefined,
+      key: () => null,
+      length: 0,
+    };
+    globalThis.localStorage = storage;
+
     await TestBed.configureTestingModule({
       imports: [App, HttpClientTestingModule],
       providers: [

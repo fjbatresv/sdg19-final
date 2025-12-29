@@ -73,7 +73,7 @@ import {
 } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
 import { Trail } from 'aws-cdk-lib/aws-cloudtrail';
-import * as path from 'path';
+import * as path from 'node:path';
 
 interface PrimaryStackProps extends StackProps {
   emailsReplicaBucket: Bucket;
@@ -156,7 +156,9 @@ export class PrimaryStack extends Stack {
       projectionType: ProjectionType.ALL,
     });
 
-    const ordersTopic = new Topic(this, 'OrdersTopic');
+    const ordersTopic = new Topic(this, 'OrdersTopic', {
+      masterKey: dataKey,
+    });
 
     const userPool = new UserPool(this, 'UserPool', {
       selfSignUpEnabled: true,
@@ -404,8 +406,10 @@ export class PrimaryStack extends Stack {
     });
 
     const webBucket = new Bucket(this, 'WebBucket', {
+      versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -590,6 +594,7 @@ export class PrimaryStack extends Stack {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -598,6 +603,7 @@ export class PrimaryStack extends Stack {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       lifecycleRules: [
@@ -611,6 +617,7 @@ export class PrimaryStack extends Stack {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       replicationRole,
