@@ -1,4 +1,4 @@
-# SDG19 Final
+# Proyecto Final - Curso de Arquitecto de Soluciones AWS
 
 [![CI](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml)
 [![Deploy](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml/badge.svg?branch=develop)](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml)
@@ -14,8 +14,6 @@
 ![API Gateway](https://img.shields.io/badge/API%20Gateway-FF4F8B?logo=amazonapigateway&logoColor=white)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
 [![Known Vulnerabilities](https://snyk.io/test/github/fjbatresv/sdg19-final/badge.svg)](https://snyk.io/test/github/fjbatresv/sdg19-final)
-
-
 
 Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, Lambdas y CDK.
 
@@ -59,9 +57,9 @@ npx nx run web:build:production
 
 ```bash
 export AWS_PROFILE=xxxx
-AWS_REGION=us-east-1 npx cdk bootstrap aws://605134457500/us-east-1 -c hostedZoneId=xxxx
-AWS_REGION=us-east-2 npx cdk bootstrap aws://605134457500/us-east-2 -c hostedZoneId=xxxx
+AWS_REGION=<PRINCIPAL_REGION> npx cdk bootstrap aws://<AWS_ACCOUNT_ID>/<PRINCIPAL_REGION> -c hostedZoneId=<HOSTED_ZONE_ID>
+AWS_REGION=<SECONDARY_REGION> npx cdk bootstrap aws://<AWS_ACCOUNT_ID>/<SECONDARY_REGION> -c hostedZoneId=<HOSTED_ZONE_ID>
 
-AWS_REGION=us-east-2 npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=xxxx
-AWS_REGION=us-east-1 npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=xxxx
+AWS_REGION=<SECONDARY_REGION> npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
+AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
 ```
