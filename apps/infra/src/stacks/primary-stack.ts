@@ -4,6 +4,7 @@ import {
   Duration,
   RemovalPolicy,
   CfnOutput,
+  Fn,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Vpc } from 'aws-cdk-lib/aws-ec2';
@@ -33,8 +34,6 @@ import {
   HttpApi,
   CorsHttpMethod,
   HttpMethod,
-  DomainName,
-  ApiMapping,
   HttpStage,
   LogGroupLogDestination,
 } from 'aws-cdk-lib/aws-apigatewayv2';
@@ -51,22 +50,31 @@ import {
   ARecord,
   RecordTarget,
 } from 'aws-cdk-lib/aws-route53';
-import {
-  CloudFrontTarget,
-  ApiGatewayv2DomainProperties,
-} from 'aws-cdk-lib/aws-route53-targets';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import {
   Certificate,
   CertificateValidation,
 } from 'aws-cdk-lib/aws-certificatemanager';
-import { Distribution, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
-import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import {
+  AllowedMethods,
+  CachePolicy,
+  Distribution,
+  PriceClass,
+  OriginRequestPolicy,
+  ViewerProtocolPolicy,
+  OriginProtocolPolicy,
+} from 'aws-cdk-lib/aws-cloudfront';
+import {
+  HttpOrigin,
+  S3BucketOrigin,
+} from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
 import { Trail } from 'aws-cdk-lib/aws-cloudtrail';
 import * as path from 'path';
 
 interface PrimaryStackProps extends StackProps {
   replicaBucket: Bucket;
+  emailsReplicaBucket: Bucket;
 }
 
 export class PrimaryStack extends Stack {
@@ -153,7 +161,7 @@ export class PrimaryStack extends Stack {
     });
 
     const apiLogs = new LogGroup(this, 'ApiAccessLogs', {
-      retention: RetentionDays.ONE_YEAR,
+      retention: RetentionDays.ONE_MONTH,
     });
 
     apiLogs.grantWrite(new ServicePrincipal('apigateway.amazonaws.com'));
@@ -356,32 +364,11 @@ export class PrimaryStack extends Stack {
       validation: CertificateValidation.fromDns(hostedZone),
     });
 
-    const apiDomain = new DomainName(this, 'ApiDomainName', {
-      domainName: apiDomainName,
-      certificate,
-    });
-
-    new ApiMapping(this, 'ApiMapping', {
-      api,
-      domainName: apiDomain,
-      stage: apiStage,
-    });
-
-    new ARecord(this, 'ApiAliasRecord', {
-      zone: hostedZone,
-      recordName: apiDomainName,
-      target: RecordTarget.fromAlias(
-        new ApiGatewayv2DomainProperties(
-          apiDomain.regionalDomainName,
-          apiDomain.regionalHostedZoneId
-        )
-      ),
-    });
-
     const webBucket = new Bucket(this, 'WebBucket', {
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     const webOrigin = S3BucketOrigin.withOriginAccessControl(webBucket);
@@ -419,15 +406,40 @@ export class PrimaryStack extends Stack {
         origin: webOrigin,
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
+      defaultRootObject: 'index.html',
       domainNames: [webDomainName],
       certificate,
       webAclId: webAcl.attrArn,
+      priceClass: PriceClass.PRICE_CLASS_100,
+    });
+
+    const apiOriginDomain = Fn.select(2, Fn.split('/', api.apiEndpoint));
+    const apiDistribution = new Distribution(this, 'ApiDistribution', {
+      defaultBehavior: {
+        origin: new HttpOrigin(apiOriginDomain, {
+          protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+        }),
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        allowedMethods: AllowedMethods.ALLOW_ALL,
+        cachePolicy: CachePolicy.CACHING_DISABLED,
+        originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
+      },
+      domainNames: [apiDomainName],
+      certificate,
+      webAclId: webAcl.attrArn,
+      priceClass: PriceClass.PRICE_CLASS_100,
     });
 
     new ARecord(this, 'WebAliasRecord', {
       zone: hostedZone,
       recordName: webDomainName,
       target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+    });
+
+    new ARecord(this, 'ApiAliasRecord', {
+      zone: hostedZone,
+      recordName: apiDomainName,
+      target: RecordTarget.fromAlias(new CloudFrontTarget(apiDistribution)),
     });
 
     const replicationRole = new Role(this, 'ReplicationRole', {
@@ -463,12 +475,14 @@ export class PrimaryStack extends Stack {
     );
 
     props.replicaBucket.grantWrite(replicationRole);
+    props.emailsReplicaBucket.grantWrite(replicationRole);
 
     const dataBucket = new Bucket(this, 'DataBucket', {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
       replicationRole,
       replicationRules: [
         {
@@ -484,7 +498,30 @@ export class PrimaryStack extends Stack {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      lifecycleRules: [
+        {
+          expiration: Duration.days(365),
+        },
+      ],
+    });
+
+    const emailsBucket = new Bucket(this, 'EmailsBucket', {
+      versioned: true,
+      encryption: BucketEncryption.S3_MANAGED,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      replicationRole,
+      replicationRules: [
+        {
+          priority: 1,
+          destination: props.emailsReplicaBucket,
+          storageClass: StorageClass.INTELLIGENT_TIERING,
+          deleteMarkerReplication: true,
+        },
+      ],
       lifecycleRules: [
         {
           expiration: Duration.days(365),
@@ -493,7 +530,7 @@ export class PrimaryStack extends Stack {
     });
 
     const trailLogs = new LogGroup(this, 'CloudTrailLogs', {
-      retention: RetentionDays.ONE_YEAR,
+      retention: RetentionDays.ONE_MONTH,
     });
 
     new Trail(this, 'CloudTrail', {
@@ -525,6 +562,9 @@ export class PrimaryStack extends Stack {
     });
     new CfnOutput(this, 'DataBucketName', {
       value: dataBucket.bucketName,
+    });
+    new CfnOutput(this, 'EmailsBucketName', {
+      value: emailsBucket.bucketName,
     });
     new CfnOutput(this, 'VpcId', {
       value: vpc.vpcId,
