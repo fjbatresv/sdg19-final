@@ -57,19 +57,19 @@ jobs:
         run: npx nx run web:build:production
 
       - name: Upload backend dist
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: backend-dist
           path: apps/backend/dist
 
       - name: Upload infra dist
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: infra-dist
           path: apps/infra/dist
 
       - name: Upload web dist
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: web-dist
           path: dist/web
