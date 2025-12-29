@@ -56,7 +56,10 @@ import {
 } from 'aws-cdk-lib/aws-certificatemanager';
 import {
   AllowedMethods,
+  CacheCookieBehavior,
+  CacheHeaderBehavior,
   CachePolicy,
+  CacheQueryStringBehavior,
   Distribution,
   PriceClass,
   ResponseHeadersPolicy,
@@ -437,10 +440,22 @@ export class PrimaryStack extends Stack {
       ],
     });
 
+    const webCachePolicy = new CachePolicy(this, 'WebCachePolicy', {
+      minTtl: Duration.hours(1),
+      defaultTtl: Duration.days(7),
+      maxTtl: Duration.days(365),
+      cookieBehavior: CacheCookieBehavior.none(),
+      headerBehavior: CacheHeaderBehavior.none(),
+      queryStringBehavior: CacheQueryStringBehavior.none(),
+      enableAcceptEncodingGzip: true,
+      enableAcceptEncodingBrotli: true,
+    });
+
     const distribution = new Distribution(this, 'WebDistribution', {
       defaultBehavior: {
         origin: webOrigin,
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: webCachePolicy,
       },
       defaultRootObject: 'index.html',
       errorResponses: [
@@ -473,6 +488,20 @@ export class PrimaryStack extends Stack {
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         responseHeadersPolicy:
           ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
+      },
+      additionalBehaviors: {
+        '/products': {
+          origin: new HttpOrigin(apiOriginDomain, {
+            protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+          }),
+          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          cachePolicy: webCachePolicy,
+          originRequestPolicy:
+            OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          responseHeadersPolicy:
+            ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
+        },
       },
       domainNames: [apiDomainName],
       certificate,
