@@ -382,6 +382,19 @@ export class PrimaryStack extends Stack {
       authorizer,
     });
 
+    const optionsFn = new Function(this, 'OptionsFn', {
+      runtime: Runtime.NODEJS_20_X,
+      handler: 'main.optionsHandler',
+      code: backendCode,
+      timeout: Duration.seconds(5),
+    });
+
+    api.addRoutes({
+      path: '/{proxy+}',
+      methods: [HttpMethod.OPTIONS],
+      integration: new HttpLambdaIntegration('OptionsIntegration', optionsFn),
+    });
+
     const certificate = new Certificate(this, 'Certificate', {
       domainName: webDomainName,
       subjectAlternativeNames: [apiDomainName],
