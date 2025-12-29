@@ -4,9 +4,10 @@ import {
   Duration,
   RemovalPolicy,
   CfnOutput,
+  Fn,
 } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Vpc } from 'aws-cdk-lib/aws-ec2';
+import { Vpc, SubnetType, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import {
   Bucket,
   BucketEncryption,
@@ -33,9 +34,6 @@ import {
   HttpApi,
   CorsHttpMethod,
   HttpMethod,
-  DomainName,
-  ApiMapping,
-  HttpStage,
   LogGroupLogDestination,
 } from 'aws-cdk-lib/aws-apigatewayv2';
 import { HttpJwtAuthorizer } from 'aws-cdk-lib/aws-apigatewayv2-authorizers';
@@ -51,23 +49,34 @@ import {
   ARecord,
   RecordTarget,
 } from 'aws-cdk-lib/aws-route53';
-import {
-  CloudFrontTarget,
-  ApiGatewayv2DomainProperties,
-} from 'aws-cdk-lib/aws-route53-targets';
+import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
 import {
   Certificate,
   CertificateValidation,
 } from 'aws-cdk-lib/aws-certificatemanager';
-import { Distribution, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
-import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import {
+  AllowedMethods,
+  CacheCookieBehavior,
+  CacheHeaderBehavior,
+  CachePolicy,
+  CacheQueryStringBehavior,
+  Distribution,
+  PriceClass,
+  ResponseHeadersPolicy,
+  OriginRequestPolicy,
+  ViewerProtocolPolicy,
+  OriginProtocolPolicy,
+} from 'aws-cdk-lib/aws-cloudfront';
+import {
+  HttpOrigin,
+  S3BucketOrigin,
+} from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
 import { Trail } from 'aws-cdk-lib/aws-cloudtrail';
 import * as path from 'path';
 
 interface PrimaryStackProps extends StackProps {
-  replicaBucket: Bucket;
-  replicaBucketKey: Key;
+  emailsReplicaBucket: Bucket;
 }
 
 export class PrimaryStack extends Stack {
@@ -111,11 +120,19 @@ export class PrimaryStack extends Stack {
       natGateways: 3,
     });
 
-    const dataKey = new Key(this, 'DataKey', {
-      enableKeyRotation: true,
+    const lambdaSecurityGroup = new SecurityGroup(this, 'LambdaSecurityGroup', {
+      vpc,
+      description: 'Security group for backend lambdas',
+      allowAllOutbound: true,
     });
 
-    const logsKey = new Key(this, 'LogsKey', {
+    const lambdaVpcConfig = {
+      vpc,
+      vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
+      securityGroups: [lambdaSecurityGroup],
+    };
+
+    const dataKey = new Key(this, 'DataKey', {
       enableKeyRotation: true,
     });
 
@@ -158,7 +175,7 @@ export class PrimaryStack extends Stack {
     });
 
     const apiLogs = new LogGroup(this, 'ApiAccessLogs', {
-      retention: RetentionDays.ONE_YEAR,
+      retention: RetentionDays.ONE_MONTH,
     });
 
     apiLogs.grantWrite(new ServicePrincipal('apigateway.amazonaws.com'));
@@ -167,19 +184,24 @@ export class PrimaryStack extends Stack {
       apiName: 'sdg19-api',
       createDefaultStage: false,
       corsPreflight: {
-        allowHeaders: ['authorization', 'content-type'],
+        allowHeaders: [
+          'authorization',
+          'content-type',
+          'x-amz-date',
+          'x-api-key',
+          'x-amz-security-token',
+          'x-amz-user-agent',
+        ],
         allowMethods: [
           CorsHttpMethod.GET,
           CorsHttpMethod.POST,
           CorsHttpMethod.OPTIONS,
         ],
-        allowOrigins: ['*'],
+        allowOrigins: [`https://${webDomainName}`],
       },
     });
 
-    const apiStage = new HttpStage(this, 'ApiStage', {
-      httpApi: api,
-      stageName: '$default',
+    api.addStage('$default', {
       autoDeploy: true,
       accessLogSettings: {
         destination: new LogGroupLogDestination(apiLogs),
@@ -214,6 +236,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.registerHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         USER_POOL_ID: userPool.userPoolId,
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
@@ -225,6 +248,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.loginHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         USER_POOL_ID: userPool.userPoolId,
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
@@ -236,6 +260,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.refreshHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
       },
@@ -246,6 +271,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.productsHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
     });
 
     const createOrderFn = new Function(this, 'CreateOrderFn', {
@@ -253,6 +279,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.createOrderHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         TABLE_NAME: table.tableName,
       },
@@ -263,6 +290,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.listOrdersHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         TABLE_NAME: table.tableName,
       },
@@ -273,6 +301,7 @@ export class PrimaryStack extends Stack {
       handler: 'main.orderStreamHandler',
       code: backendCode,
       timeout: Duration.seconds(10),
+      ...lambdaVpcConfig,
       environment: {
         ORDERS_TOPIC_ARN: ordersTopic.topicArn,
       },
@@ -355,38 +384,30 @@ export class PrimaryStack extends Stack {
       authorizer,
     });
 
+    const optionsFn = new Function(this, 'OptionsFn', {
+      runtime: Runtime.NODEJS_20_X,
+      handler: 'main.optionsHandler',
+      code: backendCode,
+      timeout: Duration.seconds(5),
+    });
+
+    api.addRoutes({
+      path: '/{proxy+}',
+      methods: [HttpMethod.OPTIONS],
+      integration: new HttpLambdaIntegration('OptionsIntegration', optionsFn),
+    });
+
     const certificate = new Certificate(this, 'Certificate', {
       domainName: webDomainName,
       subjectAlternativeNames: [apiDomainName],
       validation: CertificateValidation.fromDns(hostedZone),
     });
 
-    const apiDomain = new DomainName(this, 'ApiDomainName', {
-      domainName: apiDomainName,
-      certificate,
-    });
-
-    new ApiMapping(this, 'ApiMapping', {
-      api,
-      domainName: apiDomain,
-      stage: apiStage,
-    });
-
-    new ARecord(this, 'ApiAliasRecord', {
-      zone: hostedZone,
-      recordName: apiDomainName,
-      target: RecordTarget.fromAlias(
-        new ApiGatewayv2DomainProperties(
-          apiDomain.regionalDomainName,
-          apiDomain.regionalHostedZoneId
-        )
-      ),
-    });
-
     const webBucket = new Bucket(this, 'WebBucket', {
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     const webOrigin = S3BucketOrigin.withOriginAccessControl(webBucket);
@@ -419,20 +440,116 @@ export class PrimaryStack extends Stack {
       ],
     });
 
+    const webCachePolicy = new CachePolicy(this, 'WebCachePolicy', {
+      minTtl: Duration.hours(1),
+      defaultTtl: Duration.days(7),
+      maxTtl: Duration.days(365),
+      cookieBehavior: CacheCookieBehavior.none(),
+      headerBehavior: CacheHeaderBehavior.none(),
+      queryStringBehavior: CacheQueryStringBehavior.none(),
+      enableAcceptEncodingGzip: true,
+      enableAcceptEncodingBrotli: true,
+    });
+
+    const productsCachePolicy = new CachePolicy(this, 'ProductsCachePolicy', {
+      minTtl: Duration.seconds(0),
+      defaultTtl: Duration.minutes(1),
+      maxTtl: Duration.minutes(5),
+      cookieBehavior: CacheCookieBehavior.none(),
+      headerBehavior: CacheHeaderBehavior.none(),
+      queryStringBehavior: CacheQueryStringBehavior.all(),
+      enableAcceptEncodingGzip: true,
+      enableAcceptEncodingBrotli: true,
+    });
+
+    const apiCorsResponsePolicy = new ResponseHeadersPolicy(
+      this,
+      'ApiCorsResponsePolicy',
+      {
+        corsBehavior: {
+          accessControlAllowOrigins: [`https://${webDomainName}`],
+          accessControlAllowHeaders: [
+            'authorization',
+            'content-type',
+            'x-amz-date',
+            'x-api-key',
+            'x-amz-security-token',
+            'x-amz-user-agent',
+          ],
+          accessControlAllowMethods: ['GET', 'POST', 'OPTIONS'],
+          accessControlAllowCredentials: false,
+          accessControlMaxAge: Duration.hours(1),
+          originOverride: true,
+        },
+      }
+    );
+
     const distribution = new Distribution(this, 'WebDistribution', {
       defaultBehavior: {
         origin: webOrigin,
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: webCachePolicy,
       },
+      defaultRootObject: 'index.html',
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+        },
+      ],
       domainNames: [webDomainName],
       certificate,
       webAclId: webAcl.attrArn,
+      priceClass: PriceClass.PRICE_CLASS_100,
+    });
+
+    const apiOriginDomain = Fn.select(2, Fn.split('/', api.apiEndpoint));
+    const apiDistribution = new Distribution(this, 'ApiDistribution', {
+      defaultBehavior: {
+        origin: new HttpOrigin(apiOriginDomain, {
+          protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+        }),
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        allowedMethods: AllowedMethods.ALLOW_ALL,
+        cachePolicy: CachePolicy.CACHING_DISABLED,
+        originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+        responseHeadersPolicy: apiCorsResponsePolicy,
+      },
+      additionalBehaviors: {
+        '/products': {
+          origin: new HttpOrigin(apiOriginDomain, {
+            protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+          }),
+          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+          allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+          cachePolicy: productsCachePolicy,
+          originRequestPolicy:
+            OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          responseHeadersPolicy: apiCorsResponsePolicy,
+        },
+      },
+      domainNames: [apiDomainName],
+      certificate,
+      webAclId: webAcl.attrArn,
+      priceClass: PriceClass.PRICE_CLASS_100,
     });
 
     new ARecord(this, 'WebAliasRecord', {
       zone: hostedZone,
       recordName: webDomainName,
       target: RecordTarget.fromAlias(new CloudFrontTarget(distribution)),
+    });
+
+    new ARecord(this, 'ApiAliasRecord', {
+      zone: hostedZone,
+      recordName: apiDomainName,
+      target: RecordTarget.fromAlias(new CloudFrontTarget(apiDistribution)),
     });
 
     const replicationRole = new Role(this, 'ReplicationRole', {
@@ -467,48 +584,59 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    dataKey.grantDecrypt(replicationRole);
-    props.replicaBucketKey.grantEncrypt(replicationRole);
-    props.replicaBucket.grantWrite(replicationRole);
+    props.emailsReplicaBucket.grantWrite(replicationRole);
 
     const dataBucket = new Bucket(this, 'DataBucket', {
       versioned: true,
-      encryption: BucketEncryption.KMS,
-      encryptionKey: dataKey,
+      encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.RETAIN,
-      replicationRole,
-      replicationRules: [
-        {
-          destination: props.replicaBucket,
-          kmsKey: props.replicaBucketKey,
-          storageClass: StorageClass.INTELLIGENT_TIERING,
-          deleteMarkerReplication: true,
-          sseKmsEncryptedObjects: true,
-        },
-      ],
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     const logsBucket = new Bucket(this, 'LogsBucket', {
       versioned: true,
-      encryption: BucketEncryption.KMS,
-      encryptionKey: logsKey,
+      encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
       lifecycleRules: [
         {
-          expiration: Duration.days(365),
+          expiration: Duration.days(30),
+        },
+      ],
+    });
+
+    const emailsBucket = new Bucket(this, 'EmailsBucket', {
+      versioned: true,
+      encryption: BucketEncryption.S3_MANAGED,
+      blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      replicationRole,
+      replicationRules: [
+        {
+          priority: 1,
+          destination: props.emailsReplicaBucket,
+          storageClass: StorageClass.INTELLIGENT_TIERING,
+          deleteMarkerReplication: true,
+        },
+      ],
+      lifecycleRules: [
+        {
+          transitions: [
+            {
+              storageClass: StorageClass.GLACIER,
+              transitionAfter: Duration.days(365),
+            },
+          ],
         },
       ],
     });
 
     const trailLogs = new LogGroup(this, 'CloudTrailLogs', {
-      retention: RetentionDays.ONE_YEAR,
+      retention: RetentionDays.ONE_MONTH,
     });
-
-    logsKey.grantEncryptDecrypt(
-      new ServicePrincipal('cloudtrail.amazonaws.com')
-    );
 
     new Trail(this, 'CloudTrail', {
       bucket: logsBucket,
@@ -539,6 +667,9 @@ export class PrimaryStack extends Stack {
     });
     new CfnOutput(this, 'DataBucketName', {
       value: dataBucket.bucketName,
+    });
+    new CfnOutput(this, 'EmailsBucketName', {
+      value: emailsBucket.bucketName,
     });
     new CfnOutput(this, 'VpcId', {
       value: vpc.vpcId,

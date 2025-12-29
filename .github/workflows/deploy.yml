@@ -2,22 +2,39 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      aws_account_id:
+        description: AWS Account ID
+        required: true
+        # Use a GitHub secret or repository variable instead of hardcoding.
+      aws_region_primary:
+        description: Primary region
+        required: true
+        default: us-east-1
+      aws_region_replica:
+        description: Replica region
+        required: true
+        default: us-east-2
+      hosted_zone_id:
+        description: Route53 Hosted Zone ID
+        required: true
+        # Use a GitHub secret or repository variable instead of hardcoding.
 
 permissions:
   id-token: write
   contents: read
 
 env:
-  AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
-  AWS_REGION_PRIMARY: ${{ vars.AWS_REGION_PRIMARY || 'us-east-1' }}
-  AWS_REGION_REPLICA: ${{ vars.AWS_REGION_REPLICA || 'us-east-2' }}
-  HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
+  AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
+  AWS_REGION_PRIMARY: ${{ inputs.aws_region_primary }}
+  AWS_REGION_REPLICA: ${{ inputs.aws_region_replica }}
+  HOSTED_ZONE_ID: ${{ inputs.hosted_zone_id }}
   NODE_OPTIONS: --experimental-require-module
   NX_DAEMON: 'false'
   NX_ISOLATE_PLUGINS: 'false'
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,12 +43,6 @@ jobs:
         with:
           node-version: 24
           cache: 'npm'
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION_PRIMARY }}
 
       - name: Install dependencies
         run: npm ci
@@ -45,17 +56,160 @@ jobs:
       - name: Build web
         run: npx nx run web:build:production
 
+      - name: Upload backend dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: apps/backend/dist
+
+      - name: Upload infra dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: infra-dist
+          path: apps/infra/dist
+
+      - name: Upload web dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: dist/web
+
+  bootstrap:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_PRIMARY }}
+          role-session-name: github-actions-deploy
+          role-duration-seconds: 3600
+          audience: sts.amazonaws.com
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download backend dist
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-dist
+          path: apps/backend/dist
+
+      - name: Download infra dist
+        uses: actions/download-artifact@v4
+        with:
+          name: infra-dist
+          path: apps/infra/dist
+
       - name: Bootstrap CDK (primary)
-        run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_PRIMARY }}
+        run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_PRIMARY }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
 
       - name: Bootstrap CDK (replica)
-        run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_REPLICA }}
+        run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_REPLICA }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
+
+  deploy_infra:
+    runs-on: ubuntu-latest
+    needs: bootstrap
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_PRIMARY }}
+          role-session-name: github-actions-deploy
+          role-duration-seconds: 3600
+          audience: sts.amazonaws.com
+
+      - name: Debug OIDC context
+        run: |
+          echo "repo=${GITHUB_REPOSITORY}"
+          echo "ref=${GITHUB_REF}"
+          echo "actor=${GITHUB_ACTOR}"
+          echo "account=${AWS_ACCOUNT_ID}"
+          echo "primary_region=${AWS_REGION_PRIMARY}"
+          echo "replica_region=${AWS_REGION_REPLICA}"
+          echo "hosted_zone_id_length=${#HOSTED_ZONE_ID}"
+
+      - name: Verify caller identity
+        run: aws sts get-caller-identity
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download backend dist
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-dist
+          path: apps/backend/dist
+
+      - name: Download infra dist
+        uses: actions/download-artifact@v4
+        with:
+          name: infra-dist
+          path: apps/infra/dist
 
       - name: Deploy replica stack
         run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
 
       - name: Deploy primary stack
         run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
+
+  deploy_web:
+    runs-on: ubuntu-latest
+    needs: deploy_infra
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_PRIMARY }}
+          role-session-name: github-actions-deploy
+          role-duration-seconds: 3600
+          audience: sts.amazonaws.com
+
+      - name: Debug OIDC context
+        run: |
+          echo "repo=${GITHUB_REPOSITORY}"
+          echo "ref=${GITHUB_REF}"
+          echo "actor=${GITHUB_ACTOR}"
+          echo "account=${AWS_ACCOUNT_ID}"
+          echo "primary_region=${AWS_REGION_PRIMARY}"
+          echo "replica_region=${AWS_REGION_REPLICA}"
+          echo "hosted_zone_id_length=${#HOSTED_ZONE_ID}"
+
+      - name: Verify caller identity
+        run: aws sts get-caller-identity
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download web dist
+        uses: actions/download-artifact@v4
+        with:
+          name: web-dist
+          path: dist/web
 
       - name: Publish web to S3 and invalidate CloudFront
         run: |

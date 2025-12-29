@@ -1,35 +1,40 @@
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import {
   Bucket,
   BucketEncryption,
   BlockPublicAccess,
+  StorageClass,
 } from 'aws-cdk-lib/aws-s3';
-import { Key } from 'aws-cdk-lib/aws-kms';
 
 export class ReplicaStack extends Stack {
-  public readonly replicaBucket: Bucket;
-  public readonly replicaBucketKey: Key;
+  public readonly emailsReplicaBucket: Bucket;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    const replicaKey = new Key(this, 'ReplicaBucketKey', {
-      enableKeyRotation: true,
-    });
-
-    const replicaBucket = new Bucket(this, 'ReplicaBucket', {
+    const emailsReplicaBucket = new Bucket(this, 'EmailsReplicaBucket', {
       versioned: true,
-      encryption: BucketEncryption.KMS,
-      encryptionKey: replicaKey,
+      encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      lifecycleRules: [
+        {
+          transitions: [
+            {
+              storageClass: StorageClass.GLACIER,
+              transitionAfter: Duration.days(365),
+            },
+          ],
+        },
+      ],
     });
 
-    this.replicaBucket = replicaBucket;
-    this.replicaBucketKey = replicaKey;
+    this.emailsReplicaBucket = emailsReplicaBucket;
 
-    new CfnOutput(this, 'ReplicaBucketName', {
-      value: replicaBucket.bucketName,
+    new CfnOutput(this, 'EmailsReplicaBucketName', {
+      value: emailsReplicaBucket.bucketName,
     });
   }
 }
