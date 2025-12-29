@@ -34,7 +34,6 @@ import {
   HttpApi,
   CorsHttpMethod,
   HttpMethod,
-  HttpStage,
   LogGroupLogDestination,
 } from 'aws-cdk-lib/aws-apigatewayv2';
 import { HttpJwtAuthorizer } from 'aws-cdk-lib/aws-apigatewayv2-authorizers';
@@ -180,9 +179,7 @@ export class PrimaryStack extends Stack {
       },
     });
 
-    const apiStage = new HttpStage(this, 'ApiStage', {
-      httpApi: api,
-      stageName: '$default',
+    api.addStage('$default', {
       autoDeploy: true,
       accessLogSettings: {
         destination: new LogGroupLogDestination(apiLogs),
