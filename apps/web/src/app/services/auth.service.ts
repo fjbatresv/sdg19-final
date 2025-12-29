@@ -35,10 +35,10 @@ const STORAGE_KEY = 'sdg19.auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private http = inject(HttpClient);
-  private rawHttp = new HttpClient(inject(HttpBackend));
-  private apiBase = inject(API_BASE_URL);
-  private sessionSubject = new BehaviorSubject<AuthSession | null>(
+  private readonly http = inject(HttpClient);
+  private readonly rawHttp = new HttpClient(inject(HttpBackend));
+  private readonly apiBase = inject(API_BASE_URL);
+  private readonly sessionSubject = new BehaviorSubject<AuthSession | null>(
     this.loadSession()
   );
   private refreshRequest?: Observable<AuthSession | null>;
@@ -177,7 +177,7 @@ export class AuthService {
       return null;
     }
     try {
-      const payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payload = parts[1].replaceAll('-', '+').replaceAll('_', '/');
       const decoded = atob(payload);
       return JSON.parse(decoded) as { exp?: number };
     } catch {

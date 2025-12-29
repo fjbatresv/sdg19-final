@@ -48,9 +48,9 @@ import { AuthService } from '../services/auth.service';
   `,
 })
 export class RegisterComponent {
-  private fb = inject(FormBuilder);
-  private auth = inject(AuthService);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
+  private readonly router = inject(Router);
 
   busy = signal(false);
   error = signal('');
@@ -58,7 +58,6 @@ export class RegisterComponent {
   form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    // TODO: Align with Cognito password complexity rules (upper/lower/number/symbol).
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
