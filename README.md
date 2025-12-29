@@ -12,7 +12,6 @@
 ![S3](https://img.shields.io/badge/S3-569A31?logo=amazons3&logoColor=white)
 ![CloudFront](https://img.shields.io/badge/CloudFront-232F3E?logo=amazonaws&logoColor=white)
 ![API Gateway](https://img.shields.io/badge/API%20Gateway-FF4F8B?logo=amazonapigateway&logoColor=white)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
 [![Known Vulnerabilities](https://snyk.io/test/github/fjbatresv/sdg19-final/badge.svg)](https://snyk.io/test/github/fjbatresv/sdg19-final)
 
 Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, Lambdas y CDK.
@@ -32,12 +31,16 @@ Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, 
 
 Ver `ARCHITECTURE.md` y `architecture.drawio`.
 
-## Sonar Cloud
+## SonarCloud Scan
 
-- [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
-- [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
-- [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
-- [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
+|Infra|Web|Backend|
+|-|-|-|
+|[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
 
 ## Desarrollo local
 
