@@ -1,104 +1,67 @@
-# New Nx Repository
+# SDG19 Final
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+[![CI](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml)
+[![Deploy](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml/badge.svg?branch=develop)](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+![Nx](https://img.shields.io/badge/Nx-143055?logo=nx&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-DD0031?logo=angular&logoColor=white)
+![AWS CDK](https://img.shields.io/badge/AWS%20CDK-232F3E?logo=amazonaws&logoColor=white)
+![AWS Lambda](https://img.shields.io/badge/AWS%20Lambda-FF9900?logo=awslambda&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?logo=amazonaws&logoColor=white)
+![DynamoDB](https://img.shields.io/badge/DynamoDB-4053D6?logo=amazondynamodb&logoColor=white)
+![S3](https://img.shields.io/badge/S3-569A31?logo=amazons3&logoColor=white)
+![CloudFront](https://img.shields.io/badge/CloudFront-232F3E?logo=amazonaws&logoColor=white)
+![API Gateway](https://img.shields.io/badge/API%20Gateway-FF4F8B?logo=amazonapigateway&logoColor=white)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
+[![Known Vulnerabilities](https://snyk.io/test/github/fjbatresv/sdg19-final/badge.svg)](https://snyk.io/test/github/fjbatresv/sdg19-final)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
 
-## Generate a library
+Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, Lambdas y CDK.
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+## Apps
+
+- `apps/web`: frontend Angular 21
+- `apps/backend`: Lambdas y contrato OpenAPI
+- `apps/infra`: infraestructura CDK (VPC, CloudFront, Route53, WAF, Cognito, DynamoDB, S3)
+
+## Dominios
+
+- Web: `https://finalweb.javierba3.com`
+- API: `https://finalapi.javierba3.com`
+
+## Arquitectura
+
+Ver `ARCHITECTURE.md` y `architecture.drawio`.
+
+## Sonar Cloud
+
+- [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
+- [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
+- [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
+- [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
+
+## Desarrollo local
+
+```bash
+npx nx run web:serve
 ```
 
-## Run tasks
+## Build
 
-To build the library use:
-
-```sh
-npx nx build pkg1
+```bash
+npx nx run @org/backend:build:production
+npx nx run @org/infra:build:production
+npx nx run web:build:production
 ```
 
-To run any task with Nx use:
+## Deploy (local)
 
-```sh
-npx nx <target> <project-name>
+```bash
+export AWS_PROFILE=xxxx
+AWS_REGION=us-east-1 npx cdk bootstrap aws://605134457500/us-east-1 -c hostedZoneId=xxxx
+AWS_REGION=us-east-2 npx cdk bootstrap aws://605134457500/us-east-2 -c hostedZoneId=xxxx
+
+AWS_REGION=us-east-2 npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=xxxx
+AWS_REGION=us-east-1 npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=xxxx
 ```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
-
-```
-npx nx release
-```
-
-Pass `--dry-run` to see what would happen without actually releasing the library.
-
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
-```
-
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
-
-```sh
-npx nx sync:check
-```
-
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
-
-## Nx Cloud
-
-Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Set up CI (non-Github Actions CI)
-
-**Note:** This is only required if your CI provider is not GitHub Actions.
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
