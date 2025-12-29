@@ -1,23 +1,81 @@
+# .coderabbit.yaml
+
 language: es
+tone_instructions: >
+  Responde en español, directo y orientado a riesgos. Prioriza bugs, seguridad y regresiones.
+  Sé conciso: primero lo crítico, luego recomendaciones.
+
 reviews:
-  instructions: |
-    - Prioriza bugs, seguridad y regresiones en TypeScript, AWS CDK y Lambdas (Node 20/24).
-    - Verifica que los cambios respeten la estructura Nx (targets, paths) y que las dependencias nuevas sean necesarias.
-    - Señala hardcodes de secretos, riesgos de costos en AWS y ausencia de pruebas en lógica nueva.
+  profile: assertive
+  request_changes_workflow: false
+
+  auto_review:
+    enabled: true
+    # Habilita auto-reviews para PRs cuyo target/base branch NO sea la default branch
+    # (con esto cubres develop, release/*, hotfix/*, etc.)
+    base_branches:
+      - ".*"
+    # Opcional: hace review incremental en cada push al PR (si está soportado en tu plan/instancia)
+    auto_incremental_review: true
+
+  # Opcional (ya hay defaults), pero útil para Nx/TS:
+  path_filters:
+    - "!**/dist/**"
+    - "!**/node_modules/**"
+    - "!**/coverage/**"
+    - "!**/*.lock"
+    - "!**/*.map"
+
   path_instructions:
-    - path: 'apps/**'
+    # Instrucciones generales para todo el repo
+    - path: "**/*"
       instructions: |
-        - Enfoca la revisión en manejo de errores HTTP, validaciones de entrada y mínimos de cobertura en handlers.
-        - Revisa nombres de recursos CDK y etiquetas para consistencia con Pettzi.
-    - path: 'libs/**'
+        - Prioriza bugs, seguridad y regresiones (TypeScript, AWS CDK y Lambdas Node 20/24).
+        - Verifica que cambios respeten estructura Nx (targets, paths) y que dependencias nuevas sean necesarias.
+        - Señala hardcodes de secretos, riesgos de costos en AWS y ausencia de pruebas en lógica nueva.
+        - Señala cambios que puedan romper compatibilidad, despliegues o pipelines.
+
+    - path: "apps/web/**"
       instructions: |
-        - Enfoca la revisión en manejo de errores HTTP, validaciones de entrada y mínimos de cobertura en handlers.
-        - Revisa nombres de recursos CDK y etiquetas para consistencia con Pettzi.
-    - path: '{mintlify/**,**/*.md,**/*.mdx}'
+        - Enfoca la revisión en Angular 21: templates, control flow (@if/@for), accesibilidad y rendimiento.
+        - Verifica manejo de errores HTTP, validaciones de formularios y persistencia segura del JWT.
+        - Confirma que endpoints y URLs estén por environment (sin hardcode).
+
+    - path: "apps/backend/**"
+      instructions: |
+        - Enfoca la revisión en manejo de errores HTTP, validaciones de entrada y cobertura mínima en handlers.
+        - Revisa consistencia del contrato OpenAPI, responses y CORS.
+        - Evita dependencias innecesarias y valida compatibilidad con Node 20/24.
+
+    - path: "apps/infra/**"
+      instructions: |
+        - Enfoca la revisión en CDK: seguridad (KMS, enforcements), costos y consistencia de tags.
+        - Verifica nombres de recursos, dependencias entre stacks y configuraciones de CloudFront/WAF/VPC.
+        - Señala hardcodes de cuentas/dominios y uso incorrecto de context/vars.
+
+    - path: "libs/**"
+      instructions: |
+        - Revisa consistencia de APIs compartidas, tipos y contratos entre web/backend/infra.
+        - Señala duplicidad de lógica y riesgos de rompe-builds en Nx.
+
+    - path: "packages/**"
+      instructions: |
+        - Revisa consistencia de APIs compartidas, tipos y contratos entre web/backend/infra.
+        - Señala duplicidad de lógica y riesgos de rompe-builds en Nx.
+
+    - path: "mintlify/**"
       instructions: |
         - Revisa claridad, exactitud técnica y comandos de deploy.
-  reviewers:
-    max: 1
-    auto_request: true
-  auto_approve:
-    enabled: false
+
+    - path: "**/*.md"
+      instructions: |
+        - Revisa claridad, exactitud técnica y comandos de deploy.
+
+    - path: "**/*.mdx"
+      instructions: |
+        - Revisa claridad, exactitud técnica y comandos de deploy.
+
+    - path: ".github/workflows/**"
+      instructions: |
+        - Revisa seguridad de Actions: pinning por SHA, secrets/vars y permisos mínimos.
+        - Verifica que jobs respeten artifacts y secuencia build→deploy.

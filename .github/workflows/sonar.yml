@@ -1,0 +1,66 @@
+name: Sonar
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: write
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: web
+            project_key: sdg19-web
+            sources: apps/web/src
+          - app: backend
+            project_key: sdg19-backend
+            sources: apps/backend/src
+          - app: infra
+            project_key: sdg19-infra
+            sources: apps/infra/src
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Verify Node 24 runtime
+        run: |
+          node -p "process.version"
+          node -p "process.versions"
+          node -e "const { AsyncLocalStorage } = require('node:async_hooks'); const als = new AsyncLocalStorage(); als.run({ ok: true }, () => { if (!als.getStore()?.ok) { throw new Error('AsyncLocalStorage failed'); } });"
+
+      - name: Install dependencies (workspace)
+        if: matrix.app != 'web'
+        run: npm ci --workspace=apps/${{ matrix.app }}
+
+      - name: Install dependencies (root)
+        if: matrix.app == 'web'
+        run: npm ci
+
+      - name: SonarCloud scan (${{ matrix.app }})
+        uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=${{ matrix.project_key }}
+            -Dsonar.organization=fjbatresv
+            -Dsonar.sources=${{ matrix.sources }}
+            -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.spec.ts,**/*.test.ts,**/*.spec.js,**/*.test.js
