@@ -59,6 +59,9 @@ import {
   CachePolicy,
   Distribution,
   PriceClass,
+  OriginRequestCookieBehavior,
+  OriginRequestHeaderBehavior,
+  OriginRequestQueryStringBehavior,
   ResponseHeadersPolicy,
   OriginRequestPolicy,
   ViewerProtocolPolicy,
@@ -463,6 +466,21 @@ export class PrimaryStack extends Stack {
     });
 
     const apiOriginDomain = Fn.select(2, Fn.split('/', api.apiEndpoint));
+    const apiOriginRequestPolicy = new OriginRequestPolicy(
+      this,
+      'ApiOriginRequestPolicy',
+      {
+        headerBehavior: OriginRequestHeaderBehavior.allowList(
+          'Origin',
+          'Access-Control-Request-Method',
+          'Access-Control-Request-Headers',
+          'Authorization',
+          'Content-Type'
+        ),
+        cookieBehavior: OriginRequestCookieBehavior.none(),
+        queryStringBehavior: OriginRequestQueryStringBehavior.all(),
+      }
+    );
     const apiDistribution = new Distribution(this, 'ApiDistribution', {
       defaultBehavior: {
         origin: new HttpOrigin(apiOriginDomain, {
@@ -471,7 +489,7 @@ export class PrimaryStack extends Stack {
         viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
+        originRequestPolicy: apiOriginRequestPolicy,
         responseHeadersPolicy:
           ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
       },
