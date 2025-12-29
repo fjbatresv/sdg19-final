@@ -11,6 +11,12 @@ reviews:
 
   auto_review:
     enabled: true
+    # Habilita auto-reviews para PRs cuyo target/base branch NO sea la default branch
+    # (con esto cubres develop, release/*, hotfix/*, etc.)
+    base_branches:
+      - ".*"
+    # Opcional: hace review incremental en cada push al PR (si está soportado en tu plan/instancia)
+    auto_incremental_review: true
 
   # Opcional (ya hay defaults), pero útil para Nx/TS:
   path_filters:
