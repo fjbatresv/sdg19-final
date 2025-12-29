@@ -18,6 +18,5 @@ const replicaStack = new ReplicaStack(app, 'Sdg19ReplicaStack', {
 new PrimaryStack(app, 'Sdg19PrimaryStack', {
   env: { account, region: primaryRegion },
   crossRegionReferences: true,
-  replicaBucket: replicaStack.replicaBucket,
   emailsReplicaBucket: replicaStack.emailsReplicaBucket,
 });

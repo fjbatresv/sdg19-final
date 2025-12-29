@@ -73,7 +73,6 @@ import { Trail } from 'aws-cdk-lib/aws-cloudtrail';
 import * as path from 'path';
 
 interface PrimaryStackProps extends StackProps {
-  replicaBucket: Bucket;
   emailsReplicaBucket: Bucket;
 }
 
@@ -525,7 +524,6 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    props.replicaBucket.grantWrite(replicationRole);
     props.emailsReplicaBucket.grantWrite(replicationRole);
 
     const dataBucket = new Bucket(this, 'DataBucket', {
@@ -534,15 +532,6 @@ export class PrimaryStack extends Stack {
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
-      replicationRole,
-      replicationRules: [
-        {
-          priority: 1,
-          destination: props.replicaBucket,
-          storageClass: StorageClass.INTELLIGENT_TIERING,
-          deleteMarkerReplication: true,
-        },
-      ],
     });
 
     const logsBucket = new Bucket(this, 'LogsBucket', {
