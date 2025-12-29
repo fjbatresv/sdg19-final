@@ -474,7 +474,6 @@ export class PrimaryStack extends Stack {
           'Origin',
           'Access-Control-Request-Method',
           'Access-Control-Request-Headers',
-          'Authorization',
           'Content-Type'
         ),
         cookieBehavior: OriginRequestCookieBehavior.none(),
