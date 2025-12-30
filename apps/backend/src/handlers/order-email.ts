@@ -2,6 +2,7 @@ import { SQSEvent } from 'aws-lambda';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { SESClient, SendTemplatedEmailCommand } from '@aws-sdk/client-ses';
 import { requireEnv } from '../lib/env';
+import { randomUUID } from 'node:crypto';
 
 type OrderMessage = {
   orderId?: string;
@@ -21,7 +22,7 @@ function maskEmail(email: string) {
   if (!local || !domain) {
     return 'unknown';
   }
-  const visible = local.slice(0, 2);
+  const visible = local.length <= 2 ? '*' : local.slice(0, 2);
   return `${visible}***@${domain}`;
 }
 
@@ -37,20 +38,47 @@ function parseOrderMessage(body: string): OrderMessage | null {
   }
 }
 
+function isValidOrderMessage(
+  payload: unknown
+): payload is OrderMessage & { orderId: string; email: string } {
+  if (!payload || typeof payload !== 'object') {
+    return false;
+  }
+  const message = payload as OrderMessage;
+  if (typeof message.orderId !== 'string' || message.orderId.trim().length === 0) {
+    return false;
+  }
+  if (typeof message.email !== 'string' || message.email.trim().length === 0) {
+    return false;
+  }
+  if (
+    message.createdAt !== undefined &&
+    (typeof message.createdAt !== 'string' ||
+      Number.isNaN(Date.parse(message.createdAt)))
+  ) {
+    return false;
+  }
+  if (message.total !== undefined && typeof message.total !== 'number') {
+    return false;
+  }
+  return true;
+}
+
 export async function orderEmailHandler(event: SQSEvent) {
   const bucketName = requireEnv('EMAILS_BUCKET_NAME');
   const templateName = requireEnv('SES_TEMPLATE_NAME');
   const fromAddress = requireEnv('SES_FROM_ADDRESS');
+  const kmsKeyId = requireEnv('EMAILS_BUCKET_KMS_KEY_ID');
 
   for (const record of event.Records) {
     const message = parseOrderMessage(record.body);
-    if (!message?.email) {
-      console.warn('order-email: skipped message without email', {
-        orderId: message?.orderId ?? 'unknown',
+    if (!isValidOrderMessage(message)) {
+      console.warn('order-email: invalid message payload', {
+        messageId: record.messageId,
       });
       continue;
     }
-    const orderId = message.orderId ?? 'unknown';
+    const orderId = message.orderId;
     const recipient = maskEmail(message.email);
     console.info('order-email: sending confirmation', {
       orderId,
@@ -58,15 +86,14 @@ export async function orderEmailHandler(event: SQSEvent) {
       status: message.status ?? 'unknown',
     });
 
-    const templateData = JSON.stringify({
+    const templateData = {
       orderId: message.orderId,
       createdAt: message.createdAt,
       status: message.status,
       total: message.total,
       items: message.items,
       userPk: message.userPk,
-      email: message.email,
-    });
+    };
 
     try {
       await ses.send(
@@ -74,7 +101,7 @@ export async function orderEmailHandler(event: SQSEvent) {
           Source: fromAddress,
           Destination: { ToAddresses: [message.email] },
           Template: templateName,
-          TemplateData: templateData,
+          TemplateData: JSON.stringify(templateData),
         })
       );
     } catch (error: unknown) {
@@ -83,18 +110,19 @@ export async function orderEmailHandler(event: SQSEvent) {
       throw error;
     }
 
-    const key = `orders/${message.orderId ?? 'unknown'}/${Date.now()}.json`;
+    const key = `orders/${message.orderId}/${Date.now()}-${randomUUID()}.json`;
     try {
       await s3.send(
         new PutObjectCommand({
           Bucket: bucketName,
           Key: key,
           ContentType: 'application/json',
+          ServerSideEncryption: 'aws:kms',
+          SSEKMSKeyId: kmsKeyId,
           Body: JSON.stringify({
-            to: message.email,
             from: fromAddress,
             template: templateName,
-            data: JSON.parse(templateData),
+            data: templateData,
           }),
         })
       );

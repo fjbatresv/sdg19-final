@@ -53,6 +53,7 @@ describe('orderEmailHandler', () => {
     process.env.EMAILS_BUCKET_NAME = 'emails-bucket';
     process.env.SES_TEMPLATE_NAME = 'order-template';
     process.env.SES_FROM_ADDRESS = 'noreply@example.com';
+    process.env.EMAILS_BUCKET_KMS_KEY_ID = 'kms-key-id';
   });
 
   it('sends SES email and stores a copy in S3', async () => {
@@ -79,6 +80,8 @@ describe('orderEmailHandler', () => {
     const s3Input = (s3SendMock.mock.calls[0]?.[0] as { input: any }).input;
     expect(s3Input.Bucket).toBe('emails-bucket');
     expect(s3Input.Key).toContain('order-123');
+    expect(s3Input.ServerSideEncryption).toBe('aws:kms');
+    expect(s3Input.SSEKMSKeyId).toBe('kms-key-id');
   });
 
   it('skips messages without email', async () => {
