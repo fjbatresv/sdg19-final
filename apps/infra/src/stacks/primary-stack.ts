@@ -718,7 +718,8 @@ export class PrimaryStack extends Stack {
         {
           priority: 1,
           destination: props.emailsReplicaBucket,
-          replicaKmsKeyId: dataKey.keyArn,
+          kmsKey: dataKey,
+          sseKmsEncryptedObjects: true,
           storageClass: StorageClass.INTELLIGENT_TIERING,
           deleteMarkerReplication: true,
         },
