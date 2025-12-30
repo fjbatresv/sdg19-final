@@ -33,6 +33,10 @@ Los dominios se definen via contexto CDK o variables de entorno (`ROOT_DOMAIN_NA
 
 Ver `ARCHITECTURE.md` y `architecture.drawio`.
 
+## Observabilidad
+
+Las Lambdas usan AWS X-Ray para trazabilidad distribuida.
+
 ## SonarCloud Scan
 
 |Infra|Web|Backend|

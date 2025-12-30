@@ -11,7 +11,7 @@ Este documento resume la implementacion en AWS basada en `architecture.drawio`.
 - VPC: subredes publicas/privadas con 3 NAT gateways (egress fijo).
 - Cognito User Pool + Client: registro/login con JWT.
 - API Gateway HTTP API: endpoints de auth, productos y ordenes.
-- Lambdas: auth, products, orders, stream y OPTIONS.
+- Lambdas: auth, products, orders, stream, options, email y data lake.
 - Lambda de correos: consume SQS y envia por SES con plantilla, guarda copia en S3.
 - DynamoDB: single-table con GSI para ordenes.
 - SNS + SQS: stream de ordenes publica en SNS, SQS encola para envio de correo y data lake.
@@ -20,9 +20,10 @@ Este documento resume la implementacion en AWS basada en `architecture.drawio`.
   - `WebBucket`: sitio web
   - `DataBucket`: datos internos
   - `LogsBucket`: logs (retencion 30 dias)
-  - `EmailsBucket`: correos con transición a Intelligent-Tiering a 30 días y expiración a 90 días
+  - `EmailsBucket`: correos con transición a Glacier a 1 año y expiración a 1 año
   - `EmailsReplicaBucket` (us-east-2): replica del bucket de emails
 - SES: identidad de dominio + DKIM + MAIL FROM (subdominio mail.*) para envio.
+- X-Ray: trazas activas para lambdas.
 
 ## Flujo API
 
