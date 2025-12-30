@@ -12,6 +12,14 @@
 ![S3](https://img.shields.io/badge/S3-569A31?logo=amazons3&logoColor=white)
 ![CloudFront](https://img.shields.io/badge/CloudFront-232F3E?logo=amazonaws&logoColor=white)
 ![API Gateway](https://img.shields.io/badge/API%20Gateway-FF4F8B?logo=amazonapigateway&logoColor=white)
+![SQS](https://img.shields.io/badge/SQS-FF4F8B?logo=amazonsqs&logoColor=white)
+![SNS](https://img.shields.io/badge/SNS-FF4F8B?logo=amazonsns&logoColor=white)
+![Kinesis](https://img.shields.io/badge/Kinesis-232F3E?logo=amazonaws&logoColor=white)
+![Firehose](https://img.shields.io/badge/Firehose-232F3E?logo=amazonaws&logoColor=white)
+![SES](https://img.shields.io/badge/SES-232F3E?logo=amazonaws&logoColor=white)
+![Cognito](https://img.shields.io/badge/Cognito-232F3E?logo=amazonaws&logoColor=white)
+![Route53](https://img.shields.io/badge/Route53-232F3E?logo=amazonroute53&logoColor=white)
+![WAF](https://img.shields.io/badge/WAF-232F3E?logo=amazonaws&logoColor=white)
 [![Known Vulnerabilities](https://snyk.io/test/github/fjbatresv/sdg19-final/badge.svg)](https://snyk.io/test/github/fjbatresv/sdg19-final)
 
 Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, Lambdas y CDK.
@@ -72,6 +80,43 @@ AWS_REGION=<SECONDARY_REGION> npx cdk bootstrap aws://<AWS_ACCOUNT_ID>/<SECONDAR
 AWS_REGION=<SECONDARY_REGION> npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
 AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
 ```
+
+## Deploy (GitHub Actions)
+
+Ejemplo de `config_json` para el workflow `deploy.yml` (input `config_json`):
+
+```json
+{
+  "aws_account_id": "605134457500",
+  "aws_region_primary": "us-east-1",
+  "aws_region_replica": "us-east-2",
+  "hosted_zone_id": "Z033451412UP58MG6KXQ6",
+  "domains": {
+    "root": "javierba3.com",
+    "api": "finalapi.javierba3.com",
+    "web": "finalweb.javierba3.com"
+  },
+  "ses": {
+    "from": "no-reply@javierba3.com",
+    "mail_from": "mail.javierba3.com"
+  },
+  "enable_lambda_vpc": false
+}
+```
+
+Campos del `config_json`:
+- `aws_account_id`: cuenta AWS donde se despliega.
+- `aws_region_primary`: región primaria (stacks principales).
+- `aws_region_replica`: región de réplica (stack secundario).
+- `hosted_zone_id`: Hosted Zone ID de Route53 para los dominios.
+- `domains.root`: dominio raíz (ej. `tu-dominio.com`).
+- `domains.api`: dominio para API (ej. `finalapi.tu-dominio.com`).
+- `domains.web`: dominio para web (ej. `finalweb.tu-dominio.com`).
+- `ses.from`: remitente verificado en SES (ej. `no-reply@tu-dominio.com`).
+- `ses.mail_from`: subdominio MAIL FROM (ej. `mail.tu-dominio.com`).
+- `enable_lambda_vpc`: `true`/`false` para habilitar VPC en Lambdas.
+- `aws_role_arn` (opcional): ARN del role a asumir; si no se define usa `secrets.AWS_ROLE_ARN`.
+- `emails_replica_kms_key_arn` (opcional): ARN de la KMS de la réplica (si ya existe).
 
 ## Envio de correos (SES)
 
