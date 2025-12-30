@@ -7,7 +7,7 @@
     "sesTemplateName": "sdg19-order-confirmation",
     "sesFromAddress": "noreply@javierba3.com",
     "sesMailFromDomain": "mail.javierba3.com",
-    "enableLambdaVpc": true,
+    "enableLambdaVpc": false,
     "createHostedZone": "false"
   }
 }
