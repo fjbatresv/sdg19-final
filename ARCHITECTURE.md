@@ -19,11 +19,11 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - S3:
   - `WebBucket`: sitio web
   - `DataBucket`: datos internos
-  - `LogsBucket`: logs (retención 30 dias)
+  - `LogsBucket`: logs (retención 30 días)
   - `EmailsBucket`: correos con transición a Glacier a 1 año y expiración a 10 años
   - `EmailsReplicaBucket` (us-east-2): replica del bucket de emails
 - SES: identidad de dominio + DKIM + MAIL FROM (subdominio mail.*) para envío.
-- X-Ray: trazas activas para lambdas.
+- X-Ray: trazas activas para Lambdas.
 
 ## Flujo API
 
