@@ -62,6 +62,12 @@ describe('orderLakeHandler', () => {
       .input;
     expect(kinesisInput.StreamName).toBe('orders-stream');
     expect(kinesisInput.PartitionKey).toBe('order-123');
+    const dataBuffer = Buffer.isBuffer(kinesisInput.Data)
+      ? kinesisInput.Data
+      : Buffer.from(kinesisInput.Data as Uint8Array);
+    const payload = JSON.parse(dataBuffer.toString('utf-8'));
+    expect(payload.orderId).toBe('order-123');
+    expect(payload.userPk).toBe('user-123');
   });
 
   it('skips invalid messages', async () => {
