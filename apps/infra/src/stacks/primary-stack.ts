@@ -45,7 +45,13 @@ import {
 import { HttpJwtAuthorizer } from 'aws-cdk-lib/aws-apigatewayv2-authorizers';
 import { HttpLambdaIntegration } from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import { AccessLogFormat } from 'aws-cdk-lib/aws-apigateway';
-import { Function, Runtime, Code, StartingPosition } from 'aws-cdk-lib/aws-lambda';
+import {
+  Function,
+  Runtime,
+  Code,
+  StartingPosition,
+  Tracing,
+} from 'aws-cdk-lib/aws-lambda';
 import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import {
@@ -325,6 +331,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.registerHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(10),
       ...lambdaVpcConfig,
       environment: {
@@ -337,6 +344,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.loginHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(10),
       ...lambdaVpcConfig,
       environment: {
@@ -349,6 +357,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.refreshHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(10),
       ...lambdaVpcConfig,
       environment: {
@@ -360,6 +369,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.productsHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(10),
       ...lambdaVpcConfig,
     });
@@ -368,6 +378,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.createOrderHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(10),
       ...lambdaVpcConfig,
       environment: {
@@ -379,6 +390,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.listOrdersHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(10),
       ...lambdaVpcConfig,
       environment: {
@@ -390,6 +402,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.orderStreamHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(10),
       ...lambdaVpcConfig,
       environment: {
@@ -443,12 +456,12 @@ export class PrimaryStack extends Stack {
     );
     ordersTopic.addSubscription(
       new SqsSubscription(ordersQueue, {
-        rawMessageDelivery: true,
+        rawMessageDelivery: false,
       })
     );
     ordersTopic.addSubscription(
       new SqsSubscription(ordersLakeQueue, {
-        rawMessageDelivery: true,
+        rawMessageDelivery: false,
       })
     );
 
@@ -521,6 +534,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.optionsHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(5),
     });
 
@@ -769,6 +783,20 @@ export class PrimaryStack extends Stack {
         resources: [dataKey.keyArn],
       })
     );
+    firehoseRole.addToPolicy(
+      new PolicyStatement({
+        actions: [
+          'logs:CreateLogGroup',
+          'logs:CreateLogStream',
+          'logs:PutLogEvents',
+        ],
+        resources: ['*'],
+      })
+    );
+
+    const firehoseLogs = new LogGroup(this, 'OrdersFirehoseLogs', {
+      retention: RetentionDays.ONE_MONTH,
+    });
 
     new CfnDeliveryStream(this, 'OrdersFirehose', {
       deliveryStreamType: 'KinesisStreamAsSource',
@@ -785,6 +813,11 @@ export class PrimaryStack extends Stack {
         bufferingHints: {
           intervalInSeconds: 300,
           sizeInMBs: 5,
+        },
+        cloudWatchLoggingOptions: {
+          enabled: true,
+          logGroupName: firehoseLogs.logGroupName,
+          logStreamName: 'S3Delivery',
         },
       },
     });
@@ -932,6 +965,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.orderEmailHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(orderEmailTimeoutSeconds),
       ...lambdaVpcConfig,
       environment: {
@@ -946,6 +980,7 @@ export class PrimaryStack extends Stack {
       runtime: Runtime.NODEJS_20_X,
       handler: 'main.orderLakeHandler',
       code: backendCode,
+      tracing: Tracing.ACTIVE,
       timeout: Duration.seconds(orderLakeTimeoutSeconds),
       ...lambdaVpcConfig,
       environment: {
@@ -961,6 +996,7 @@ export class PrimaryStack extends Stack {
     orderLakeFn.addEventSource(
       new SqsEventSource(ordersLakeQueue, {
         batchSize: 10,
+        reportBatchItemFailures: true,
       })
     );
 
@@ -986,6 +1022,12 @@ export class PrimaryStack extends Stack {
       new PolicyStatement({
         actions: ['kinesis:PutRecord', 'kinesis:PutRecords'],
         resources: [ordersStream.streamArn],
+      })
+    );
+    orderLakeFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['kms:Decrypt', 'kms:GenerateDataKey'],
+        resources: [dataKey.keyArn],
       })
     );
 
