@@ -85,6 +85,12 @@ import { Queue, QueueEncryption } from 'aws-cdk-lib/aws-sqs';
 import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { SqsSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import {
+  Stream,
+  StreamEncryption,
+  StreamMode,
+} from 'aws-cdk-lib/aws-kinesis';
+import { CfnDeliveryStream } from 'aws-cdk-lib/aws-kinesisfirehose';
+import {
   Alarm,
   ComparisonOperator,
   Metric,
@@ -140,8 +146,22 @@ export class PrimaryStack extends Stack {
     }
 
     const enableLambdaVpc =
-      this.node.tryGetContext('enableLambdaVpc') ?? true;
+      this.node.tryGetContext('enableLambdaVpc') ?? process.env.ENABLE_LAMBDA_VPC;
     const useVpc = !(enableLambdaVpc === false || enableLambdaVpc === 'false');
+
+    const emailsReplicaKmsKeyArn =
+      this.node.tryGetContext('emailsReplicaKmsKeyArn') ??
+      process.env.EMAILS_REPLICA_KMS_KEY_ARN;
+    if (!emailsReplicaKmsKeyArn) {
+      throw new Error(
+        'emailsReplicaKmsKeyArn is required. Set context emailsReplicaKmsKeyArn or EMAILS_REPLICA_KMS_KEY_ARN.'
+      );
+    }
+    const emailsReplicaKmsKey = Key.fromKeyArn(
+      this,
+      'EmailsReplicaKey',
+      emailsReplicaKmsKeyArn
+    );
 
     const vpc = useVpc
       ? new Vpc(this, 'Vpc', {
@@ -194,6 +214,7 @@ export class PrimaryStack extends Stack {
       masterKey: dataKey,
     });
     const orderEmailTimeoutSeconds = 15;
+    const orderLakeTimeoutSeconds = 10;
     const ordersDlq = new Queue(this, 'OrdersQueueDLQ', {
       encryption: QueueEncryption.KMS,
       encryptionMasterKey: dataKey,
@@ -204,6 +225,19 @@ export class PrimaryStack extends Stack {
       encryptionMasterKey: dataKey,
       deadLetterQueue: {
         queue: ordersDlq,
+        maxReceiveCount: 5,
+      },
+    });
+    const lakeDlq = new Queue(this, 'OrdersLakeQueueDLQ', {
+      encryption: QueueEncryption.KMS,
+      encryptionMasterKey: dataKey,
+    });
+    const ordersLakeQueue = new Queue(this, 'OrdersLakeQueue', {
+      visibilityTimeout: Duration.seconds(orderLakeTimeoutSeconds * 6),
+      encryption: QueueEncryption.KMS,
+      encryptionMasterKey: dataKey,
+      deadLetterQueue: {
+        queue: lakeDlq,
         maxReceiveCount: 5,
       },
     });
@@ -409,6 +443,11 @@ export class PrimaryStack extends Stack {
     );
     ordersTopic.addSubscription(
       new SqsSubscription(ordersQueue, {
+        rawMessageDelivery: true,
+      })
+    );
+    ordersTopic.addSubscription(
+      new SqsSubscription(ordersLakeQueue, {
         rawMessageDelivery: true,
       })
     );
@@ -691,6 +730,65 @@ export class PrimaryStack extends Stack {
       autoDeleteObjects: true,
     });
 
+    const ordersStream = new Stream(this, 'OrdersStream', {
+      streamMode: StreamMode.ON_DEMAND,
+      encryption: StreamEncryption.KMS,
+      encryptionKey: dataKey,
+    });
+
+    const firehoseRole = new Role(this, 'OrdersFirehoseRole', {
+      assumedBy: new ServicePrincipal('firehose.amazonaws.com'),
+    });
+    firehoseRole.addToPolicy(
+      new PolicyStatement({
+        actions: [
+          'kinesis:DescribeStream',
+          'kinesis:GetShardIterator',
+          'kinesis:GetRecords',
+          'kinesis:ListShards',
+        ],
+        resources: [ordersStream.streamArn],
+      })
+    );
+    firehoseRole.addToPolicy(
+      new PolicyStatement({
+        actions: [
+          's3:AbortMultipartUpload',
+          's3:GetBucketLocation',
+          's3:GetObject',
+          's3:ListBucket',
+          's3:ListBucketMultipartUploads',
+          's3:PutObject',
+        ],
+        resources: [dataBucket.bucketArn, `${dataBucket.bucketArn}/*`],
+      })
+    );
+    firehoseRole.addToPolicy(
+      new PolicyStatement({
+        actions: ['kms:Decrypt', 'kms:GenerateDataKey'],
+        resources: [dataKey.keyArn],
+      })
+    );
+
+    new CfnDeliveryStream(this, 'OrdersFirehose', {
+      deliveryStreamType: 'KinesisStreamAsSource',
+      kinesisStreamSourceConfiguration: {
+        kinesisStreamArn: ordersStream.streamArn,
+        roleArn: firehoseRole.roleArn,
+      },
+      s3DestinationConfiguration: {
+        bucketArn: dataBucket.bucketArn,
+        roleArn: firehoseRole.roleArn,
+        prefix: 'data-lake/orders/',
+        errorOutputPrefix: 'data-lake/errors/',
+        compressionFormat: 'GZIP',
+        bufferingHints: {
+          intervalInSeconds: 300,
+          sizeInMBs: 5,
+        },
+      },
+    });
+
     const logsBucket = new Bucket(this, 'LogsBucket', {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
@@ -718,7 +816,7 @@ export class PrimaryStack extends Stack {
         {
           priority: 1,
           destination: props.emailsReplicaBucket,
-          kmsKey: dataKey,
+          kmsKey: emailsReplicaKmsKey,
           sseKmsEncryptedObjects: true,
           storageClass: StorageClass.INTELLIGENT_TIERING,
           deleteMarkerReplication: true,
@@ -728,11 +826,11 @@ export class PrimaryStack extends Stack {
         {
           transitions: [
             {
-              storageClass: StorageClass.INTELLIGENT_TIERING,
-              transitionAfter: Duration.days(30),
+              storageClass: StorageClass.GLACIER,
+              transitionAfter: Duration.days(365),
             },
           ],
-          expiration: Duration.days(90),
+          expiration: Duration.days(3650),
         },
       ],
     });
@@ -844,8 +942,24 @@ export class PrimaryStack extends Stack {
       },
     });
 
+    const orderLakeFn = new Function(this, 'OrderLakeFn', {
+      runtime: Runtime.NODEJS_20_X,
+      handler: 'main.orderLakeHandler',
+      code: backendCode,
+      timeout: Duration.seconds(orderLakeTimeoutSeconds),
+      ...lambdaVpcConfig,
+      environment: {
+        KINESIS_STREAM_NAME: ordersStream.streamName,
+      },
+    });
+
     orderEmailFn.addEventSource(
       new SqsEventSource(ordersQueue, {
+        batchSize: 10,
+      })
+    );
+    orderLakeFn.addEventSource(
+      new SqsEventSource(ordersLakeQueue, {
         batchSize: 10,
       })
     );
@@ -866,6 +980,12 @@ export class PrimaryStack extends Stack {
       new PolicyStatement({
         actions: ['ses:SendTemplatedEmail', 'ses:SendEmail'],
         resources: [sesIdentity.emailIdentityArn],
+      })
+    );
+    orderLakeFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['kinesis:PutRecord', 'kinesis:PutRecords'],
+        resources: [ordersStream.streamArn],
       })
     );
 

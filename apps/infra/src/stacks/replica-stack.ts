@@ -6,6 +6,7 @@ import {
   BlockPublicAccess,
   StorageClass,
 } from 'aws-cdk-lib/aws-s3';
+import { Key } from 'aws-cdk-lib/aws-kms';
 
 export class ReplicaStack extends Stack {
   public readonly emailsReplicaBucket: Bucket;
@@ -13,9 +14,14 @@ export class ReplicaStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    const replicaKey = new Key(this, 'EmailsReplicaKey', {
+      enableKeyRotation: true,
+    });
+
     const emailsReplicaBucket = new Bucket(this, 'EmailsReplicaBucket', {
       versioned: true,
-      encryption: BucketEncryption.S3_MANAGED,
+      encryption: BucketEncryption.KMS,
+      encryptionKey: replicaKey,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
@@ -25,10 +31,10 @@ export class ReplicaStack extends Stack {
           transitions: [
             {
               storageClass: StorageClass.INTELLIGENT_TIERING,
-              transitionAfter: Duration.days(30),
+              transitionAfter: Duration.days(365),
             },
           ],
-          expiration: Duration.days(90),
+          expiration: Duration.days(3650),
         },
       ],
     });
@@ -37,6 +43,9 @@ export class ReplicaStack extends Stack {
 
     new CfnOutput(this, 'EmailsReplicaBucketName', {
       value: emailsReplicaBucket.bucketName,
+    });
+    new CfnOutput(this, 'EmailsReplicaKmsKeyArn', {
+      value: replicaKey.keyArn,
     });
   }
 }
