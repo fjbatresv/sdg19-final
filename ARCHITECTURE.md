@@ -12,7 +12,7 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - Cognito User Pool + Client: registro/login con JWT.
 - API Gateway HTTP API: endpoints de auth, productos y órdenes.
 - Lambdas: auth, products, orders, stream, options, email y data lake.
-- Lambda de correos: consume SQS y envia por SES con plantilla, guarda copia en S3.
+- Lambda de correos: consume SQS y envía por SES con plantilla, guarda copia en S3.
 - DynamoDB: single-table con GSI para órdenes.
 - SNS + SQS: stream de órdenes publica en SNS, SQS encola para envío de correo y data lake.
 - Kinesis Data Stream + Firehose: ingestión de eventos de órdenes hacia S3 (data lake).
@@ -48,3 +48,4 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - Fase 1: registro, autenticación, productos, órdenes, lectura de órdenes.
 - Fase 2: envío de correos.
 - Fase 3: data lake (SQS -> Lambda -> Kinesis -> Firehose -> S3).
+- Fase 4: cobertura de pruebas.
