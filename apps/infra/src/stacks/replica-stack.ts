@@ -24,10 +24,11 @@ export class ReplicaStack extends Stack {
         {
           transitions: [
             {
-              storageClass: StorageClass.GLACIER,
-              transitionAfter: Duration.days(365),
+              storageClass: StorageClass.INTELLIGENT_TIERING,
+              transitionAfter: Duration.days(30),
             },
           ],
+          expiration: Duration.days(90),
         },
       ],
     });
