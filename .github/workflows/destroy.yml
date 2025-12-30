@@ -12,6 +12,7 @@ permissions:
   contents: read
 
 env:
+  NX_CLOUD: "false"
   JSII_SILENCE_WARNING_DEPRECATED: "1"
   NODE_OPTIONS: --experimental-require-module
   NX_DAEMON: "false"
