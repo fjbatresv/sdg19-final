@@ -95,6 +95,7 @@ import {
   StreamEncryption,
   StreamMode,
 } from 'aws-cdk-lib/aws-kinesis';
+import { CfnDatabase, CfnTable } from 'aws-cdk-lib/aws-glue';
 import { CfnDeliveryStream } from 'aws-cdk-lib/aws-kinesisfirehose';
 import {
   Alarm,
@@ -750,6 +751,51 @@ export class PrimaryStack extends Stack {
       encryptionKey: dataKey,
     });
 
+    const dataLakeDatabase = new CfnDatabase(this, 'DataLakeDatabase', {
+      catalogId: this.account,
+      databaseInput: {
+        name: 'sdg19_data_lake',
+      },
+    });
+
+    const dataLakeTable = new CfnTable(this, 'DataLakeOrdersTable', {
+      catalogId: this.account,
+      databaseName: dataLakeDatabase.ref,
+      tableInput: {
+        name: 'orders',
+        tableType: 'EXTERNAL_TABLE',
+        parameters: {
+          classification: 'parquet',
+        },
+        partitionKeys: [
+          { name: 'year', type: 'string' },
+          { name: 'month', type: 'string' },
+          { name: 'day', type: 'string' },
+          { name: 'hour', type: 'string' },
+        ],
+        storageDescriptor: {
+          columns: [
+            { name: 'orderId', type: 'string' },
+            { name: 'userPk', type: 'string' },
+            { name: 'createdAt', type: 'string' },
+            { name: 'status', type: 'string' },
+            { name: 'total', type: 'double' },
+            { name: 'items', type: 'string' },
+          ],
+          location: `s3://${dataBucket.bucketName}/data-lake/orders/`,
+          inputFormat:
+            'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat',
+          outputFormat:
+            'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat',
+          serdeInfo: {
+            serializationLibrary:
+              'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe',
+          },
+        },
+      },
+    });
+    dataLakeTable.addDependency(dataLakeDatabase);
+
     const firehoseRole = new Role(this, 'OrdersFirehoseRole', {
       assumedBy: new ServicePrincipal('firehose.amazonaws.com'),
     });
@@ -785,6 +831,16 @@ export class PrimaryStack extends Stack {
     );
     firehoseRole.addToPolicy(
       new PolicyStatement({
+        actions: ['glue:GetTable', 'glue:GetTableVersion', 'glue:GetTableVersions'],
+        resources: [
+          `arn:aws:glue:${this.region}:${this.account}:catalog`,
+          `arn:aws:glue:${this.region}:${this.account}:database/${dataLakeDatabase.ref}`,
+          `arn:aws:glue:${this.region}:${this.account}:table/${dataLakeDatabase.ref}/${dataLakeTable.ref}`,
+        ],
+      })
+    );
+    firehoseRole.addToPolicy(
+      new PolicyStatement({
         actions: [
           'logs:CreateLogGroup',
           'logs:CreateLogStream',
@@ -798,21 +854,67 @@ export class PrimaryStack extends Stack {
       retention: RetentionDays.ONE_MONTH,
     });
 
-    new CfnDeliveryStream(this, 'OrdersFirehose', {
+    const ordersFirehose = new CfnDeliveryStream(this, 'OrdersFirehose', {
       deliveryStreamType: 'KinesisStreamAsSource',
       kinesisStreamSourceConfiguration: {
         kinesisStreamArn: ordersStream.streamArn,
         roleArn: firehoseRole.roleArn,
       },
-      s3DestinationConfiguration: {
+      extendedS3DestinationConfiguration: {
         bucketArn: dataBucket.bucketArn,
         roleArn: firehoseRole.roleArn,
-        prefix: 'data-lake/orders/',
+        prefix:
+          'data-lake/orders/!{partitionKeyFromQuery:year}/!{partitionKeyFromQuery:month}/!{partitionKeyFromQuery:day}/!{partitionKeyFromQuery:hour}/',
         errorOutputPrefix: 'data-lake/errors/',
-        compressionFormat: 'GZIP',
+        compressionFormat: 'UNCOMPRESSED',
         bufferingHints: {
           intervalInSeconds: 300,
           sizeInMBs: 5,
+        },
+        processingConfiguration: {
+          enabled: true,
+          processors: [
+            {
+              type: 'MetadataExtraction',
+              parameters: [
+                {
+                  parameterName: 'MetadataExtractionQuery',
+                  parameterValue:
+                    '{year: .createdAt[0:4], month: .createdAt[5:7], day: .createdAt[8:10], hour: .createdAt[11:13]}',
+                },
+                {
+                  parameterName: 'JsonParsingEngine',
+                  parameterValue: 'JQ-1.6',
+                },
+              ],
+            },
+          ],
+        },
+        dynamicPartitioningConfiguration: {
+          enabled: true,
+          retryOptions: {
+            durationInSeconds: 300,
+          },
+        },
+        dataFormatConversionConfiguration: {
+          enabled: true,
+          inputFormatConfiguration: {
+            deserializer: {
+              openXJsonSerDe: {},
+            },
+          },
+          outputFormatConfiguration: {
+            serializer: {
+              parquetSerDe: {},
+            },
+          },
+          schemaConfiguration: {
+            databaseName: dataLakeDatabase.ref,
+            tableName: dataLakeTable.ref,
+            roleArn: firehoseRole.roleArn,
+            region: this.region,
+            catalogId: this.account,
+          },
         },
         cloudWatchLoggingOptions: {
           enabled: true,
@@ -821,6 +923,7 @@ export class PrimaryStack extends Stack {
         },
       },
     });
+    ordersFirehose.addDependency(dataLakeTable);
 
     const logsBucket = new Bucket(this, 'LogsBucket', {
       versioned: true,

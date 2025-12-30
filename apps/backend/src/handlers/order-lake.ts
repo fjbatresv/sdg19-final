@@ -74,7 +74,8 @@ export async function orderLakeHandler(event: SQSEvent) {
       createdAt: message.createdAt,
       status: message.status,
       total: message.total,
-      items: message.items,
+      items:
+        message.items !== undefined ? JSON.stringify(message.items) : undefined,
       userPk: message.userPk,
     };
 
