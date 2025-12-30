@@ -26,7 +26,9 @@ function parseOrderMessage(body: string): OrderMessage | null {
       return JSON.parse(parsed.Message) as OrderMessage;
     }
     return parsed as OrderMessage;
-  } catch {
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : 'unknown';
+    console.warn('order-lake: failed to parse message', { reason, body });
     return null;
   }
 }
