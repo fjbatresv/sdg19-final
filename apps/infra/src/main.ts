@@ -21,6 +21,7 @@ const primaryStack = new PrimaryStack(app, 'Sdg19PrimaryStack', {
   env: { account, region: primaryRegion },
   crossRegionReferences: true,
   emailsReplicaBucket: replicaStack.emailsReplicaBucket,
+  emailsReplicaKmsKeyArn: replicaStack.emailsReplicaKmsKeyArn,
 });
 
 primaryStack.addDependency(replicaStack);

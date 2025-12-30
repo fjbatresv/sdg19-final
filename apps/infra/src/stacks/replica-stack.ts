@@ -10,6 +10,7 @@ import { Key } from 'aws-cdk-lib/aws-kms';
 
 export class ReplicaStack extends Stack {
   public readonly emailsReplicaBucket: Bucket;
+  public readonly emailsReplicaKmsKeyArn: string;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -40,6 +41,7 @@ export class ReplicaStack extends Stack {
     });
 
     this.emailsReplicaBucket = emailsReplicaBucket;
+    this.emailsReplicaKmsKeyArn = replicaKey.keyArn;
 
     new CfnOutput(this, 'EmailsReplicaBucketName', {
       value: emailsReplicaBucket.bucketName,

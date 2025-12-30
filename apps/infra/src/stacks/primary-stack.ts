@@ -107,6 +107,7 @@ import * as path from 'node:path';
 
 interface PrimaryStackProps extends StackProps {
   emailsReplicaBucket: Bucket;
+  emailsReplicaKmsKeyArn: string;
 }
 
 export class PrimaryStack extends Stack {
@@ -156,12 +157,10 @@ export class PrimaryStack extends Stack {
       this.node.tryGetContext('enableLambdaVpc') ?? process.env.ENABLE_LAMBDA_VPC;
     const useVpc = !(enableLambdaVpc === false || enableLambdaVpc === 'false');
 
-    const emailsReplicaKmsKeyArn =
-      this.node.tryGetContext('emailsReplicaKmsKeyArn') ??
-      process.env.EMAILS_REPLICA_KMS_KEY_ARN;
+    const emailsReplicaKmsKeyArn = props.emailsReplicaKmsKeyArn;
     if (!emailsReplicaKmsKeyArn) {
       throw new Error(
-        'emailsReplicaKmsKeyArn is required. Set context emailsReplicaKmsKeyArn or EMAILS_REPLICA_KMS_KEY_ARN.'
+        'emailsReplicaKmsKeyArn is required. Pass it from the replica stack.'
       );
     }
     const emailsReplicaKmsKey = Key.fromKeyArn(
