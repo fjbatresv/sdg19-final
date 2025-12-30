@@ -12,7 +12,10 @@ type OrderMessage = {
   email?: string;
 };
 
-const kinesis = new KinesisClient({});
+// Kinesis region defaults to AWS_REGION so execution is deterministic in Lambda.
+const kinesis = new KinesisClient({
+  region: process.env.AWS_REGION || 'us-east-1',
+});
 
 function parseOrderMessage(body: string): OrderMessage | null {
   try {
@@ -51,6 +54,7 @@ function isValidOrderMessage(
 
 export async function orderLakeHandler(event: SQSEvent) {
   const streamName = requireEnv('KINESIS_STREAM_NAME');
+  const batchItemFailures: { itemIdentifier: string }[] = [];
 
   for (const record of event.Records) {
     const message = parseOrderMessage(record.body);
@@ -58,6 +62,7 @@ export async function orderLakeHandler(event: SQSEvent) {
       console.warn('order-lake: invalid message payload', {
         messageId: record.messageId,
       });
+      batchItemFailures.push({ itemIdentifier: record.messageId });
       continue;
     }
 
@@ -84,7 +89,9 @@ export async function orderLakeHandler(event: SQSEvent) {
         orderId: message.orderId,
         reason,
       });
-      throw error;
+      batchItemFailures.push({ itemIdentifier: record.messageId });
     }
   }
+
+  return { batchItemFailures };
 }

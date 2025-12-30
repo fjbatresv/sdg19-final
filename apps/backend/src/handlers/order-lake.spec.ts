@@ -42,6 +42,7 @@ describe('orderLakeHandler', () => {
     const { orderLakeHandler } = await import('./order-lake');
     const message = {
       orderId: 'order-123',
+      userPk: 'user-123',
       createdAt: '2025-12-29T12:00:00Z',
       status: 'CREATED',
       total: 99.5,
@@ -66,5 +67,24 @@ describe('orderLakeHandler', () => {
     await orderLakeHandler(event);
 
     expect(kinesisSendMock).not.toHaveBeenCalled();
+  });
+
+  it('returns batch failure when kinesis fails', async () => {
+    kinesisSendMock.mockRejectedValueOnce(new Error('Kinesis error'));
+    const { orderLakeHandler } = await import('./order-lake');
+    const message = {
+      orderId: 'order-456',
+      userPk: 'user-456',
+      createdAt: '2025-12-29T12:00:00Z',
+      status: 'CREATED',
+      total: 12.5,
+    };
+    const event = buildEvent(JSON.stringify({ Message: JSON.stringify(message) }));
+
+    const result = await orderLakeHandler(event);
+
+    expect(result).toEqual({
+      batchItemFailures: [{ itemIdentifier: 'msg-1' }],
+    });
   });
 });
