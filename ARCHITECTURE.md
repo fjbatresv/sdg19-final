@@ -20,7 +20,7 @@ Este documento resume la implementacion en AWS basada en `architecture.drawio`.
   - `WebBucket`: sitio web
   - `DataBucket`: datos internos
   - `LogsBucket`: logs (retencion 30 dias)
-  - `EmailsBucket`: correos con transición a Glacier a 1 año y expiración a 1 año
+  - `EmailsBucket`: correos con transición a Glacier a 1 año y expiración a 10 años
   - `EmailsReplicaBucket` (us-east-2): replica del bucket de emails
 - SES: identidad de dominio + DKIM + MAIL FROM (subdominio mail.*) para envio.
 - X-Ray: trazas activas para lambdas.
