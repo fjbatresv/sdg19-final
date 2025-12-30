@@ -21,7 +21,12 @@ const buildEvent = (body: string): SQSEvent => ({
       messageId: 'msg-1',
       receiptHandle: 'r1',
       body,
-      attributes: {},
+      attributes: {
+        ApproximateReceiveCount: '1',
+        SentTimestamp: '1735490000000',
+        SenderId: 'sender-id',
+        ApproximateFirstReceiveTimestamp: '1735490000000',
+      },
       messageAttributes: {},
       md5OfBody: '',
       eventSource: 'aws:sqs',
