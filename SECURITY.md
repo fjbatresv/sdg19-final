@@ -4,6 +4,7 @@
 
 If you discover a security issue, do not open a public issue. Send a report to the
 project owner with:
+
 - A clear description of the issue and impact
 - Steps to reproduce
 - Any suggested remediation
@@ -12,11 +13,15 @@ project owner with:
 
 - **Identity**: Authentication uses Amazon Cognito User Pools with JWT tokens.
 - **Network**: API is exposed through API Gateway with CloudFront and WAF in front.
-- **Data**: Primary data is stored in DynamoDB (single-table design). S3 buckets
-  are encrypted using S3-managed keys (SSE-S3) for now.
-- **Replication**: The emails bucket is replicated to the replica region.
+- **Data**: Primary data is stored in DynamoDB (single-table design). Email
+  objects are encrypted with SSE-KMS and bucket policies deny unencrypted writes.
+- **Data Lake**: Orders are streamed to Kinesis (KMS-encrypted) and delivered
+  to S3 via Firehose.
+- **Replication**: The emails bucket is replicated to the replica region with
+  KMS encryption and a 10-years retention policy.
 - **Logging & Monitoring**: CloudTrail and CloudWatch are enabled for audit and
-  operational visibility.
+  operational visibility. SQS uses DLQs for failed messages. X-Ray is enabled
+  for Lambda traces.
 
 ## Operational Security
 

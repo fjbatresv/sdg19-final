@@ -3,32 +3,16 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      aws_account_id:
-        description: AWS Account ID
+      config_json:
+        description: JSON config for account/regions/domains/SES/VPC (see README)
         required: true
-        # Use a GitHub secret or repository variable instead of hardcoding.
-      aws_region_primary:
-        description: Primary region
-        required: true
-        default: us-east-1
-      aws_region_replica:
-        description: Replica region
-        required: true
-        default: us-east-2
-      hosted_zone_id:
-        description: Route53 Hosted Zone ID
-        required: true
-        # Use a GitHub secret or repository variable instead of hardcoding.
 
 permissions:
   id-token: write
   contents: read
 
 env:
-  AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
-  AWS_REGION_PRIMARY: ${{ inputs.aws_region_primary }}
-  AWS_REGION_REPLICA: ${{ inputs.aws_region_replica }}
-  HOSTED_ZONE_ID: ${{ inputs.hosted_zone_id }}
+  NX_CLOUD: "false"
   JSII_SILENCE_WARNING_DEPRECATED: '1'
   NODE_OPTIONS: --experimental-require-module
   NX_DAEMON: 'false'
@@ -86,10 +70,16 @@ jobs:
           node-version: 24
           cache: 'npm'
 
+      - name: Parse config
+        uses: ./.github/actions/parse-config
+        with:
+          config_json: ${{ inputs.config_json }}
+          aws_role_arn_secret: ${{ secrets.AWS_ROLE_ARN }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION_PRIMARY }}
           role-session-name: github-actions-deploy
           role-duration-seconds: 3600
@@ -127,10 +117,16 @@ jobs:
           node-version: 24
           cache: 'npm'
 
+      - name: Parse config
+        uses: ./.github/actions/parse-config
+        with:
+          config_json: ${{ inputs.config_json }}
+          aws_role_arn_secret: ${{ secrets.AWS_ROLE_ARN }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION_PRIMARY }}
           role-session-name: github-actions-deploy
           role-duration-seconds: 3600
@@ -167,8 +163,26 @@ jobs:
       - name: Deploy replica stack
         run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
 
+      - name: Resolve replica KMS key ARN
+        run: |
+          REPLICA_KMS_KEY_ARN=$(aws cloudformation describe-stacks \
+            --stack-name Sdg19ReplicaStack \
+            --region "${AWS_REGION_REPLICA}" \
+            --query "Stacks[0].Outputs[?OutputKey=='EmailsReplicaKmsKeyArn'].OutputValue" \
+            --output text)
+          echo "EMAILS_REPLICA_KMS_KEY_ARN=${REPLICA_KMS_KEY_ARN}" >> $GITHUB_ENV
+
       - name: Deploy primary stack
-        run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
+        run: |
+          AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk deploy Sdg19PrimaryStack --require-approval never \
+            -c hostedZoneId="${{ env.HOSTED_ZONE_ID }}" \
+            -c rootDomainName="${{ env.ROOT_DOMAIN_NAME }}" \
+            -c apiDomainName="${{ env.API_DOMAIN_NAME }}" \
+            -c webDomainName="${{ env.WEB_DOMAIN_NAME }}" \
+            -c sesFromAddress="${{ env.SES_FROM_ADDRESS }}" \
+            -c sesMailFromDomain="${{ env.SES_MAIL_FROM_DOMAIN }}" \
+            -c enableLambdaVpc="${{ env.ENABLE_LAMBDA_VPC }}" \
+            -c emailsReplicaKmsKeyArn="${{ env.EMAILS_REPLICA_KMS_KEY_ARN }}"
 
   deploy_web:
     runs-on: ubuntu-latest
@@ -181,10 +195,16 @@ jobs:
           node-version: 24
           cache: 'npm'
 
+      - name: Parse config
+        uses: ./.github/actions/parse-config
+        with:
+          config_json: ${{ inputs.config_json }}
+          aws_role_arn_secret: ${{ secrets.AWS_ROLE_ARN }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION_PRIMARY }}
           role-session-name: github-actions-deploy
           role-duration-seconds: 3600

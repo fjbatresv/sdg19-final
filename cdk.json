@@ -1,8 +1,6 @@
 {
   "app": "node apps/infra/dist/main.js",
   "context": {
-    "sesTemplateName": "sdg19-order-confirmation",
-    "enableLambdaVpc": false,
-    "createHostedZone": "false"
+    "sesTemplateName": "sdg19-order-confirmation"
   }
 }
