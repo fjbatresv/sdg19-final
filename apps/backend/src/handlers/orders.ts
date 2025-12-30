@@ -1,5 +1,5 @@
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { jsonResponse } from '../lib/response';
 import { requireEnv } from '../lib/env';

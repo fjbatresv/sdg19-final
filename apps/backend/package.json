@@ -95,8 +95,17 @@
             "buildTarget": "@org/backend:build:production"
           }
         }
+      },
+      "test": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "vitest run --config apps/backend/vitest.config.ts"
+        }
       }
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.958.0",
+    "@aws-sdk/client-ses": "^3.958.0"
+  }
 }

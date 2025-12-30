@@ -1,8 +1,10 @@
-import { App } from 'aws-cdk-lib';
+import { App, Tags } from 'aws-cdk-lib';
 import { PrimaryStack } from './stacks/primary-stack';
 import { ReplicaStack } from './stacks/replica-stack';
 
 const app = new App();
+Tags.of(app).add('project', 'sdg19-final');
+Tags.of(app).add('reason', 'sdg19');
 
 const account = process.env.CDK_DEFAULT_ACCOUNT ?? process.env.AWS_ACCOUNT_ID;
 if (!account) {
@@ -15,8 +17,10 @@ const replicaStack = new ReplicaStack(app, 'Sdg19ReplicaStack', {
   env: { account, region: replicaRegion },
 });
 
-new PrimaryStack(app, 'Sdg19PrimaryStack', {
+const primaryStack = new PrimaryStack(app, 'Sdg19PrimaryStack', {
   env: { account, region: primaryRegion },
   crossRegionReferences: true,
   emailsReplicaBucket: replicaStack.emailsReplicaBucket,
 });
+
+primaryStack.addDependency(replicaStack);

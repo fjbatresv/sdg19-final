@@ -41,7 +41,7 @@ import { OrdersService, OrderSummary } from '../services/orders.service';
   `,
 })
 export class OrdersComponent {
-  private ordersService = inject(OrdersService);
+  private readonly ordersService = inject(OrdersService);
 
   orders = signal<OrderSummary[]>([]);
   loading = signal(true);

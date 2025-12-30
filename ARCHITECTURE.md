@@ -12,13 +12,16 @@ Este documento resume la implementacion en AWS basada en `architecture.drawio`.
 - Cognito User Pool + Client: registro/login con JWT.
 - API Gateway HTTP API: endpoints de auth, productos y ordenes.
 - Lambdas: auth, products, orders, stream y OPTIONS.
+- Lambda de correos: consume SQS y envia por SES con plantilla, guarda copia en S3.
 - DynamoDB: single-table con GSI para ordenes.
+- SNS + SQS: stream de ordenes publica en SNS, SQS encola para envio de correo.
 - S3:
   - `WebBucket`: sitio web
   - `DataBucket`: datos internos
   - `LogsBucket`: logs (retencion 30 dias)
-  - `EmailsBucket`: correos con transition a Glacier a 1 año
+  - `EmailsBucket`: correos con transición a Intelligent-Tiering a 30 días y expiración a 90 días
   - `EmailsReplicaBucket` (us-east-2): replica del bucket de emails
+- SES: identidad de dominio + DKIM + MAIL FROM (subdominio mail.*) para envio.
 
 ## Flujo API
 
@@ -26,6 +29,12 @@ Este documento resume la implementacion en AWS basada en `architecture.drawio`.
 - Auth: /auth/register, /auth/login, /auth/refresh
 - Productos: /products (cacheable en CloudFront)
 - Ordenes: /orders (POST/GET) con JWT
+
+## Flujo de correos
+
+- DynamoDB Stream -> Lambda (order-stream) -> SNS (orders topic)
+- SNS -> SQS (orders queue) -> Lambda (order-email)
+- Lambda (order-email) -> SES (plantilla) + copia en S3 (EmailsBucket)
 
 ## Fases
 

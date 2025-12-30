@@ -29,7 +29,13 @@ import {
   UserPoolClient,
   AccountRecovery,
 } from 'aws-cdk-lib/aws-cognito';
-import { Role, ServicePrincipal, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import {
+  Role,
+  ServicePrincipal,
+  PolicyStatement,
+  AnyPrincipal,
+  Effect,
+} from 'aws-cdk-lib/aws-iam';
 import {
   HttpApi,
   CorsHttpMethod,
@@ -72,8 +78,19 @@ import {
   S3BucketOrigin,
 } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
+import { CfnTemplate } from 'aws-cdk-lib/aws-ses';
+import { EmailIdentity, Identity } from 'aws-cdk-lib/aws-ses';
 import { Trail } from 'aws-cdk-lib/aws-cloudtrail';
-import * as path from 'path';
+import { Queue, QueueEncryption } from 'aws-cdk-lib/aws-sqs';
+import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
+import { SqsSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
+import {
+  Alarm,
+  ComparisonOperator,
+  Metric,
+  TreatMissingData,
+} from 'aws-cdk-lib/aws-cloudwatch';
+import * as path from 'node:path';
 
 interface PrimaryStackProps extends StackProps {
   emailsReplicaBucket: Bucket;
@@ -84,12 +101,19 @@ export class PrimaryStack extends Stack {
     super(scope, id, props);
 
     const rootDomainName =
-      this.node.tryGetContext('rootDomainName') ?? 'javierba3.com';
+      this.node.tryGetContext('rootDomainName') ?? process.env.ROOT_DOMAIN_NAME;
+    if (!rootDomainName) {
+      throw new Error(
+        'rootDomainName is required. Set context rootDomainName or ROOT_DOMAIN_NAME.'
+      );
+    }
     const apiDomainName =
       this.node.tryGetContext('apiDomainName') ??
+      process.env.API_DOMAIN_NAME ??
       `finalapi.${rootDomainName}`;
     const webDomainName =
       this.node.tryGetContext('webDomainName') ??
+      process.env.WEB_DOMAIN_NAME ??
       `finalweb.${rootDomainName}`;
     const hostedZoneId = this.node.tryGetContext('hostedZoneId') as
       | string
@@ -115,22 +139,32 @@ export class PrimaryStack extends Stack {
       });
     }
 
-    const vpc = new Vpc(this, 'Vpc', {
-      maxAzs: 3,
-      natGateways: 3,
-    });
+    const enableLambdaVpc =
+      this.node.tryGetContext('enableLambdaVpc') ?? true;
+    const useVpc = !(enableLambdaVpc === false || enableLambdaVpc === 'false');
 
-    const lambdaSecurityGroup = new SecurityGroup(this, 'LambdaSecurityGroup', {
-      vpc,
-      description: 'Security group for backend lambdas',
-      allowAllOutbound: true,
-    });
+    const vpc = useVpc
+      ? new Vpc(this, 'Vpc', {
+          maxAzs: 3,
+          natGateways: 3,
+        })
+      : undefined;
 
-    const lambdaVpcConfig = {
-      vpc,
-      vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
-      securityGroups: [lambdaSecurityGroup],
-    };
+    const lambdaSecurityGroup = useVpc
+      ? new SecurityGroup(this, 'LambdaSecurityGroup', {
+          vpc: vpc as Vpc,
+          description: 'Security group for backend lambdas',
+          allowAllOutbound: true,
+        })
+      : undefined;
+
+    const lambdaVpcConfig = useVpc
+      ? {
+          vpc: vpc as Vpc,
+          vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
+          securityGroups: [lambdaSecurityGroup as SecurityGroup],
+        }
+      : {};
 
     const dataKey = new Key(this, 'DataKey', {
       enableKeyRotation: true,
@@ -156,7 +190,23 @@ export class PrimaryStack extends Stack {
       projectionType: ProjectionType.ALL,
     });
 
-    const ordersTopic = new Topic(this, 'OrdersTopic');
+    const ordersTopic = new Topic(this, 'OrdersTopic', {
+      masterKey: dataKey,
+    });
+    const orderEmailTimeoutSeconds = 15;
+    const ordersDlq = new Queue(this, 'OrdersQueueDLQ', {
+      encryption: QueueEncryption.KMS,
+      encryptionMasterKey: dataKey,
+    });
+    const ordersQueue = new Queue(this, 'OrdersQueue', {
+      visibilityTimeout: Duration.seconds(orderEmailTimeoutSeconds * 6),
+      encryption: QueueEncryption.KMS,
+      encryptionMasterKey: dataKey,
+      deadLetterQueue: {
+        queue: ordersDlq,
+        maxReceiveCount: 5,
+      },
+    });
 
     const userPool = new UserPool(this, 'UserPool', {
       selfSignUpEnabled: true,
@@ -178,7 +228,13 @@ export class PrimaryStack extends Stack {
       retention: RetentionDays.ONE_MONTH,
     });
 
-    apiLogs.grantWrite(new ServicePrincipal('apigateway.amazonaws.com'));
+    apiLogs.addToResourcePolicy(
+      new PolicyStatement({
+        principals: [new ServicePrincipal('apigateway.amazonaws.com')],
+        actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+        resources: [apiLogs.logGroupArn, `${apiLogs.logGroupArn}:*`],
+      })
+    );
 
     const api = new HttpApi(this, 'HttpApi', {
       apiName: 'sdg19-api',
@@ -314,10 +370,48 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    table.grantReadWriteData(createOrderFn);
-    table.grantReadData(listOrdersFn);
-    table.grantStreamRead(orderStreamFn);
-    ordersTopic.grantPublish(orderStreamFn);
+    createOrderFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: [
+          'dynamodb:PutItem',
+          'dynamodb:UpdateItem',
+          'dynamodb:GetItem',
+          'dynamodb:Query',
+          'dynamodb:DeleteItem',
+        ],
+        resources: [table.tableArn, `${table.tableArn}/index/*`],
+      })
+    );
+    listOrdersFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['dynamodb:GetItem', 'dynamodb:Query'],
+        resources: [table.tableArn, `${table.tableArn}/index/*`],
+      })
+    );
+    if (table.tableStreamArn) {
+      orderStreamFn.addToRolePolicy(
+        new PolicyStatement({
+          actions: [
+            'dynamodb:DescribeStream',
+            'dynamodb:GetRecords',
+            'dynamodb:GetShardIterator',
+            'dynamodb:ListStreams',
+          ],
+          resources: [table.tableStreamArn],
+        })
+      );
+    }
+    orderStreamFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['sns:Publish'],
+        resources: [ordersTopic.topicArn],
+      })
+    );
+    ordersTopic.addSubscription(
+      new SqsSubscription(ordersQueue, {
+        rawMessageDelivery: true,
+      })
+    );
 
     registerFn.addToRolePolicy(
       new PolicyStatement({
@@ -404,8 +498,10 @@ export class PrimaryStack extends Stack {
     });
 
     const webBucket = new Bucket(this, 'WebBucket', {
+      versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -584,12 +680,13 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    props.emailsReplicaBucket.grantWrite(replicationRole);
+    // Replication role policy already grants required S3 actions.
 
     const dataBucket = new Bucket(this, 'DataBucket', {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
     });
@@ -598,6 +695,7 @@ export class PrimaryStack extends Stack {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       lifecycleRules: [
@@ -609,8 +707,10 @@ export class PrimaryStack extends Stack {
 
     const emailsBucket = new Bucket(this, 'EmailsBucket', {
       versioned: true,
-      encryption: BucketEncryption.S3_MANAGED,
+      encryption: BucketEncryption.KMS,
+      encryptionKey: dataKey,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       replicationRole,
@@ -618,6 +718,8 @@ export class PrimaryStack extends Stack {
         {
           priority: 1,
           destination: props.emailsReplicaBucket,
+          kmsKey: dataKey,
+          sseKmsEncryptedObjects: true,
           storageClass: StorageClass.INTELLIGENT_TIERING,
           deleteMarkerReplication: true,
         },
@@ -626,13 +728,146 @@ export class PrimaryStack extends Stack {
         {
           transitions: [
             {
-              storageClass: StorageClass.GLACIER,
-              transitionAfter: Duration.days(365),
+              storageClass: StorageClass.INTELLIGENT_TIERING,
+              transitionAfter: Duration.days(30),
             },
           ],
+          expiration: Duration.days(90),
         },
       ],
     });
+
+    emailsBucket.addToResourcePolicy(
+      new PolicyStatement({
+        sid: 'DenyUnencryptedEmailUploads',
+        effect: Effect.DENY,
+        principals: [new AnyPrincipal()],
+        actions: ['s3:PutObject'],
+        resources: [`${emailsBucket.bucketArn}/*`],
+        conditions: {
+          StringNotEquals: {
+            's3:x-amz-server-side-encryption': 'aws:kms',
+          },
+        },
+      })
+    );
+    emailsBucket.addToResourcePolicy(
+      new PolicyStatement({
+        sid: 'DenyWrongKmsKeyForEmailUploads',
+        effect: Effect.DENY,
+        principals: [new AnyPrincipal()],
+        actions: ['s3:PutObject'],
+        resources: [`${emailsBucket.bucketArn}/*`],
+        conditions: {
+          StringNotEquals: {
+            's3:x-amz-server-side-encryption-aws-kms-key-id': dataKey.keyArn,
+          },
+        },
+      })
+    );
+
+    const emailsBucketSizeMetric = new Metric({
+      namespace: 'AWS/S3',
+      metricName: 'BucketSizeBytes',
+      dimensionsMap: {
+        BucketName: emailsBucket.bucketName,
+        StorageType: 'StandardStorage',
+      },
+      statistic: 'Average',
+      period: Duration.days(1),
+    });
+
+    new Alarm(this, 'EmailsBucketSizeAlarm', {
+      metric: emailsBucketSizeMetric,
+      threshold: 5 * 1024 * 1024 * 1024,
+      evaluationPeriods: 1,
+      comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
+      treatMissingData: TreatMissingData.NOT_BREACHING,
+    });
+
+    const sesTemplateName =
+      this.node.tryGetContext('sesTemplateName') ??
+      'sdg19-order-confirmation';
+    const sesFromAddress =
+      this.node.tryGetContext('sesFromAddress') ?? process.env.SES_FROM_ADDRESS;
+    if (!sesFromAddress) {
+      throw new Error(
+        'sesFromAddress is required. Set context sesFromAddress or SES_FROM_ADDRESS.'
+      );
+    }
+    const sesMailFromDomain =
+      this.node.tryGetContext('sesMailFromDomain') ??
+      process.env.SES_MAIL_FROM_DOMAIN ??
+      `mail.${rootDomainName}`;
+    if (!sesMailFromDomain) {
+      throw new Error(
+        'sesMailFromDomain is required. Set context sesMailFromDomain or SES_MAIL_FROM_DOMAIN.'
+      );
+    }
+
+    const sesIdentity = new EmailIdentity(this, 'SesDomainIdentity', {
+      identity: Identity.publicHostedZone(hostedZone),
+      mailFromDomain: sesMailFromDomain,
+    });
+
+    new CfnTemplate(this, 'OrderEmailTemplate', {
+      template: {
+        templateName: sesTemplateName,
+        subjectPart: 'Confirmación de orden {{orderId}}',
+        htmlPart: `
+          <html>
+            <body style="font-family: Arial, sans-serif; color: #1f2933;">
+              <h2>Gracias por tu orden</h2>
+              <p>Orden: <strong>{{orderId}}</strong></p>
+              <p>Fecha: {{createdAt}}</p>
+              <p>Estado: {{status}}</p>
+              <p>Total: {{total}}</p>
+            </body>
+          </html>
+        `,
+        textPart:
+          'Gracias por tu orden {{orderId}}. Fecha: {{createdAt}}. Estado: {{status}}. Total: {{total}}.',
+      },
+    });
+
+    const orderEmailFn = new Function(this, 'OrderEmailFn', {
+      runtime: Runtime.NODEJS_20_X,
+      handler: 'main.orderEmailHandler',
+      code: backendCode,
+      timeout: Duration.seconds(orderEmailTimeoutSeconds),
+      ...lambdaVpcConfig,
+      environment: {
+        EMAILS_BUCKET_NAME: emailsBucket.bucketName,
+        SES_TEMPLATE_NAME: sesTemplateName,
+        SES_FROM_ADDRESS: sesFromAddress,
+        EMAILS_BUCKET_KMS_KEY_ID: dataKey.keyArn,
+      },
+    });
+
+    orderEmailFn.addEventSource(
+      new SqsEventSource(ordersQueue, {
+        batchSize: 10,
+      })
+    );
+
+    orderEmailFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['s3:PutObject'],
+        resources: [`${emailsBucket.bucketArn}/*`],
+      })
+    );
+    orderEmailFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['kms:Encrypt', 'kms:GenerateDataKey'],
+        resources: [dataKey.keyArn],
+      })
+    );
+    orderEmailFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['ses:SendTemplatedEmail', 'ses:SendEmail'],
+        resources: [sesIdentity.emailIdentityArn],
+      })
+    );
 
     const trailLogs = new LogGroup(this, 'CloudTrailLogs', {
       retention: RetentionDays.ONE_MONTH,
@@ -671,8 +906,10 @@ export class PrimaryStack extends Stack {
     new CfnOutput(this, 'EmailsBucketName', {
       value: emailsBucket.bucketName,
     });
-    new CfnOutput(this, 'VpcId', {
-      value: vpc.vpcId,
-    });
+    if (vpc) {
+      new CfnOutput(this, 'VpcId', {
+        value: vpc.vpcId,
+      });
+    }
   }
 }

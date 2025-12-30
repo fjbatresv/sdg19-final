@@ -17,16 +17,18 @@ export class ReplicaStack extends Stack {
       versioned: true,
       encryption: BucketEncryption.S3_MANAGED,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
+      enforceSSL: true,
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       lifecycleRules: [
         {
           transitions: [
             {
-              storageClass: StorageClass.GLACIER,
-              transitionAfter: Duration.days(365),
+              storageClass: StorageClass.INTELLIGENT_TIERING,
+              transitionAfter: Duration.days(30),
             },
           ],
+          expiration: Duration.days(90),
         },
       ],
     });

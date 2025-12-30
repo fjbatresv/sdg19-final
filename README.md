@@ -12,7 +12,6 @@
 ![S3](https://img.shields.io/badge/S3-569A31?logo=amazons3&logoColor=white)
 ![CloudFront](https://img.shields.io/badge/CloudFront-232F3E?logo=amazonaws&logoColor=white)
 ![API Gateway](https://img.shields.io/badge/API%20Gateway-FF4F8B?logo=amazonapigateway&logoColor=white)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
 [![Known Vulnerabilities](https://snyk.io/test/github/fjbatresv/sdg19-final/badge.svg)](https://snyk.io/test/github/fjbatresv/sdg19-final)
 
 Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, Lambdas y CDK.
@@ -32,12 +31,16 @@ Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, 
 
 Ver `ARCHITECTURE.md` y `architecture.drawio`.
 
-## Sonar Cloud
+## SonarCloud Scan
 
-- [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=bugs)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
-- [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
-- [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=coverage)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
-- [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=fjbatresv_sdg19-final&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=fjbatresv_sdg19-final)
+|Infra|Web|Backend|
+|-|-|-|
+|[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
+|[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sdg19-infra&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sdg19-infra)|[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sdg19-web&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sdg19-web)|[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sdg19-backend&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sdg19-backend)|
 
 ## Desarrollo local
 
@@ -63,3 +66,32 @@ AWS_REGION=<SECONDARY_REGION> npx cdk bootstrap aws://<AWS_ACCOUNT_ID>/<SECONDAR
 AWS_REGION=<SECONDARY_REGION> npx cdk deploy Sdg19ReplicaStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
 AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack --require-approval never -c hostedZoneId=<HOSTED_ZONE_ID>
 ```
+
+## Envio de correos (SES)
+
+El stack crea la identidad de dominio SES, DKIM y MAIL FROM usando Route53.
+Para enviar a cualquier destinatario necesitas sacar SES del sandbox.
+
+Contexto recomendado en `cdk.json`:
+- `rootDomainName`: dominio raiz (ej: `tu-dominio.com`) o `ROOT_DOMAIN_NAME`
+- `apiDomainName`: dominio de API (ej: `finalapi.tu-dominio.com`) o `API_DOMAIN_NAME`
+- `webDomainName`: dominio de web (ej: `finalweb.tu-dominio.com`) o `WEB_DOMAIN_NAME`
+- `sesTemplateName`: nombre de plantilla SES (ej: `sdg19-order-confirmation`)
+- `sesFromAddress`: remitente (ej: `noreply@tu-dominio`) o `SES_FROM_ADDRESS`
+- `sesMailFromDomain`: subdominio MAIL FROM (ej: `mail.tu-dominio`) o `SES_MAIL_FROM_DOMAIN`
+
+Ejemplo por CLI:
+
+```bash
+AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack \
+  -c hostedZoneId=<HOSTED_ZONE_ID> \
+  -c rootDomainName=tu-dominio.com \
+  -c apiDomainName=finalapi.tu-dominio.com \
+  -c webDomainName=finalweb.tu-dominio.com \
+  -c sesFromAddress=noreply@tu-dominio.com \
+  -c sesMailFromDomain=mail.tu-dominio.com
+```
+
+Despues del deploy:
+1. Verifica que los registros de Route53 se creen (DKIM + MAIL FROM).
+2. Solicita salida de SES sandbox para enviar a cualquier correo. Guia oficial: https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html
