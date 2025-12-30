@@ -73,10 +73,25 @@ El stack crea la identidad de dominio SES, DKIM y MAIL FROM usando Route53.
 Para enviar a cualquier destinatario necesitas sacar SES del sandbox.
 
 Contexto recomendado en `cdk.json`:
+- `rootDomainName`: dominio raiz (ej: `tu-dominio.com`) o `ROOT_DOMAIN_NAME`
+- `apiDomainName`: dominio de API (ej: `finalapi.tu-dominio.com`) o `API_DOMAIN_NAME`
+- `webDomainName`: dominio de web (ej: `finalweb.tu-dominio.com`) o `WEB_DOMAIN_NAME`
 - `sesTemplateName`: nombre de plantilla SES (ej: `sdg19-order-confirmation`)
-- `sesFromAddress`: remitente (ej: `noreply@tu-dominio`)
-- `sesMailFromDomain`: subdominio MAIL FROM (ej: `mail.tu-dominio`)
+- `sesFromAddress`: remitente (ej: `noreply@tu-dominio`) o `SES_FROM_ADDRESS`
+- `sesMailFromDomain`: subdominio MAIL FROM (ej: `mail.tu-dominio`) o `SES_MAIL_FROM_DOMAIN`
+
+Ejemplo por CLI:
+
+```bash
+AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack \
+  -c hostedZoneId=<HOSTED_ZONE_ID> \
+  -c rootDomainName=tu-dominio.com \
+  -c apiDomainName=finalapi.tu-dominio.com \
+  -c webDomainName=finalweb.tu-dominio.com \
+  -c sesFromAddress=noreply@tu-dominio.com \
+  -c sesMailFromDomain=mail.tu-dominio.com
+```
 
 Despues del deploy:
 1. Verifica que los registros de Route53 se creen (DKIM + MAIL FROM).
-2. Solicita salida de SES sandbox para enviar a cualquier correo.
+2. Solicita salida de SES sandbox para enviar a cualquier correo. Guia oficial: https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html
