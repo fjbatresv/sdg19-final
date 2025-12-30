@@ -90,7 +90,7 @@ export async function orderLakeHandler(event: SQSEvent) {
         orderId: message.orderId,
         reason,
       });
-      batchItemFailures.push({ itemIdentifier: record.messageId });
+      throw error instanceof Error ? error : new Error('Kinesis error');
     }
   }
 

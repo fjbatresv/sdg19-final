@@ -68,7 +68,7 @@ describe('orderLakeHandler', () => {
     expect(kinesisSendMock).not.toHaveBeenCalled();
   });
 
-  it('returns batch failure when kinesis fails', async () => {
+  it('rethrows when kinesis fails', async () => {
     kinesisSendMock.mockRejectedValueOnce(new Error('Kinesis error'));
     const { orderLakeHandler } = await import('./order-lake');
     const message = {
@@ -80,10 +80,6 @@ describe('orderLakeHandler', () => {
     };
     const event = buildEvent(JSON.stringify({ Message: JSON.stringify(message) }));
 
-    const result = await orderLakeHandler(event);
-
-    expect(result).toEqual({
-      batchItemFailures: [{ itemIdentifier: 'msg-1' }],
-    });
+    await expect(orderLakeHandler(event)).rejects.toThrow('Kinesis error');
   });
 });
