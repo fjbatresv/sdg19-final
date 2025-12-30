@@ -103,5 +103,8 @@ runs:
           echo "ses_mail_from_domain=$SES_MAIL_FROM_DOMAIN"
           echo "enable_lambda_vpc=$ENABLE_LAMBDA_VPC"
           echo "aws_role_arn=$AWS_ROLE_ARN"
-          echo "emails_replica_kms_key_arn=$EMAILS_REPLICA_KMS_KEY_ARN"
         } >> "$GITHUB_OUTPUT"
+
+        if [ -n "$EMAILS_REPLICA_KMS_KEY_ARN" ]; then
+          echo "emails_replica_kms_key_arn=$EMAILS_REPLICA_KMS_KEY_ARN" >> "$GITHUB_OUTPUT"
+        fi
