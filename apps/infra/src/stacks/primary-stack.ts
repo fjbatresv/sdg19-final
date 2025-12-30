@@ -198,7 +198,13 @@ export class PrimaryStack extends Stack {
       retention: RetentionDays.ONE_MONTH,
     });
 
-    apiLogs.grantWrite(new ServicePrincipal('apigateway.amazonaws.com'));
+    apiLogs.addToResourcePolicy(
+      new PolicyStatement({
+        principals: [new ServicePrincipal('apigateway.amazonaws.com')],
+        actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+        resources: [apiLogs.logGroupArn, `${apiLogs.logGroupArn}:*`],
+      })
+    );
 
     const api = new HttpApi(this, 'HttpApi', {
       apiName: 'sdg19-api',
@@ -334,10 +340,43 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    table.grantReadWriteData(createOrderFn);
-    table.grantReadData(listOrdersFn);
-    table.grantStreamRead(orderStreamFn);
-    ordersTopic.grantPublish(orderStreamFn);
+    createOrderFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: [
+          'dynamodb:PutItem',
+          'dynamodb:UpdateItem',
+          'dynamodb:GetItem',
+          'dynamodb:Query',
+          'dynamodb:DeleteItem',
+        ],
+        resources: [table.tableArn, `${table.tableArn}/index/*`],
+      })
+    );
+    listOrdersFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['dynamodb:GetItem', 'dynamodb:Query'],
+        resources: [table.tableArn, `${table.tableArn}/index/*`],
+      })
+    );
+    if (table.tableStreamArn) {
+      orderStreamFn.addToRolePolicy(
+        new PolicyStatement({
+          actions: [
+            'dynamodb:DescribeStream',
+            'dynamodb:GetRecords',
+            'dynamodb:GetShardIterator',
+            'dynamodb:ListStreams',
+          ],
+          resources: [table.tableStreamArn],
+        })
+      );
+    }
+    orderStreamFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['sns:Publish'],
+        resources: [ordersTopic.topicArn],
+      })
+    );
     ordersTopic.addSubscription(
       new SqsSubscription(ordersQueue, {
         rawMessageDelivery: true,
@@ -611,7 +650,7 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    props.emailsReplicaBucket.grantWrite(replicationRole);
+    // Replication role policy already grants required S3 actions.
 
     const dataBucket = new Bucket(this, 'DataBucket', {
       versioned: true,
@@ -718,12 +757,16 @@ export class PrimaryStack extends Stack {
       })
     );
 
-    emailsBucket.grantPut(orderEmailFn);
-    sesIdentity.grantSendEmail(orderEmailFn);
     orderEmailFn.addToRolePolicy(
       new PolicyStatement({
-        actions: ['ses:SendTemplatedEmail'],
-        resources: ['*'],
+        actions: ['s3:PutObject'],
+        resources: [`${emailsBucket.bucketArn}/*`],
+      })
+    );
+    orderEmailFn.addToRolePolicy(
+      new PolicyStatement({
+        actions: ['ses:SendTemplatedEmail', 'ses:SendEmail'],
+        resources: [sesIdentity.emailIdentityArn],
       })
     );
 
