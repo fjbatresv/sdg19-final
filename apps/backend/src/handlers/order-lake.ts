@@ -9,7 +9,6 @@ type OrderMessage = {
   total?: number;
   items?: unknown[];
   status?: string;
-  email?: string;
 };
 
 // Kinesis region defaults to AWS_REGION so execution is deterministic in Lambda.
