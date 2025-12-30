@@ -127,18 +127,18 @@ Ejemplo de `config_json` para el workflow `deploy.yml` (input `config_json`):
 
 ```json
 {
-  "aws_account_id": "605134457500",
+  "aws_account_id": "123456789012",
   "aws_region_primary": "us-east-1",
   "aws_region_replica": "us-east-2",
-  "hosted_zone_id": "Z033451412UP58MG6KXQ6",
+  "hosted_zone_id": "Z0ABCDEF1234567XYZ",
   "domains": {
-    "root": "javierba3.com",
-    "api": "finalapi.javierba3.com",
-    "web": "finalweb.javierba3.com"
+    "root": "example.dev",
+    "api": "api.example.dev",
+    "web": "web.example.dev"
   },
   "ses": {
-    "from": "no-reply@javierba3.com",
-    "mail_from": "mail.javierba3.com"
+    "from": "no-reply@example.dev",
+    "mail_from": "mail.example.dev"
   },
   "enable_lambda_vpc": false
 }
