@@ -1,9 +1,8 @@
 {
   "app": "node apps/infra/dist/main.js",
   "context": {
-    "rootDomainName": "javierba3.com",
-    "apiDomainName": "finalapi.javierba3.com",
-    "webDomainName": "finalweb.javierba3.com",
+    "sesTemplateName": "sdg19-order-confirmation",
+    "enableLambdaVpc": false,
     "createHostedZone": "false"
   }
 }
