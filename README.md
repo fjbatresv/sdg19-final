@@ -24,12 +24,18 @@ Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, 
 
 ## Dominios
 
-- Web: `https://finalweb.javierba3.com`
-- API: `https://finalapi.javierba3.com`
+- Web: `https://finalweb.<tu-dominio>`
+- API: `https://finalapi.<tu-dominio>`
+
+Los dominios se definen via contexto CDK o variables de entorno (`ROOT_DOMAIN_NAME`, `API_DOMAIN_NAME`, `WEB_DOMAIN_NAME`).
 
 ## Arquitectura
 
 Ver `ARCHITECTURE.md` y `architecture.drawio`.
+
+## Observabilidad
+
+Las Lambdas usan AWS X-Ray para trazabilidad distribuida.
 
 ## SonarCloud Scan
 
@@ -95,3 +101,10 @@ AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack \
 Despues del deploy:
 1. Verifica que los registros de Route53 se creen (DKIM + MAIL FROM).
 2. Solicita salida de SES sandbox para enviar a cualquier correo. Guia oficial: https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html
+
+## Data lake (Fase 3)
+
+Los eventos de ordenes se publican en SNS y se derivan a una cola SQS dedicada.
+Una Lambda consume esos mensajes, los escribe en un Kinesis Data Stream y un
+Firehose los entrega al bucket de datos (`DataBucket`) bajo el prefijo
+`data-lake/orders/`.
