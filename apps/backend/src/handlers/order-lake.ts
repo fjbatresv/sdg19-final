@@ -64,7 +64,6 @@ export async function orderLakeHandler(event: SQSEvent) {
       console.warn('order-lake: invalid message payload', {
         messageId: record.messageId,
       });
-      batchItemFailures.push({ itemIdentifier: record.messageId });
       continue;
     }
 
