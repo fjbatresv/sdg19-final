@@ -14,7 +14,8 @@ Este documento resume la implementacion en AWS basada en `architecture.drawio`.
 - Lambdas: auth, products, orders, stream y OPTIONS.
 - Lambda de correos: consume SQS y envia por SES con plantilla, guarda copia en S3.
 - DynamoDB: single-table con GSI para ordenes.
-- SNS + SQS: stream de ordenes publica en SNS, SQS encola para envio de correo.
+- SNS + SQS: stream de ordenes publica en SNS, SQS encola para envio de correo y data lake.
+- Kinesis Data Stream + Firehose: ingestion de eventos de ordenes hacia S3 (data lake).
 - S3:
   - `WebBucket`: sitio web
   - `DataBucket`: datos internos
@@ -36,7 +37,13 @@ Este documento resume la implementacion en AWS basada en `architecture.drawio`.
 - SNS -> SQS (orders queue) -> Lambda (order-email)
 - Lambda (order-email) -> SES (plantilla) + copia en S3 (EmailsBucket)
 
+## Flujo de data lake
+
+- SNS -> SQS (orders lake queue) -> Lambda (order-lake)
+- Lambda (order-lake) -> Kinesis Data Stream -> Firehose -> S3 (DataBucket)
+
 ## Fases
 
 - Fase 1: registro, autenticacion, productos, ordenes, lectura de ordenes
-- Fase 2: envio de correos y data lake
+- Fase 2: envio de correos
+- Fase 3: data lake (SQS -> Lambda -> Kinesis -> Firehose -> S3)
