@@ -12,6 +12,7 @@ permissions:
   contents: read
 
 env:
+  JSII_SILENCE_WARNING_DEPRECATED: "1"
   NODE_OPTIONS: --experimental-require-module
   NX_DAEMON: "false"
   NX_ISOLATE_PLUGINS: "false"
@@ -28,53 +29,10 @@ jobs:
           cache: "npm"
 
       - name: Parse config
-        run: |
-          CONFIG='${{ inputs.config_json }}'
-          AWS_ACCOUNT_ID=$(echo "$CONFIG" | jq -r '.aws_account_id // empty')
-          AWS_REGION_PRIMARY=$(echo "$CONFIG" | jq -r '.aws_region_primary // empty')
-          AWS_REGION_REPLICA=$(echo "$CONFIG" | jq -r '.aws_region_replica // empty')
-          HOSTED_ZONE_ID=$(echo "$CONFIG" | jq -r '.hosted_zone_id // empty')
-          ROOT_DOMAIN_NAME=$(echo "$CONFIG" | jq -r '.domains.root // empty')
-          API_DOMAIN_NAME=$(echo "$CONFIG" | jq -r '.domains.api // empty')
-          WEB_DOMAIN_NAME=$(echo "$CONFIG" | jq -r '.domains.web // empty')
-          SES_FROM_ADDRESS=$(echo "$CONFIG" | jq -r '.ses.from // empty')
-          SES_MAIL_FROM_DOMAIN=$(echo "$CONFIG" | jq -r '.ses.mail_from // empty')
-          ENABLE_LAMBDA_VPC=$(echo "$CONFIG" | jq -r '.enable_lambda_vpc // "false"')
-          AWS_ROLE_ARN=$(echo "$CONFIG" | jq -r '.aws_role_arn // empty')
-          EMAILS_REPLICA_KMS_KEY_ARN=$(echo "$CONFIG" | jq -r '.emails_replica_kms_key_arn // empty')
-          if [ -z "$AWS_ROLE_ARN" ]; then
-            AWS_ROLE_ARN='${{ secrets.AWS_ROLE_ARN }}'
-          fi
-          if [ -z "$AWS_ACCOUNT_ID" ] || [ -z "$AWS_REGION_PRIMARY" ] || [ -z "$AWS_REGION_REPLICA" ] || [ -z "$HOSTED_ZONE_ID" ]; then
-            echo "config_json missing aws_account_id/aws_region_primary/aws_region_replica/hosted_zone_id" >&2
-            exit 1
-          fi
-          if [ -z "$ROOT_DOMAIN_NAME" ] || [ -z "$API_DOMAIN_NAME" ] || [ -z "$WEB_DOMAIN_NAME" ]; then
-            echo "config_json missing domains.root/domains.api/domains.web" >&2
-            exit 1
-          fi
-          if [ -z "$SES_FROM_ADDRESS" ] || [ -z "$SES_MAIL_FROM_DOMAIN" ]; then
-            echo "config_json missing ses.from/ses.mail_from" >&2
-            exit 1
-          fi
-          if [ -z "$AWS_ROLE_ARN" ]; then
-            echo "AWS role ARN not provided and secrets.AWS_ROLE_ARN is empty" >&2
-            exit 1
-          fi
-          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
-          echo "AWS_REGION_PRIMARY=$AWS_REGION_PRIMARY" >> $GITHUB_ENV
-          echo "AWS_REGION_REPLICA=$AWS_REGION_REPLICA" >> $GITHUB_ENV
-          echo "HOSTED_ZONE_ID=$HOSTED_ZONE_ID" >> $GITHUB_ENV
-          echo "ROOT_DOMAIN_NAME=$ROOT_DOMAIN_NAME" >> $GITHUB_ENV
-          echo "API_DOMAIN_NAME=$API_DOMAIN_NAME" >> $GITHUB_ENV
-          echo "WEB_DOMAIN_NAME=$WEB_DOMAIN_NAME" >> $GITHUB_ENV
-          echo "SES_FROM_ADDRESS=$SES_FROM_ADDRESS" >> $GITHUB_ENV
-          echo "SES_MAIL_FROM_DOMAIN=$SES_MAIL_FROM_DOMAIN" >> $GITHUB_ENV
-          echo "ENABLE_LAMBDA_VPC=$ENABLE_LAMBDA_VPC" >> $GITHUB_ENV
-          echo "AWS_ROLE_ARN=$AWS_ROLE_ARN" >> $GITHUB_ENV
-          if [ -n "$EMAILS_REPLICA_KMS_KEY_ARN" ]; then
-            echo "EMAILS_REPLICA_KMS_KEY_ARN=$EMAILS_REPLICA_KMS_KEY_ARN" >> $GITHUB_ENV
-          fi
+        uses: ./.github/actions/parse-config
+        with:
+          config_json: ${{ inputs.config_json }}
+          aws_role_arn_secret: ${{ secrets.AWS_ROLE_ARN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
