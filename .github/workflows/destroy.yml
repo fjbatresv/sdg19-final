@@ -1,0 +1,132 @@
+name: Destroy
+
+on:
+  workflow_dispatch:
+    inputs:
+      aws_account_id:
+        description: AWS Account ID
+        required: true
+      aws_region_primary:
+        description: Primary region
+        required: true
+        default: us-east-1
+      aws_region_replica:
+        description: Replica region
+        required: true
+        default: us-east-2
+      hosted_zone_id:
+        description: Route53 Hosted Zone ID
+        required: true
+      root_domain_name:
+        description: Root domain (e.g. javierba3.com)
+        required: true
+      api_domain_name:
+        description: API domain (e.g. finalapi.javierba3.com)
+        required: true
+      web_domain_name:
+        description: Web domain (e.g. finalweb.javierba3.com)
+        required: true
+      ses_from_address:
+        description: SES From address (e.g. noreply@javierba3.com)
+        required: true
+      ses_mail_from_domain:
+        description: SES MAIL FROM subdomain (e.g. mail.javierba3.com)
+        required: true
+      enable_lambda_vpc:
+        description: Enable Lambda VPC (true/false)
+        required: true
+        default: "false"
+      aws_role_arn:
+        description: AWS Role ARN to assume
+        required: true
+      emails_replica_kms_key_arn:
+        description: Replica KMS key ARN (leave blank to auto-resolve)
+        required: false
+        default: ""
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
+  AWS_REGION_PRIMARY: ${{ inputs.aws_region_primary }}
+  AWS_REGION_REPLICA: ${{ inputs.aws_region_replica }}
+  HOSTED_ZONE_ID: ${{ inputs.hosted_zone_id }}
+  ROOT_DOMAIN_NAME: ${{ inputs.root_domain_name }}
+  API_DOMAIN_NAME: ${{ inputs.api_domain_name }}
+  WEB_DOMAIN_NAME: ${{ inputs.web_domain_name }}
+  SES_FROM_ADDRESS: ${{ inputs.ses_from_address }}
+  SES_MAIL_FROM_DOMAIN: ${{ inputs.ses_mail_from_domain }}
+  ENABLE_LAMBDA_VPC: ${{ inputs.enable_lambda_vpc }}
+  AWS_ROLE_ARN: ${{ inputs.aws_role_arn }}
+  EMAILS_REPLICA_KMS_KEY_ARN: ${{ inputs.emails_replica_kms_key_arn }}
+  NODE_OPTIONS: --experimental-require-module
+  NX_DAEMON: "false"
+  NX_ISOLATE_PLUGINS: "false"
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION_PRIMARY }}
+          role-session-name: github-actions-destroy
+          role-duration-seconds: 3600
+          audience: sts.amazonaws.com
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build backend
+        run: npx nx run @org/backend:build:production
+
+      - name: Build infra
+        run: npx nx run @org/infra:build:production
+
+      - name: Resolve replica KMS key ARN
+        run: |
+          if [ -z "${EMAILS_REPLICA_KMS_KEY_ARN}" ]; then
+            EMAILS_REPLICA_KMS_KEY_ARN=$(aws cloudformation describe-stacks \
+              --stack-name Sdg19ReplicaStack \
+              --query "Stacks[0].Outputs[?OutputKey=='EmailsReplicaKmsKeyArn'].OutputValue" \
+              --output text || true)
+          fi
+          if [ -z "${EMAILS_REPLICA_KMS_KEY_ARN}" ] || [ "${EMAILS_REPLICA_KMS_KEY_ARN}" = "None" ]; then
+            echo "Replica KMS key ARN is required to destroy primary stack." >&2
+            exit 1
+          fi
+          echo "EMAILS_REPLICA_KMS_KEY_ARN=${EMAILS_REPLICA_KMS_KEY_ARN}" >> $GITHUB_ENV
+
+      - name: Destroy primary stack
+        run: |
+          AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk destroy Sdg19PrimaryStack --force \
+            -c hostedZoneId=${{ env.HOSTED_ZONE_ID }} \
+            -c rootDomainName=${{ env.ROOT_DOMAIN_NAME }} \
+            -c apiDomainName=${{ env.API_DOMAIN_NAME }} \
+            -c webDomainName=${{ env.WEB_DOMAIN_NAME }} \
+            -c sesFromAddress=${{ env.SES_FROM_ADDRESS }} \
+            -c sesMailFromDomain=${{ env.SES_MAIL_FROM_DOMAIN }} \
+            -c enableLambdaVpc=${{ env.ENABLE_LAMBDA_VPC }} \
+            -c emailsReplicaKmsKeyArn=${{ env.EMAILS_REPLICA_KMS_KEY_ARN }}
+
+      - name: Destroy replica stack
+        run: |
+          AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk destroy Sdg19ReplicaStack --force \
+            -c hostedZoneId=${{ env.HOSTED_ZONE_ID }} \
+            -c rootDomainName=${{ env.ROOT_DOMAIN_NAME }} \
+            -c apiDomainName=${{ env.API_DOMAIN_NAME }} \
+            -c webDomainName=${{ env.WEB_DOMAIN_NAME }} \
+            -c sesFromAddress=${{ env.SES_FROM_ADDRESS }} \
+            -c sesMailFromDomain=${{ env.SES_MAIL_FROM_DOMAIN }} \
+            -c enableLambdaVpc=${{ env.ENABLE_LAMBDA_VPC }}
