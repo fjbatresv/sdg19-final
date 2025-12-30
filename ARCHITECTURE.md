@@ -45,6 +45,6 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 
 ## Fases
 
-- Fase 1: registro, autenticacion, productos, ordenes, lectura de ordenes
-- Fase 2: envio de correos
-- Fase 3: data lake (SQS -> Lambda -> Kinesis -> Firehose -> S3)
+- Fase 1: registro, autenticación, productos, órdenes, lectura de órdenes.
+- Fase 2: envío de correos.
+- Fase 3: data lake (SQS -> Lambda -> Kinesis -> Firehose -> S3).
