@@ -41,6 +41,46 @@ Los dominios se definen via contexto CDK o variables de entorno (`ROOT_DOMAIN_NA
 
 Ver `ARCHITECTURE.md` y `architecture.drawio`.
 
+Diagrama (Mermaid) basado en `architecture.drawio`:
+
+```mermaid
+flowchart LR
+  user((Usuario)) --> web[Angular Web]
+  web --> cfWeb[CloudFront Web]
+  cfWeb --> s3web[S3 WebBucket]
+
+  web --> cfApi[CloudFront API]
+  cfApi --> api[API Gateway HTTP API]
+  api --> auth[Lambda Auth]
+  api --> products[Lambda Products]
+  api --> orders[Lambda Orders]
+
+  orders --> ddb[DynamoDB Single Table]
+  ddb --> stream[DynamoDB Stream]
+  stream --> orderStream[Lambda Order Stream]
+  orderStream --> sns[SNS Orders Topic]
+
+  sns --> sqsEmail[SQS Orders Queue]
+  sqsEmail --> orderEmail[Lambda Order Email]
+  orderEmail --> ses[SES Template]
+  orderEmail --> s3email[S3 EmailsBucket]
+
+  sns --> sqsLake[SQS Orders Lake Queue]
+  sqsLake --> orderLake[Lambda Order Lake]
+  orderLake --> kinesis[Kinesis Data Stream]
+  kinesis --> firehose[Firehose]
+  firehose --> s3data[S3 DataBucket]
+
+  subgraph Edge
+    waf[WAF]
+    r53[Route53]
+  end
+  r53 --> cfWeb
+  r53 --> cfApi
+  waf --> cfWeb
+  waf --> cfApi
+```
+
 ## Observabilidad
 
 Las Lambdas usan AWS X-Ray para trazabilidad distribuida.
