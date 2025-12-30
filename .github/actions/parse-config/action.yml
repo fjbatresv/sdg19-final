@@ -3,8 +3,6 @@ description: Parse workflow config JSON into environment variables.
 inputs:
   config_json:
     required: true
-  aws_role_arn_secret:
-    required: false
 outputs:
   aws_account_id:
     value: ${{ steps.parse.outputs.aws_account_id }}
@@ -26,8 +24,8 @@ outputs:
     value: ${{ steps.parse.outputs.ses_mail_from_domain }}
   enable_lambda_vpc:
     value: ${{ steps.parse.outputs.enable_lambda_vpc }}
-  aws_role_arn:
-    value: ${{ steps.parse.outputs.aws_role_arn }}
+  aws_role_name:
+    value: ${{ steps.parse.outputs.aws_role_name }}
   emails_replica_kms_key_arn:
     value: ${{ steps.parse.outputs.emails_replica_kms_key_arn }}
 runs:
@@ -37,7 +35,6 @@ runs:
       shell: bash
       env:
         CONFIG_JSON: ${{ inputs.config_json }}
-        AWS_ROLE_ARN_SECRET: ${{ inputs.aws_role_arn_secret }}
       run: |
         AWS_ACCOUNT_ID=$(printf '%s' "$CONFIG_JSON" | jq -r '.aws_account_id // empty')
         AWS_REGION_PRIMARY=$(printf '%s' "$CONFIG_JSON" | jq -r '.aws_region_primary // empty')
@@ -49,12 +46,8 @@ runs:
         SES_FROM_ADDRESS=$(printf '%s' "$CONFIG_JSON" | jq -r '.ses.from // empty')
         SES_MAIL_FROM_DOMAIN=$(printf '%s' "$CONFIG_JSON" | jq -r '.ses.mail_from // empty')
         ENABLE_LAMBDA_VPC=$(printf '%s' "$CONFIG_JSON" | jq -r '.enable_lambda_vpc // "false"')
-        AWS_ROLE_ARN=$(printf '%s' "$CONFIG_JSON" | jq -r '.aws_role_arn // empty')
+        AWS_ROLE_NAME=$(printf '%s' "$CONFIG_JSON" | jq -r '.aws_role_name // empty')
         EMAILS_REPLICA_KMS_KEY_ARN=$(printf '%s' "$CONFIG_JSON" | jq -r '.emails_replica_kms_key_arn // empty')
-
-        if [ -z "$AWS_ROLE_ARN" ]; then
-          AWS_ROLE_ARN="$AWS_ROLE_ARN_SECRET"
-        fi
 
         if [ -z "$AWS_ACCOUNT_ID" ] || [ -z "$AWS_REGION_PRIMARY" ] || [ -z "$AWS_REGION_REPLICA" ] || [ -z "$HOSTED_ZONE_ID" ]; then
           echo "config_json missing aws_account_id/aws_region_primary/aws_region_replica/hosted_zone_id" >&2
@@ -68,10 +61,11 @@ runs:
           echo "config_json missing ses.from/ses.mail_from" >&2
           exit 1
         fi
-        if [ -z "$AWS_ROLE_ARN" ]; then
-          echo "AWS role ARN not provided and aws_role_arn_secret is empty" >&2
+        if [ -z "$AWS_ROLE_NAME" ]; then
+          echo "config_json missing aws_role_name" >&2
           exit 1
         fi
+        AWS_ROLE_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_ROLE_NAME}"
 
         {
           echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID"
@@ -84,6 +78,7 @@ runs:
           echo "SES_FROM_ADDRESS=$SES_FROM_ADDRESS"
           echo "SES_MAIL_FROM_DOMAIN=$SES_MAIL_FROM_DOMAIN"
           echo "ENABLE_LAMBDA_VPC=$ENABLE_LAMBDA_VPC"
+          echo "AWS_ROLE_NAME=$AWS_ROLE_NAME"
           echo "AWS_ROLE_ARN=$AWS_ROLE_ARN"
         } >> "$GITHUB_ENV"
 
@@ -102,6 +97,7 @@ runs:
           echo "ses_from_address=$SES_FROM_ADDRESS"
           echo "ses_mail_from_domain=$SES_MAIL_FROM_DOMAIN"
           echo "enable_lambda_vpc=$ENABLE_LAMBDA_VPC"
+          echo "aws_role_name=$AWS_ROLE_NAME"
           echo "aws_role_arn=$AWS_ROLE_ARN"
         } >> "$GITHUB_OUTPUT"
 

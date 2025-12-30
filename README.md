@@ -140,11 +140,13 @@ Ejemplo de `config_json` para el workflow `deploy.yml` (input `config_json`):
     "from": "no-reply@example.dev",
     "mail_from": "mail.example.dev"
   },
-  "enable_lambda_vpc": false
+  "enable_lambda_vpc": false,
+  "aws_role_name": "sdg19-deploy-role"
 }
 ```
 
 Campos del `config_json`:
+
 - `aws_account_id`: cuenta AWS donde se despliega.
 - `aws_region_primary`: región primaria (stacks principales).
 - `aws_region_replica`: región de réplica (stack secundario).
@@ -155,8 +157,10 @@ Campos del `config_json`:
 - `ses.from`: remitente verificado en SES (ej. `no-reply@tu-dominio.com`).
 - `ses.mail_from`: subdominio MAIL FROM (ej. `mail.tu-dominio.com`).
 - `enable_lambda_vpc`: `true`/`false` para habilitar VPC en Lambdas.
-- `aws_role_arn` (opcional): ARN del role a asumir; si no se define usa `secrets.AWS_ROLE_ARN`.
+- `aws_role_name`: nombre del role a asumir.
 - `emails_replica_kms_key_arn` (opcional): ARN de la KMS de la réplica (si ya existe).
+
+El ARN del role se construye con `aws_account_id` + `aws_role_name`.
 
 ## Envio de correos (SES)
 
@@ -164,6 +168,7 @@ El stack crea la identidad de dominio SES, DKIM y MAIL FROM usando Route53.
 Para enviar a cualquier destinatario necesitas sacar SES del sandbox.
 
 Contexto recomendado en `cdk.json`:
+
 - `rootDomainName`: dominio raiz (ej: `tu-dominio.com`) o `ROOT_DOMAIN_NAME`
 - `apiDomainName`: dominio de API (ej: `finalapi.tu-dominio.com`) o `API_DOMAIN_NAME`
 - `webDomainName`: dominio de web (ej: `finalweb.tu-dominio.com`) o `WEB_DOMAIN_NAME`
@@ -184,8 +189,9 @@ AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack \
 ```
 
 Despues del deploy:
+
 1. Verifica que los registros de Route53 se creen (DKIM + MAIL FROM).
-2. Solicita salida de SES sandbox para enviar a cualquier correo. Guia oficial: https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html
+2. Solicita salida de SES sandbox para enviar a cualquier correo. Guia oficial: <https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html>
 
 ## Data lake (Fase 3)
 

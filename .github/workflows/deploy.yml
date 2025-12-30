@@ -74,7 +74,6 @@ jobs:
         uses: ./.github/actions/parse-config
         with:
           config_json: ${{ inputs.config_json }}
-          aws_role_arn_secret: ${{ secrets.AWS_ROLE_ARN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
@@ -121,7 +120,6 @@ jobs:
         uses: ./.github/actions/parse-config
         with:
           config_json: ${{ inputs.config_json }}
-          aws_role_arn_secret: ${{ secrets.AWS_ROLE_ARN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
@@ -199,7 +197,6 @@ jobs:
         uses: ./.github/actions/parse-config
         with:
           config_json: ${{ inputs.config_json }}
-          aws_role_arn_secret: ${{ secrets.AWS_ROLE_ARN }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
