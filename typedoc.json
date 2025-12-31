@@ -1,0 +1,26 @@
+{
+  "entryPoints": [
+    "apps/backend/src/main.ts",
+    "apps/infra/src/main.ts"
+  ],
+  "out": "docs/api-typedoc",
+  "tsconfig": "typedoc.tsconfig.json",
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "apps/web/**"
+  ],
+  "highlightLanguages": [
+    "bash",
+    "json",
+    "yaml",
+    "ts",
+    "tsx",
+    "js",
+    "mermaid"
+  ],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "excludeExternals": true
+}

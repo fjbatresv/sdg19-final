@@ -1,0 +1,28 @@
+{
+  "name": "docs",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "targets": {
+    "coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node tools/doc-coverage/doc-coverage.js"
+      }
+    },
+    "api": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "typedoc --options typedoc.json"
+      }
+    },
+    "check": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run docs:coverage",
+          "nx run docs:api"
+        ]
+      }
+    }
+  }
+}

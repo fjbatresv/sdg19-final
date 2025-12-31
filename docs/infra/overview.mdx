@@ -1,0 +1,27 @@
+---
+title: Infraestructura
+description: Resumen de componentes y servicios AWS.
+---
+
+## Componentes principales
+
+- CloudFront para web y API.
+- S3 para web, data lake, logs y emails.
+- API Gateway HTTP API y Lambdas.
+- DynamoDB single-table con streams.
+- SNS y SQS para orquestar ordenes.
+- Kinesis + Firehose para data lake.
+- SES para envio de correos.
+- Route53 + ACM + WAF en el borde.
+
+## VPC
+
+Se usa VPC con subnets publicas/privadas y NAT gateways cuando
+`enable_lambda_vpc` esta habilitado. Para escenarios de bajo costo
+se puede desactivar el VPC en Lambdas.
+
+## Observabilidad
+
+- CloudTrail para auditoria.
+- CloudWatch Logs y alarms para componentes criticos.
+- X-Ray habilitado en Lambdas.

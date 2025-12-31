@@ -38,6 +38,7 @@ jobs:
 
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
       - run: NODE_OPTIONS=--experimental-require-module NX_DAEMON=false NX_ISOLATE_PLUGINS=false npx nx run-many -t lint test build typecheck e2e-ci
+      - run: npx nx run docs:check
       # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
       - run: npx nx fix-ci
         if: always() && env.NX_CLOUD != 'false'

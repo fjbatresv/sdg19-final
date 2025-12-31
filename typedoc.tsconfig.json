@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.base.json",
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "apps/web/**",
+    "node_modules",
+    "dist",
+    "tmp"
+  ]
+}

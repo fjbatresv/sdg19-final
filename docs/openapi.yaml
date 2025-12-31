@@ -1,0 +1,296 @@
+openapi: 3.0.3
+info:
+  title: SDG19 Final API
+  version: 0.1.0
+  description: API para registro, autenticacion y ordenes.
+servers:
+  - url: https://finalapi.javierba3.com
+paths:
+  /auth/register:
+    post:
+      summary: Registrar usuario y devolver tokens JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Solicitud invalida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/login:
+    post:
+      summary: Iniciar sesion y devolver tokens JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Sesion iniciada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Credenciales invalidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /auth/refresh:
+    post:
+      summary: Renovar tokens JWT con refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Tokens renovados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Token invalido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /products:
+    get:
+      summary: Listar productos disponibles
+      responses:
+        '200':
+          description: Lista de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /orders:
+    post:
+      summary: Crear una orden para el usuario autenticado
+      security:
+        - CognitoJWT: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Orden creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Listar ordenes del usuario autenticado
+      security:
+        - CognitoJWT: []
+      responses:
+        '200':
+          description: Lista de ordenes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          description: No autorizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    CognitoJWT:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        name:
+          type: string
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+    RefreshRequest:
+      type: object
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          type: string
+    AuthResponse:
+      type: object
+      required:
+        - userId
+        - accessToken
+        - idToken
+      properties:
+        userId:
+          type: string
+        accessToken:
+          type: string
+        idToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+          format: int32
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - price
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        price:
+          type: number
+          format: float
+        currency:
+          type: string
+          example: USD
+    CreateOrderRequest:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        notes:
+          type: string
+    OrderItem:
+      type: object
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+        unitPrice:
+          type: number
+          format: float
+    Order:
+      type: object
+      required:
+        - orderId
+        - status
+        - createdAt
+        - items
+        - total
+      properties:
+        orderId:
+          type: string
+        status:
+          type: string
+          example: CREATED
+        createdAt:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        total:
+          type: number
+          format: float
+    ErrorResponse:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string

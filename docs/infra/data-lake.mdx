@@ -1,0 +1,27 @@
+---
+title: Data Lake
+description: Flujo de ingest y almacenamiento en S3.
+---
+
+El flujo de data lake toma las ordenes desde SNS y las persiste en S3:
+
+```mermaid
+sequenceDiagram
+  participant SNS as SNS Orders Topic
+  participant SQS as Orders Lake Queue
+  participant Lambda as Order Lake Lambda
+  participant Kinesis as Kinesis Stream
+  participant Firehose as Firehose
+  participant S3 as DataBucket
+
+  SNS->>SQS: Mensaje de orden
+  SQS->>Lambda: Batch SQS
+  Lambda->>Kinesis: PutRecord
+  Kinesis->>Firehose: Stream
+  Firehose->>S3: Parquet particionado
+```
+
+Notas:
+
+- Firehose usa conversion a Parquet y particionado dinamico.
+- Glue Catalog mantiene el esquema de la tabla de ordenes.

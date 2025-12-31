@@ -1,0 +1,53 @@
+---
+title: SDG19 Final
+description: Documentacion de la solucion y su arquitectura.
+---
+
+Bienvenido a la documentacion del proyecto final. Esta solucion cubre autenticacion,
+ordenes, envio de correos y data lake con infraestructura en AWS.
+
+## Arquitectura general
+
+```mermaid
+flowchart LR
+  user((Usuario)) --> web[Angular Web]
+  web --> cfWeb[CloudFront Web]
+  cfWeb --> s3web[S3 WebBucket]
+
+  web --> cfApi[CloudFront API]
+  cfApi --> api[API Gateway HTTP API]
+  api --> auth[Lambda Auth]
+  api --> products[Lambda Products]
+  api --> orders[Lambda Orders]
+
+  orders --> ddb[DynamoDB Single Table]
+  ddb --> stream[DynamoDB Stream]
+  stream --> orderStream[Lambda Order Stream]
+  orderStream --> sns[SNS Orders Topic]
+
+  sns --> sqsEmail[SQS Orders Queue]
+  sqsEmail --> orderEmail[Lambda Order Email]
+  orderEmail --> ses[SES Template]
+  orderEmail --> s3email[S3 EmailsBucket]
+
+  sns --> sqsLake[SQS Orders Lake Queue]
+  sqsLake --> orderLake[Lambda Order Lake]
+  orderLake --> kinesis[Kinesis Data Stream]
+  kinesis --> firehose[Firehose]
+  firehose --> s3data[S3 DataBucket]
+
+  subgraph Edge
+    waf[WAF]
+    r53[Route53]
+  end
+  r53 --> cfWeb
+  r53 --> cfApi
+  waf --> cfWeb
+  waf --> cfApi
+```
+
+## Fases completadas
+
+- Fase 1: autenticacion, productos y ordenes.
+- Fase 2: envio de correos con SES.
+- Fase 3: data lake con Kinesis + Firehose.
