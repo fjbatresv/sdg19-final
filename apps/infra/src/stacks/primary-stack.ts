@@ -430,12 +430,14 @@ export class PrimaryStack extends Stack {
         resources: [table.tableArn, `${table.tableArn}/index/*`],
       })
     );
+    dataKey.grantEncryptDecrypt(createOrderFn);
     listOrdersFn.addToRolePolicy(
       new PolicyStatement({
         actions: ['dynamodb:GetItem', 'dynamodb:Query'],
         resources: [table.tableArn, `${table.tableArn}/index/*`],
       })
     );
+    dataKey.grantDecrypt(listOrdersFn);
     if (table.tableStreamArn) {
       orderStreamFn.addToRolePolicy(
         new PolicyStatement({
@@ -449,6 +451,7 @@ export class PrimaryStack extends Stack {
         })
       );
     }
+    dataKey.grantDecrypt(orderStreamFn);
     orderStreamFn.addToRolePolicy(
       new PolicyStatement({
         actions: ['sns:Publish'],
