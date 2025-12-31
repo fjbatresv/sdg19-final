@@ -25,8 +25,8 @@
       ],
       "options": {
         "commands": [
-          "NX_CLOUD=false NX_DAEMON=false NX_ISOLATE_PLUGINS=false nx run docs:coverage",
-          "NX_CLOUD=false NX_DAEMON=false NX_ISOLATE_PLUGINS=false nx run docs:api"
+          "nx run docs:coverage",
+          "nx run docs:api"
         ]
       }
     }
