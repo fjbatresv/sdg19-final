@@ -255,6 +255,9 @@ export class PrimaryStack extends Stack {
       signInAliases: { email: true },
       autoVerify: { email: false },
       accountRecovery: AccountRecovery.EMAIL_ONLY,
+      passwordPolicy: {
+        minLength: 10,
+      },
     });
 
     const userPoolClient = new UserPoolClient(this, 'UserPoolClient', {
