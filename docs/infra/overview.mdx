@@ -30,7 +30,7 @@ tráfico se recomienda desactivar `enableLambdaVpc`.
 
 - CloudTrail para auditoría, con retención definida por cuenta.
 - CloudWatch Logs por Lambda con naming consistente y retención (ej. 30 días),
-  cifrado KMS y alarmas por errores/latencia.
+  cifrado KMS y alarmas por errores/latencia; DynamoDB y S3 usan KMS por defecto.
 - X-Ray habilitado con sampling configurable (ej. 5%) para controlar costos.
 - Controles de red y seguridad: security groups mínimos, NACLs restrictivas y
   reglas WAF para bots/SQLi; ver `apps/infra/src/stacks/primary-stack.ts`.
