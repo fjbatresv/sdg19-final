@@ -100,10 +100,10 @@ jobs:
           path: apps/infra/dist
 
       - name: Bootstrap CDK (primary)
-        run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_PRIMARY }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
+        run: AWS_REGION=${{ env.AWS_REGION_PRIMARY }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_PRIMARY }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }} --force
 
       - name: Bootstrap CDK (replica)
-        run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_REPLICA }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }}
+        run: AWS_REGION=${{ env.AWS_REGION_REPLICA }} npx cdk bootstrap aws://${{ env.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION_REPLICA }} -c hostedZoneId=${{ env.HOSTED_ZONE_ID }} --force
 
   deploy_infra:
     runs-on: ubuntu-latest
