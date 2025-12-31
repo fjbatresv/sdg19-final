@@ -21,9 +21,19 @@ try {
   const baseUrl = process.env.OPENAPI_BASE_URL;
   if (baseUrl) {
     const content = readFileSync(DESTINATION, 'utf8');
-    const sanitized = baseUrl.startsWith('http')
-      ? new URL(baseUrl).host
-      : baseUrl;
+    let sanitized = baseUrl;
+    if (baseUrl.startsWith('http')) {
+      try {
+        sanitized = new URL(baseUrl).host;
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : 'unknown';
+        console.error('OPENAPI_BASE_URL is not a valid URL.', {
+          value: baseUrl,
+          reason,
+        });
+        process.exit(1);
+      }
+    }
     const updated = content.replace(
       /(baseUrl:\n\s+default:\s*)([^\n]+)/,
       `$1${sanitized}`
