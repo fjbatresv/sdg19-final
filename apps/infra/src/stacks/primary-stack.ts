@@ -33,6 +33,7 @@ import {
   Role,
   ServicePrincipal,
   PolicyStatement,
+  Policy,
   AnyPrincipal,
   Effect,
 } from 'aws-cdk-lib/aws-iam';
@@ -796,6 +797,7 @@ export class PrimaryStack extends Stack {
     dataLakeTable.addDependency(dataLakeDatabase);
 
     const firehoseRole = new Role(this, 'OrdersFirehoseRole', {
+      roleName: 'OrdersFirehoseRole',
       assumedBy: new ServicePrincipal('firehose.amazonaws.com'),
     });
     firehoseRole.addToPolicy(
@@ -805,6 +807,11 @@ export class PrimaryStack extends Stack {
           'kinesis:DescribeStreamSummary',
         ],
         resources: ['*'],
+        conditions: {
+          ArnEquals: {
+            'kinesis:StreamArn': ordersStream.streamArn,
+          },
+        },
       })
     );
     firehoseRole.addToPolicy(
@@ -857,12 +864,15 @@ export class PrimaryStack extends Stack {
       })
     );
 
+    console.log('fireHoseRole', firehoseRole.policyFragment)
+
     const firehoseLogs = new LogGroup(this, 'OrdersFirehoseLogs', {
       retention: RetentionDays.ONE_MONTH,
     });
 
     const ordersFirehose = new CfnDeliveryStream(this, 'OrdersFirehose', {
       deliveryStreamType: 'KinesisStreamAsSource',
+      deliveryStreamName: 'OrdersFireHose',
       kinesisStreamSourceConfiguration: {
         kinesisStreamArn: ordersStream.streamArn,
         roleArn: firehoseRole.roleArn,
@@ -930,6 +940,11 @@ export class PrimaryStack extends Stack {
         },
       },
     });
+    const firehoseRolePolicy = firehoseRole.node.findChild(
+      'DefaultPolicy'
+    ) as Policy;
+    ordersFirehose.node.addDependency(firehoseRole);
+    ordersFirehose.node.addDependency(firehoseRolePolicy);
     ordersFirehose.addDependency(dataLakeTable);
 
     const logsBucket = new Bucket(this, 'LogsBucket', {
