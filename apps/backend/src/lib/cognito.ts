@@ -7,6 +7,9 @@ import {
 
 export const cognitoClient = new CognitoIdentityProviderClient({});
 
+/**
+ * Register a new user and immediately confirm it in the user pool.
+ */
 export async function registerUser(input: {
   clientId: string;
   userPoolId: string;
@@ -34,6 +37,9 @@ export async function registerUser(input: {
   );
 }
 
+/**
+ * Perform user/password auth and return the Cognito auth result.
+ */
 export async function loginUser(input: {
   clientId: string;
   email: string;
@@ -53,6 +59,9 @@ export async function loginUser(input: {
   return result.AuthenticationResult ?? {};
 }
 
+/**
+ * Refresh tokens using the Cognito refresh token flow.
+ */
 export async function refreshUser(input: {
   clientId: string;
   refreshToken: string;

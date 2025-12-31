@@ -4,6 +4,9 @@ import { unmarshall } from '@aws-sdk/util-dynamodb';
 import { publishOrder } from '../lib/sns';
 import { requireEnv } from '../lib/env';
 
+/**
+ * Publish new orders from the DynamoDB stream to SNS.
+ */
 export async function orderStreamHandler(event: DynamoDBStreamEvent) {
   const topicArn = requireEnv('ORDERS_TOPIC_ARN');
 

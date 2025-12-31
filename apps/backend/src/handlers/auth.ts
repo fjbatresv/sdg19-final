@@ -3,6 +3,9 @@ import { jsonResponse } from '../lib/response';
 import { requireEnv } from '../lib/env';
 import { loginUser, refreshUser, registerUser } from '../lib/cognito';
 
+/**
+ * Parse JSON body from an API Gateway event.
+ */
 function parseBody(event: APIGatewayProxyEventV2) {
   if (!event.body) {
     return null;
@@ -14,6 +17,9 @@ function parseBody(event: APIGatewayProxyEventV2) {
   }
 }
 
+/**
+ * Extract the Cognito subject from an ID token payload.
+ */
 function getSubFromIdToken(idToken?: string) {
   if (!idToken) {
     return undefined;
@@ -32,6 +38,9 @@ function getSubFromIdToken(idToken?: string) {
   }
 }
 
+/**
+ * Register a user and return Cognito tokens.
+ */
 export async function registerHandler(event: APIGatewayProxyEventV2) {
   const body = parseBody(event);
   if (!body?.email || !body?.password) {
@@ -70,6 +79,9 @@ export async function registerHandler(event: APIGatewayProxyEventV2) {
   }
 }
 
+/**
+ * Authenticate a user with Cognito and return tokens.
+ */
 export async function loginHandler(event: APIGatewayProxyEventV2) {
   const body = parseBody(event);
   if (!body?.email || !body?.password) {
@@ -103,6 +115,9 @@ export async function loginHandler(event: APIGatewayProxyEventV2) {
   }
 }
 
+/**
+ * Refresh Cognito tokens using a refresh token.
+ */
 export async function refreshHandler(event: APIGatewayProxyEventV2) {
   const body = parseBody(event);
   if (!body?.refreshToken) {

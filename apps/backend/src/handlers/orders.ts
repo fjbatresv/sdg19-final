@@ -11,6 +11,9 @@ type JwtClaims = {
   email?: string;
 };
 
+/**
+ * Extract JWT claims from API Gateway authorizer context.
+ */
 function getUserClaims(event: APIGatewayProxyEventV2): JwtClaims | null {
   const claims = (event.requestContext as any)?.authorizer?.jwt?.claims;
   if (!claims) {
@@ -19,6 +22,9 @@ function getUserClaims(event: APIGatewayProxyEventV2): JwtClaims | null {
   return claims as JwtClaims;
 }
 
+/**
+ * Parse JSON body from an API Gateway event.
+ */
 function parseBody(event: APIGatewayProxyEventV2) {
   if (!event.body) {
     return null;
@@ -30,6 +36,9 @@ function parseBody(event: APIGatewayProxyEventV2) {
   }
 }
 
+/**
+ * Create an order for the authenticated user.
+ */
 export async function createOrderHandler(event: APIGatewayProxyEventV2) {
   const claims = getUserClaims(event);
   if (!claims?.sub) {
@@ -104,6 +113,9 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
   }
 }
 
+/**
+ * List orders for the authenticated user.
+ */
 export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
   const claims = getUserClaims(event);
   if (!claims?.sub) {
