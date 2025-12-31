@@ -47,3 +47,5 @@ Referencia: `oidc_role/identity-provider.json`.
 
 - Ejecuta `npm run docs:dev` para preview Mintlify.
 - Ejecuta `npm run docs:check` para validar TypeDoc + doc coverage.
+- Usa `OPENAPI_BASE_URL=finalapi.tu-dominio.com` antes de
+  `npm run docs:sync-openapi` para fijar el server por entorno.
