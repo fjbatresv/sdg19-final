@@ -803,6 +803,18 @@ export class PrimaryStack extends Stack {
         actions: [
           'kinesis:DescribeStream',
           'kinesis:DescribeStreamSummary',
+        ],
+        resources: ['*'],
+        conditions: {
+          ArnEquals: {
+            'kinesis:StreamArn': ordersStream.streamArn,
+          },
+        },
+      })
+    );
+    firehoseRole.addToPolicy(
+      new PolicyStatement({
+        actions: [
           'kinesis:GetShardIterator',
           'kinesis:GetRecords',
           'kinesis:ListShards',
