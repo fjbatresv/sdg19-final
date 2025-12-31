@@ -806,7 +806,7 @@ export class PrimaryStack extends Stack {
           'kinesis:DescribeStream',
           'kinesis:DescribeStreamSummary',
         ],
-        resources: [ordersStream.streamArn],
+        resources: ['*'],
       })
     );
     firehoseRole.addToPolicy(
