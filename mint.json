@@ -13,10 +13,6 @@
   },
   "tabs": [
     {
-      "name": "Docs",
-      "url": "docs/index"
-    },
-    {
       "name": "API",
       "url": "api",
       "openapi": "/docs/openapi.yaml"

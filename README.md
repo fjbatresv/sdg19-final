@@ -110,6 +110,22 @@ npx nx run @org/infra:build:production
 npx nx run web:build:production
 ```
 
+## Documentacion
+
+La documentacion vive en `docs/` (Mintlify) y `docs/api-typedoc/` (TypeDoc).
+
+```bash
+npm run docs:dev
+npm run docs:check
+npm run docs:coverage
+```
+
+Para actualizar el contrato OpenAPI publicado en Mintlify:
+
+```bash
+npm run docs:sync-openapi
+```
+
 ## Deploy (local)
 
 ```bash
