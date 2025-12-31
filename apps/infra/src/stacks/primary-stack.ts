@@ -868,7 +868,7 @@ export class PrimaryStack extends Stack {
         compressionFormat: 'UNCOMPRESSED',
         bufferingHints: {
           intervalInSeconds: 300,
-          sizeInMBs: 5,
+          sizeInMBs: 64,
         },
         processingConfiguration: {
           enabled: true,
