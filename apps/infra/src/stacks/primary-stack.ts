@@ -13,6 +13,7 @@ import {
   BucketEncryption,
   BlockPublicAccess,
   StorageClass,
+  ReplicationTimeValue,
 } from 'aws-cdk-lib/aws-s3';
 import { Key } from 'aws-cdk-lib/aws-kms';
 import {
@@ -738,6 +739,8 @@ export class PrimaryStack extends Stack {
     );
 
     // Replication role policy already grants required S3 actions.
+    dataKey.grantDecrypt(replicationRole);
+    emailsReplicaKmsKey.grantEncryptDecrypt(replicationRole);
 
     const dataBucket = new Bucket(this, 'DataBucket', {
       versioned: true,
@@ -970,10 +973,13 @@ export class PrimaryStack extends Stack {
       replicationRole,
       replicationRules: [
         {
+          id: 'EmailsReplication',
           priority: 1,
           destination: props.emailsReplicaBucket,
           kmsKey: emailsReplicaKmsKey,
           sseKmsEncryptedObjects: true,
+          replicationTimeControl: ReplicationTimeValue.FIFTEEN_MINUTES,
+          metrics: ReplicationTimeValue.FIFTEEN_MINUTES,
           storageClass: StorageClass.INTELLIGENT_TIERING,
           deleteMarkerReplication: true,
         },
@@ -1036,6 +1042,44 @@ export class PrimaryStack extends Stack {
       threshold: 5 * 1024 * 1024 * 1024,
       evaluationPeriods: 1,
       comparisonOperator: ComparisonOperator.GREATER_THAN_THRESHOLD,
+      treatMissingData: TreatMissingData.NOT_BREACHING,
+    });
+
+    const replicationBytesPendingMetric = new Metric({
+      namespace: 'AWS/S3',
+      metricName: 'BytesPendingReplication',
+      dimensionsMap: {
+        BucketName: emailsBucket.bucketName,
+        RuleId: 'EmailsReplication',
+      },
+      statistic: 'Sum',
+      period: Duration.minutes(5),
+    });
+
+    new Alarm(this, 'EmailsReplicationBytesPendingAlarm', {
+      metric: replicationBytesPendingMetric,
+      threshold: 1,
+      evaluationPeriods: 1,
+      comparisonOperator: ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
+      treatMissingData: TreatMissingData.NOT_BREACHING,
+    });
+
+    const replicationOpsPendingMetric = new Metric({
+      namespace: 'AWS/S3',
+      metricName: 'OperationsPendingReplication',
+      dimensionsMap: {
+        BucketName: emailsBucket.bucketName,
+        RuleId: 'EmailsReplication',
+      },
+      statistic: 'Sum',
+      period: Duration.minutes(5),
+    });
+
+    new Alarm(this, 'EmailsReplicationOpsPendingAlarm', {
+      metric: replicationOpsPendingMetric,
+      threshold: 1,
+      evaluationPeriods: 1,
+      comparisonOperator: ComparisonOperator.GREATER_THAN_OR_EQUAL_TO_THRESHOLD,
       treatMissingData: TreatMissingData.NOT_BREACHING,
     });
 
