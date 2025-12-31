@@ -49,7 +49,7 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - Fase 1: registro, autenticación, productos, órdenes, lectura de órdenes.
 - Fase 2: envío de correos.
 - Fase 3: data lake (SQS -> Lambda -> Kinesis -> Firehose -> S3).
-- Fase 4: agregar mintlify para documentación.
+- Fase 4: agregar mintlify para documentación y TypeDoc.
 - Fase 5: agregar compodoc con github actions y github pages.
 - Fase 6: cobertura de pruebas.
 - Fase 7: limpiar Security Hotspots e issues de SonarCloud.
