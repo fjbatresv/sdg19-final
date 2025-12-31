@@ -49,12 +49,18 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - Fase 1: registro, autenticación, productos, órdenes, lectura de órdenes.
 - Fase 2: envío de correos.
 - Fase 3: data lake (SQS -> Lambda -> Kinesis -> Firehose -> S3).
-- Fase 4: cobertura de pruebas.
-- Fase 5: limpiar Security Hotspots e issues de SonarCloud.
-- Fase 6: agregar mintlify para documentación.
-- Fase 7: agregar compodoc con github actions.
+- Fase 4: agregar mintlify para documentación.
+- Fase 5: agregar compodoc con github actions y github pages.
+- Fase 6: cobertura de pruebas.
+- Fase 7: limpiar Security Hotspots e issues de SonarCloud.
 
 ## CI/CD y multi-cuenta
 
-Los JSON en `oidc_role/` permiten crear rápidamente el role OIDC en otras
-cuentas para reutilizar el pipeline de deploy.
+Los JSON en `oidc_role/` permiten crear el Identity Provider OIDC y el role
+para reutilizar el pipeline de deploy en otras cuentas:
+
+- `oidc_role/identity-provider.json`: datos del OIDC provider.
+- `oidc_role/trust-relationship.json`: trust policy (reemplazar placeholders).
+- `oidc_role/permission-policy.json`: permisos mínimos (reemplazar placeholders).
+
+Ver `DEPLOY.md` para el paso a paso.

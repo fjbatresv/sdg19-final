@@ -29,8 +29,9 @@ project owner with:
 - **Secrets**: Runtime secrets should be stored in AWS-native services (e.g.,
   Secrets Manager or SSM) and not committed to the repository.
 - **CI/CD**: GitHub Actions uses OIDC to assume AWS roles; credentials are not
-  stored in the repo. Reference trust and permission policies live in
-  `oidc_role/` to bootstrap roles in other accounts.
+  stored in the repo. The OIDC provider definition plus trust/permission
+  policies live in `oidc_role/` to bootstrap roles in other accounts. See
+  `DEPLOY.md` for the setup sequence and placeholder replacement.
 - **Tagging**: All stacks include required tags for cost allocation and audit.
 
 ## Supported Versions

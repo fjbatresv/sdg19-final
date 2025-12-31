@@ -123,11 +123,15 @@ AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack --require-approva
 
 ## Deploy (GitHub Actions)
 
+Antes de desplegar, revisa `DEPLOY.md` para crear el Hosted Zone, el OIDC
+provider y el role con su policy.
+
 ### OIDC role para otras cuentas
 
 La carpeta `oidc_role/` incluye JSON de referencia para crear un role OIDC
 en otra cuenta y reutilizar este pipeline:
 
+- `oidc_role/identity-provider.json`: datos del Identity Provider OIDC.
 - `oidc_role/trust-relationship.json`: trust policy para GitHub Actions.
 - `oidc_role/permission-policy.json`: permisos mínimos para CDK + deploy.
 

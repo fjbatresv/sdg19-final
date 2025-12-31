@@ -2,6 +2,17 @@
     "Version": "2012-10-17",
     "Statement": [
         {
+            "Sid": "CloudFormationGlobal",
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:DescribeEvents",
+                "cloudformation:DescribeStacks",
+                "cloudformation:GetTemplate",
+                "cloudformation:ValidateTemplate"
+            ],
+            "Resource": "*"
+        },
+        {
             "Sid": "CDKBootstrap",
             "Effect": "Allow",
             "Action": [
@@ -14,11 +25,11 @@
                 "iam:DeleteRolePolicy",
                 "iam:AttachRolePolicy",
                 "iam:DetachRolePolicy",
+                "iam:ListRolePolicies",
+                "iam:ListAttachedRolePolicies",
                 "iam:PassRole",
                 "iam:TagRole",
                 "iam:UntagRole",
-                "iam:ListRolePolicies",
-                "iam:ListAttachedRolePolicies",
                 "iam:ListRoleTags",
                 "s3:*Bucket*",
                 "s3:*Object*",

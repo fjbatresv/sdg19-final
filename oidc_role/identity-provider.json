@@ -1,0 +1,5 @@
+{
+    "provider": "token.actions.githubusercontent.com",
+    "type": "OpenID Connect",
+    "audience": "sts.amazonaws.com"
+}
