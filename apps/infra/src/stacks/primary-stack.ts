@@ -1113,13 +1113,160 @@ export class PrimaryStack extends Stack {
         templateName: sesTemplateName,
         subjectPart: 'Confirmación de orden {{orderId}}',
         htmlPart: `
-          <html>
-            <body style="font-family: Arial, sans-serif; color: #1f2933;">
-              <h2>Gracias por tu orden</h2>
-              <p>Orden: <strong>{{orderId}}</strong></p>
-              <p>Fecha: {{createdAt}}</p>
-              <p>Estado: {{status}}</p>
-              <p>Total: {{total}}</p>
+          <!doctype html>
+          <html lang="es">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width,initial-scale=1" />
+              <title>Orden {{orderId}}</title>
+            </head>
+
+            <body style="margin:0;padding:0;background:#f6f7f9;">
+              <!-- Preheader -->
+              <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
+                Confirmación de orden {{orderId}} ({{status}}). Total Q {{total}}.
+              </div>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f6f7f9;">
+                <tr>
+                  <td align="center" style="padding:24px 12px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                      style="max-width:640px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(16,24,40,.08);">
+
+                      <!-- Header -->
+                      <tr>
+                        <td style="padding:28px 28px 16px 28px;">
+                          <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;color:#667085;">
+                            Gracias por tu orden
+                          </div>
+                          <div style="margin-top:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:22px;font-weight:800;color:#101828;line-height:1.25;">
+                            Confirmación de compra
+                          </div>
+                          <div style="margin-top:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;color:#475467;line-height:1.6;">
+                            Recibimos tu orden y la estamos procesando. Aquí están los detalles:
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- Divider -->
+                      <tr>
+                        <td style="padding:0 28px;">
+                          <div style="height:1px;background:#eaecf0;width:100%;"></div>
+                        </td>
+                      </tr>
+
+                      <!-- Summary -->
+                      <tr>
+                        <td style="padding:18px 28px 10px 28px;">
+                          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                              <td style="padding:10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#667085;">
+                                Orden
+                              </td>
+                              <td align="right" style="padding:10px 0;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-size:12px;color:#101828;">
+                                {{orderId}}
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td style="padding:10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#667085;">
+                                Fecha
+                              </td>
+                              <td align="right" style="padding:10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;color:#101828;">
+                                {{createdAt}}
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td style="padding:10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#667085;">
+                                Estado
+                              </td>
+                              <td align="right" style="padding:10px 0;">
+                                <span style="display:inline-block;padding:6px 10px;border-radius:999px;background:#f2f4f7;color:#344054;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;font-weight:700;">
+                                  {{status}}
+                                </span>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td style="padding:12px 0 2px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#667085;">
+                                Total
+                              </td>
+                              <td align="right" style="padding:12px 0 2px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:20px;font-weight:900;color:#101828;">
+                                Q {{total}}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- Items -->
+                      <tr>
+                        <td style="padding:0 28px 18px 28px;">
+                          <div style="height:1px;background:#eaecf0;width:100%;"></div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding:18px 28px 6px 28px;">
+                          <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#667085;">
+                            Productos
+                          </div>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td style="padding:0 28px 22px 28px;">
+                          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
+                            style="border-collapse:separate;border-spacing:0 10px;">
+                            {{#each items}}
+                            <tr>
+                              <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
+                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                  <tr>
+                                    <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;font-weight:800;color:#101828;">
+                                      {{productId}}
+                                    </td>
+                                    <td align="right" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;color:#475467;">
+                                      x{{quantity}}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
+                                      Precio unitario
+                                    </td>
+                                    <td align="right" style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
+                                      Q {{unitPrice}}
+                                    </td>
+                                  </tr>
+                                </table>
+                              </td>
+                            </tr>
+                            {{/each}}
+                          </table>
+
+                          <div style="margin-top:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#98a2b3;line-height:1.6;">
+                            Nota: Los tiempos de entrega pueden variar según disponibilidad.
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- Footer -->
+                      <tr>
+                        <td style="padding:18px 28px 26px 28px;background:#fcfcfd;">
+                          <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;line-height:1.6;">
+                            Este correo fue generado automáticamente. Si no reconoces esta orden, ignora este mensaje.
+                          </div>
+                          <div style="margin-top:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#98a2b3;">
+                            © {{year}} sdg19 proyecto final
+                          </div>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                </tr>
+              </table>
             </body>
           </html>
         `,
