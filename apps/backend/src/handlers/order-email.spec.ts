@@ -64,7 +64,14 @@ describe('orderEmailHandler', () => {
       status: 'CREATED',
       total: 99.5,
       email: 'user@example.com',
-      items: [{ productId: 'p1', quantity: 1 }],
+      items: [
+        {
+          productId: 'p1',
+          productName: 'Starter Pack',
+          quantity: 1,
+          unitPrice: 9.99,
+        },
+      ],
     };
     const event = buildEvent(JSON.stringify({ Message: JSON.stringify(message) }));
 

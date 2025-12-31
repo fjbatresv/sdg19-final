@@ -16,6 +16,7 @@ type OrderMessage = {
 
 type OrderItem = {
   productId: string;
+  productName?: string;
   quantity: number;
   unitPrice: number;
 };
@@ -116,14 +117,16 @@ export async function orderEmailHandler(event: SQSEvent) {
       userPk: message.userPk,
       year: new Date().getFullYear(),
       itemsHtml: items
-        .map(
-          (item) =>
-            `<tr>
+        .map((item) => {
+          const displayName = item.productName?.trim()
+            ? item.productName
+            : item.productId;
+          return `<tr>
               <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                   <tr>
                     <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;font-weight:800;color:#101828;">
-                      ${item.productId}
+                      ${displayName}
                     </td>
                     <td align="right" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;color:#475467;">
                       x${item.quantity}
@@ -139,8 +142,8 @@ export async function orderEmailHandler(event: SQSEvent) {
                   </tr>
                 </table>
               </td>
-            </tr>`
-        )
+            </tr>`;
+        })
         .join(''),
     };
 

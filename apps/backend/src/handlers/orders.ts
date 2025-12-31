@@ -53,6 +53,7 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
       }
       return {
         productId: product.id,
+        productName: product.name,
         quantity,
         unitPrice: product.price,
       };
