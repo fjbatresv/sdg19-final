@@ -1,9 +1,17 @@
 const { Project, SyntaxKind } = require('ts-morph');
-const { readdirSync } = require('node:fs');
+const {
+  readdirSync,
+  existsSync,
+  readFileSync,
+  mkdirSync,
+  writeFileSync,
+} = require('node:fs');
 const { join, dirname, relative, sep } = require('node:path');
 
 const ROOT = process.cwd();
 const THRESHOLD = Number(process.env.DOC_COVERAGE_THRESHOLD ?? 80);
+const REPORT_DIR = join(ROOT, 'doc-coverage');
+const REPORT_FILE = join(REPORT_DIR, 'docCoverageReport.json');
 const EXCLUDE_DIRS = new Set([
   '.git',
   '.nx',
@@ -73,10 +81,27 @@ function hasJsDocDescription(declaration) {
 }
 
 function buildProject() {
-  const project = new Project({
-    tsConfigFilePath: join(ROOT, 'tsconfig.base.json'),
-    skipAddingFilesFromTsConfig: true,
-  });
+  const tsConfigFilePath = join(ROOT, 'tsconfig.base.json');
+  if (!existsSync(tsConfigFilePath)) {
+    throw new Error(`Missing tsconfig: ${tsConfigFilePath}`);
+  }
+  try {
+    readFileSync(tsConfigFilePath, 'utf8');
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : 'unknown';
+    throw new Error(`Unable to read tsconfig: ${tsConfigFilePath}. ${reason}`);
+  }
+
+  let project;
+  try {
+    project = new Project({
+      tsConfigFilePath,
+      skipAddingFilesFromTsConfig: true,
+    });
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : 'unknown';
+    throw new Error(`Failed to load tsconfig: ${tsConfigFilePath}. ${reason}`);
+  }
 
   project.addSourceFilesAtPaths([
     'apps/**/src/**/*.{ts,tsx}',
@@ -103,6 +128,9 @@ let documentedSymbols = 0;
 for (const entrypoint of entrypoints) {
   const sourceFile = project.getSourceFile(entrypoint);
   if (!sourceFile) {
+    console.warn(
+      `Doc coverage: entrypoint not found: ${entrypoint}. Verify the path or entrypoint list.`
+    );
     continue;
   }
   const exported = sourceFile.getExportedDeclarations();
@@ -135,6 +163,23 @@ for (const entrypoint of entrypoints) {
 
 const coverage =
   totalSymbols === 0 ? 100 : (documentedSymbols / totalSymbols) * 100;
+
+mkdirSync(REPORT_DIR, { recursive: true });
+writeFileSync(
+  REPORT_FILE,
+  JSON.stringify(
+    {
+      jsdocCoverage: {
+        documentedSymbols,
+        totalSymbols,
+        coveragePercent: Number(coverage.toFixed(2)),
+      },
+      missingDocs,
+    },
+    null,
+    2
+  )
+);
 
 console.log(
   `Doc coverage: ${documentedSymbols}/${totalSymbols} (${coverage.toFixed(2)}%)`
