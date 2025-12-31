@@ -451,7 +451,7 @@ export class PrimaryStack extends Stack {
         })
       );
     }
-    dataKey.grantDecrypt(orderStreamFn);
+    dataKey.grantEncryptDecrypt(orderStreamFn);
     orderStreamFn.addToRolePolicy(
       new PolicyStatement({
         actions: ['sns:Publish'],
