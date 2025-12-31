@@ -38,12 +38,12 @@ Referencia: `oidc_role/identity-provider.json`.
    reemplazar el `ACCOUNT_ID`.
 6. El nombre del role debe coincidir con `aws_role_name` en el workflow.
 
-## Verificacion rapida
+## Verificación rápida
 
 - El workflow `deploy.yml` debe poder asumir el role via OIDC.
 - El deploy requiere el `hosted_zone_id` y los dominios en el `config_json`.
 
-## Documentacion local
+## Documentación local
 
 - Ejecuta `npm run docs:dev` para preview Mintlify.
 - Ejecuta `npm run docs:check` para validar TypeDoc + doc coverage.
