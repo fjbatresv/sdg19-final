@@ -606,8 +606,8 @@ export class PrimaryStack extends Stack {
 
     const productsCachePolicy = new CachePolicy(this, 'ProductsCachePolicy', {
       minTtl: Duration.seconds(0),
-      defaultTtl: Duration.minutes(1),
-      maxTtl: Duration.minutes(5),
+      defaultTtl: Duration.days(1),
+      maxTtl: Duration.days(1),
       cookieBehavior: CacheCookieBehavior.none(),
       headerBehavior: CacheHeaderBehavior.none(),
       queryStringBehavior: CacheQueryStringBehavior.all(),
@@ -1059,7 +1059,7 @@ export class PrimaryStack extends Stack {
       );
     }
 
-    const sesIdentity = new EmailIdentity(this, 'SesDomainIdentity', {
+    new EmailIdentity(this, 'SesDomainIdentity', {
       identity: Identity.publicHostedZone(hostedZone),
       mailFromDomain: sesMailFromDomain,
     });
@@ -1138,7 +1138,12 @@ export class PrimaryStack extends Stack {
     orderEmailFn.addToRolePolicy(
       new PolicyStatement({
         actions: ['ses:SendTemplatedEmail', 'ses:SendEmail'],
-        resources: [sesIdentity.emailIdentityArn],
+        resources: ['*'],
+        conditions: {
+          StringEquals: {
+            'ses:FromAddress': sesFromAddress,
+          },
+        },
       })
     );
     orderLakeFn.addToRolePolicy(
