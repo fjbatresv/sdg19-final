@@ -802,6 +802,7 @@ export class PrimaryStack extends Stack {
       new PolicyStatement({
         actions: [
           'kinesis:DescribeStream',
+          'kinesis:DescribeStreamSummary',
           'kinesis:GetShardIterator',
           'kinesis:GetRecords',
           'kinesis:ListShards',
