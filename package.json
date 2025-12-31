@@ -7,7 +7,8 @@
     "docs:sync-openapi": "node tools/mintlify/sync-openapi.js",
     "docs:coverage": "node tools/doc-coverage/doc-coverage.js",
     "docs:check": "node tools/mintlify/sync-openapi.js && nx run docs:check",
-    "docs:dev": "node tools/mintlify/sync-openapi.js && mintlify dev"
+    "docs:dev": "node tools/mintlify/sync-openapi.js && npx mintlify dev",
+    "ci:verify": "NX_CLOUD=false NX_DAEMON=false NX_ISOLATE_PLUGINS=false npx nx run-many -t lint test build && NX_CLOUD=false NX_DAEMON=false NX_ISOLATE_PLUGINS=false npm run docs:check && AWS_ACCOUNT_ID=605134457500 npx cdk synth -c rootDomainName=javierba3.com -c hostedZoneId=Z033451412UP58MG6KXQ6 -c apiDomainName=finalapi.javierba3.com -c webDomainName=finalweb.javierba3.com -c sesFromAddress=final-no-reply@javierba3.com -c sesMailFromDomain=mail.javierba3.com -c enableLambdaVpc=true"
   },
   "private": true,
   "devDependencies": {
@@ -41,7 +42,6 @@
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jsdom": "^27.1.0",
-    "mintlify": "^4.2.255",
     "nx": "22.3.3",
     "patch-package": "^8.0.1",
     "prettier": "^3.7.4",
