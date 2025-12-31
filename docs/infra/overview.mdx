@@ -5,23 +5,34 @@ description: Resumen de componentes y servicios AWS.
 
 ## Componentes principales
 
-- CloudFront para web y API.
-- S3 para web, data lake, logs y emails.
-- API Gateway HTTP API y Lambdas.
-- DynamoDB single-table con streams.
-- SNS y SQS para orquestar ordenes.
-- Kinesis + Firehose para data lake.
-- SES para envio de correos.
-- Route53 + ACM + WAF en el borde.
+- CloudFront para web y API en distribuciones separadas; TTLs típicos:
+  min 0s, default 1d, max 7d, con invalidaciones por despliegue de frontend.
+- S3 para web, data lake, logs y emails con cifrado KMS y políticas de acceso
+  por bucket/prefix.
+- API Gateway HTTP API y Lambdas; despliegue blue/green con stage `$default`.
+- DynamoDB single-table: PK `USER#<sub>` y SK `ORDER#<id>`; GSI por usuario/fecha
+  (GSI1PK/GSI1SK) para listar órdenes, usando on-demand para picos variables.
+- SNS y SQS para orquestar órdenes con DLQs y reintentos controlados.
+- Kinesis + Firehose para data lake con buffering y particionado por fecha.
+- SES para correos transaccionales (no marketing), con límites de envío por
+  cuenta (p. ej., ~50 emails/seg y 50k/día) y manejo de bounces/complaints vía
+  SNS.
+- Route53 + ACM + WAF en el borde con reglas OWASP y rate limiting.
 
 ## VPC
 
-Se usa VPC con subnets publicas/privadas y NAT gateways cuando
-`enable_lambda_vpc` esta habilitado. Para escenarios de bajo costo
-se puede desactivar el VPC en Lambdas.
+Se usa VPC con subnets públicas/privadas y NAT gateways cuando
+`enableLambdaVpc` está habilitado (contexto CDK o `ENABLE_LAMBDA_VPC`). Esto
+implica 3 NAT gateways (~$135–150/mes). Para entornos de desarrollo con bajo
+tráfico se recomienda desactivar `enableLambdaVpc`.
 
 ## Observabilidad
 
-- CloudTrail para auditoria.
-- CloudWatch Logs y alarms para componentes criticos.
-- X-Ray habilitado en Lambdas.
+- CloudTrail para auditoría, con retención definida por cuenta.
+- CloudWatch Logs por Lambda con naming consistente y retención (ej. 30 días),
+  cifrado KMS y alarmas por errores/latencia.
+- X-Ray habilitado con sampling configurable (ej. 5%) para controlar costos.
+- Controles de red y seguridad: security groups mínimos, NACLs restrictivas y
+  reglas WAF para bots/SQLi; ver `apps/infra/src/stacks/primary-stack.ts`.
+- Cumplimiento: datos UE permanecen en regiones EU cuando aplica; política GDPR
+  y residencia definida en los playbooks de infraestructura.
