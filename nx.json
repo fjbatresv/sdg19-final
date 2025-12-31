@@ -29,7 +29,7 @@
     "appsDir": "apps",
     "libsDir": "libs"
   },
-  "nxCloudId": "6950c94f4810f7d1f3433b0a",
+  "neverConnectToCloud": true,
   "targetDefaults": {
     "@angular/build:application": {
       "cache": true,

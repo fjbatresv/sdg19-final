@@ -8,6 +8,7 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - CloudFront (api): distribución para API Gateway HTTP API.
 - Route53: DNS para `finalweb` y `finalapi`.
 - WAF: aplicado a ambas distribuciones.
+- GitHub Actions OIDC: role por cuenta para desplegar sin llaves estáticas.
 - VPC: subredes públicas/privadas con 3 NAT gateways (egress fijo).
 - Cognito User Pool + Client: registro/login con JWT.
 - API Gateway HTTP API: endpoints de auth, productos y órdenes.
@@ -52,3 +53,8 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - Fase 5: limpiar Security Hotspots e issues de SonarCloud.
 - Fase 6: agregar mintlify para documentación.
 - Fase 7: agregar compodoc con github actions.
+
+## CI/CD y multi-cuenta
+
+Los JSON en `oidc_role/` permiten crear rápidamente el role OIDC en otras
+cuentas para reutilizar el pipeline de deploy.

@@ -123,6 +123,21 @@ AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack --require-approva
 
 ## Deploy (GitHub Actions)
 
+### OIDC role para otras cuentas
+
+La carpeta `oidc_role/` incluye JSON de referencia para crear un role OIDC
+en otra cuenta y reutilizar este pipeline:
+
+- `oidc_role/trust-relationship.json`: trust policy para GitHub Actions.
+- `oidc_role/permission-policy.json`: permisos mínimos para CDK + deploy.
+
+Reemplaza los placeholders:
+- `$ACCOUNT_ID` por el ID de la cuenta destino.
+- `repo:<user>/<repository name>:*` por el repo real (owner/nombre).
+
+Luego crea el role con ese trust policy y adjunta la policy de permisos.
+El `aws_role_name` en el `config_json` debe coincidir con el nombre de ese role.
+
 Ejemplo de `config_json` para el workflow `deploy.yml` (input `config_json`):
 
 ```json
