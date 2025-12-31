@@ -108,11 +108,12 @@ export async function orderEmailHandler(event: SQSEvent) {
       status: message.status ?? 'unknown',
     });
 
+    const formattedTotal =
+      typeof message.total === 'number' ? message.total.toFixed(2) : undefined;
     const templateData = {
       orderId: message.orderId,
-      createdAt: message.createdAt,
       status: message.status,
-      total: message.total,
+      total: formattedTotal,
       items,
       userPk: message.userPk,
       year: new Date().getFullYear(),
@@ -121,6 +122,10 @@ export async function orderEmailHandler(event: SQSEvent) {
           const displayName = item.productName?.trim()
             ? item.productName
             : item.productId;
+          const unitPrice =
+            typeof item.unitPrice === 'number'
+              ? item.unitPrice.toFixed(2)
+              : item.unitPrice;
           return `<tr>
               <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -137,7 +142,7 @@ export async function orderEmailHandler(event: SQSEvent) {
                       Precio unitario
                     </td>
                     <td align="right" style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
-                      Q ${item.unitPrice}
+                      $ ${unitPrice}
                     </td>
                   </tr>
                 </table>

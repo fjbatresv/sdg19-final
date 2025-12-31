@@ -1124,7 +1124,7 @@ export class PrimaryStack extends Stack {
             <body style="margin:0;padding:0;background:#f6f7f9;">
               <!-- Preheader -->
               <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
-                Confirmación de orden {{orderId}} ({{status}}). Total Q {{total}}.
+                Confirmación de orden {{orderId}} ({{status}}). Total $ {{total}}.
               </div>
 
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f6f7f9;">
@@ -1170,15 +1170,6 @@ export class PrimaryStack extends Stack {
 
                             <tr>
                               <td style="padding:10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#667085;">
-                                Fecha
-                              </td>
-                              <td align="right" style="padding:10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;color:#101828;">
-                                {{createdAt}}
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td style="padding:10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#667085;">
                                 Estado
                               </td>
                               <td align="right" style="padding:10px 0;">
@@ -1193,7 +1184,7 @@ export class PrimaryStack extends Stack {
                                 Total
                               </td>
                               <td align="right" style="padding:12px 0 2px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:20px;font-weight:900;color:#101828;">
-                                Q {{total}}
+                                $ {{total}}
                               </td>
                             </tr>
                           </table>
@@ -1248,7 +1239,7 @@ export class PrimaryStack extends Stack {
           </html>
         `,
         textPart:
-          'Gracias por tu orden {{orderId}}. Fecha: {{createdAt}}. Estado: {{status}}. Total: {{total}}.',
+          'Gracias por tu orden {{orderId}}. Estado: {{status}}. Total: $ {{total}}.',
       },
     });
 
