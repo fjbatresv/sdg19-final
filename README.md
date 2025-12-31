@@ -110,7 +110,7 @@ npx nx run @org/infra:build:production
 npx nx run web:build:production
 ```
 
-## Documentacion
+## Documentación
 
 La documentacion vive en `docs/` (Mintlify) y `docs/api-typedoc/` (TypeDoc).
 
