@@ -102,19 +102,8 @@ paths:
     get:
       summary: Listar productos disponibles
       parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 20
-          description: Maximo de items por pagina.
-        - in: query
-          name: nextToken
-          schema:
-            type: string
-          description: Cursor de paginacion devuelto por la respuesta previa.
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/NextTokenParam'
       responses:
         '200':
           description: Lista paginada de productos
@@ -163,19 +152,8 @@ paths:
       security:
         - CognitoJWT: []
       parameters:
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            minimum: 1
-            maximum: 100
-            default: 20
-          description: Maximo de items por pagina.
-        - in: query
-          name: nextToken
-          schema:
-            type: string
-          description: Cursor de paginacion devuelto por la respuesta previa.
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/NextTokenParam'
       responses:
         '200':
           description: Lista paginada de ordenes
@@ -207,6 +185,22 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  parameters:
+    LimitParam:
+      in: query
+      name: limit
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Maximo de items por pagina.
+    NextTokenParam:
+      in: query
+      name: nextToken
+      schema:
+        type: string
+      description: Cursor de paginacion devuelto por la respuesta previa.
   schemas:
     RegisterRequest:
       type: object
@@ -220,6 +214,7 @@ components:
         password:
           type: string
           minLength: 10
+          maxLength: 256
         name:
           type: string
     LoginRequest:
@@ -234,6 +229,7 @@ components:
         password:
           type: string
           minLength: 10
+          maxLength: 256
     RefreshRequest:
       type: object
       required:
@@ -241,6 +237,10 @@ components:
       properties:
         refreshToken:
           type: string
+          minLength: 20
+          maxLength: 4096
+          pattern: '^[A-Za-z0-9+/=._-]+$'
+          description: Token opaco de Cognito (formato base64-like).
     AuthResponse:
       type: object
       required:
@@ -309,6 +309,8 @@ components:
         - id
         - name
         - price
+        - availableQuantity
+        - inStock
       properties:
         id:
           type: string
@@ -323,7 +325,20 @@ components:
           format: float
         currency:
           type: string
+          enum:
+            - USD
+            - EUR
+            - GTQ
           example: USD
+        availableQuantity:
+          type: integer
+          minimum: 0
+          description: Number of units currently available
+          example: 12
+        inStock:
+          type: boolean
+          description: Whether the product is currently in stock
+          example: true
     CreateOrderRequest:
       type: object
       required:
@@ -337,6 +352,7 @@ components:
             $ref: '#/components/schemas/OrderItem'
         notes:
           type: string
+          maxLength: 10000
     OrderItem:
       type: object
       required:
@@ -349,6 +365,7 @@ components:
           type: integer
           format: int32
           minimum: 1
+          maximum: 10000
         unitPrice:
           type: number
           format: float
@@ -360,12 +377,12 @@ components:
         - createdAt
         - items
         - total
+        - currency
       properties:
         orderId:
           type: string
         status:
-          type: string
-          example: CREATED
+          $ref: '#/components/schemas/OrderStatus'
         createdAt:
           type: string
           format: date-time
@@ -377,10 +394,29 @@ components:
         total:
           type: number
           format: float
+        currency:
+          type: string
+          enum:
+            - USD
+            - EUR
+            - GTQ
+          example: USD
+    OrderStatus:
+      type: string
+      enum:
+        - CREATED
+        - PENDING
+        - FAILED
+        - COMPLETED
+      example: CREATED
     ErrorResponse:
       type: object
       required:
         - message
       properties:
+        code:
+          type: string
+          description: Identificador del error para manejo programatico.
+          example: INVALID_REQUEST
         message:
           type: string

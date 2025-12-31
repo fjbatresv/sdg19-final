@@ -51,14 +51,20 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
   }
 
   try {
+    let orderCurrency: string | undefined;
     const orderItems = body.items.map((item: any) => {
       const product = products.find((p) => p.id === item.productId);
       if (!product) {
         throw new Error(`Producto invalido: ${item.productId}`);
       }
       const quantity = Number(item.quantity);
-      if (!Number.isFinite(quantity) || quantity < 1) {
+      if (!Number.isFinite(quantity) || quantity < 1 || quantity > 10000) {
         throw new Error(`Cantidad invalida para ${item.productId}`);
+      }
+      if (!orderCurrency) {
+        orderCurrency = product.currency;
+      } else if (product.currency !== orderCurrency) {
+        throw new Error('Todos los productos deben usar la misma moneda');
       }
       return {
         productId: product.id,
@@ -90,6 +96,7 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
       email: claims.email,
       items: orderItems,
       total,
+      currency: orderCurrency ?? 'USD',
     };
 
     await docClient.send(
@@ -105,6 +112,7 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
       createdAt,
       items: orderItems,
       total,
+      currency: order.currency,
     });
   } catch (error: unknown) {
     const message =
@@ -122,6 +130,27 @@ export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
     return jsonResponse(401, { message: 'No autorizado' });
   }
 
+  const limitParam = event.queryStringParameters?.limit;
+  const nextTokenParam = event.queryStringParameters?.nextToken;
+  const limit = limitParam ? Number(limitParam) : 20;
+  if (!Number.isFinite(limit) || limit < 1 || limit > 100) {
+    return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
+  }
+
+  let exclusiveStartKey: Record<string, unknown> | undefined;
+  if (nextTokenParam) {
+    try {
+      const decoded = Buffer.from(nextTokenParam, 'base64').toString('utf8');
+      const parsed = JSON.parse(decoded);
+      if (!parsed || typeof parsed !== 'object') {
+        throw new Error('Token invalido');
+      }
+      exclusiveStartKey = parsed;
+    } catch {
+      return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
+    }
+  }
+
   try {
     const tableName = requireEnv('TABLE_NAME');
     const pk = `USER#${claims.sub}`;
@@ -135,7 +164,8 @@ export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
           ':pk': pk,
         },
         ScanIndexForward: false,
-        Limit: 50,
+        Limit: limit,
+        ExclusiveStartKey: exclusiveStartKey,
       })
     );
 
@@ -146,9 +176,19 @@ export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
         createdAt: item.createdAt,
         items: item.items,
         total: item.total,
+        currency: item.currency ?? 'USD',
       })) ?? [];
 
-    return jsonResponse(200, items);
+    const nextToken = result.LastEvaluatedKey
+      ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString('base64')
+      : undefined;
+
+    return jsonResponse(200, {
+      items,
+      limit,
+      nextToken,
+      totalCount: result.Count ?? items.length,
+    });
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : 'Error leyendo ordenes';
