@@ -14,6 +14,12 @@ type OrderMessage = {
   status?: string;
 };
 
+type OrderItem = {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+};
+
 const s3 = new S3Client({});
 const ses = new SESClient({});
 
@@ -64,6 +70,18 @@ function isValidOrderMessage(
   return true;
 }
 
+function isOrderItem(value: unknown): value is OrderItem {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const item = value as Partial<OrderItem>;
+  return (
+    typeof item.productId === 'string' &&
+    typeof item.quantity === 'number' &&
+    typeof item.unitPrice === 'number'
+  );
+}
+
 export async function orderEmailHandler(event: SQSEvent) {
   const bucketName = requireEnv('EMAILS_BUCKET_NAME');
   const templateName = requireEnv('SES_TEMPLATE_NAME');
@@ -79,6 +97,9 @@ export async function orderEmailHandler(event: SQSEvent) {
       continue;
     }
     const orderId = message.orderId;
+    const items = Array.isArray(message.items)
+      ? message.items.filter(isOrderItem)
+      : [];
     const recipient = maskEmail(message.email);
     console.info('order-email: sending confirmation', {
       orderId,
@@ -91,8 +112,36 @@ export async function orderEmailHandler(event: SQSEvent) {
       createdAt: message.createdAt,
       status: message.status,
       total: message.total,
-      items: message.items,
+      items,
       userPk: message.userPk,
+      year: new Date().getFullYear(),
+      itemsHtml: items
+        .map(
+          (item) =>
+            `<tr>
+              <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;font-weight:800;color:#101828;">
+                      ${item.productId}
+                    </td>
+                    <td align="right" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;color:#475467;">
+                      x${item.quantity}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
+                      Precio unitario
+                    </td>
+                    <td align="right" style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
+                      Q ${item.unitPrice}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>`
+        )
+        .join(''),
     };
 
     try {

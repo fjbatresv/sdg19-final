@@ -1219,30 +1219,7 @@ export class PrimaryStack extends Stack {
                         <td style="padding:0 28px 22px 28px;">
                           <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0"
                             style="border-collapse:separate;border-spacing:0 10px;">
-                            {{#each items}}
-                            <tr>
-                              <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
-                                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-                                  <tr>
-                                    <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;font-weight:800;color:#101828;">
-                                      {{productId}}
-                                    </td>
-                                    <td align="right" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;color:#475467;">
-                                      x{{quantity}}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
-                                      Precio unitario
-                                    </td>
-                                    <td align="right" style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
-                                      Q {{unitPrice}}
-                                    </td>
-                                  </tr>
-                                </table>
-                              </td>
-                            </tr>
-                            {{/each}}
+                            {{{itemsHtml}}}
                           </table>
 
                           <div style="margin-top:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#98a2b3;line-height:1.6;">
