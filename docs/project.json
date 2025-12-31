@@ -5,22 +5,28 @@
   "targets": {
     "coverage": {
       "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/doc-coverage"],
       "options": {
         "command": "node tools/doc-coverage/doc-coverage.js"
       }
     },
     "api": {
       "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/docs/api-typedoc"],
       "options": {
         "command": "typedoc --options typedoc.json"
       }
     },
     "check": {
       "executor": "nx:run-commands",
+      "outputs": [
+        "{workspaceRoot}/doc-coverage",
+        "{workspaceRoot}/docs/api-typedoc"
+      ],
       "options": {
         "commands": [
-          "nx run docs:coverage",
-          "nx run docs:api"
+          "NX_CLOUD=false NX_DAEMON=false NX_ISOLATE_PLUGINS=false nx run docs:coverage",
+          "NX_CLOUD=false NX_DAEMON=false NX_ISOLATE_PLUGINS=false nx run docs:api"
         ]
       }
     }
