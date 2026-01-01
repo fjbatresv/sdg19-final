@@ -5,6 +5,7 @@
   "prefix": "app",
   "sourceRoot": "apps/web/src",
   "tags": [],
+  "implicitDependencies": ["shared-types"],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",

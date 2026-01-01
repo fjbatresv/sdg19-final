@@ -5,12 +5,7 @@
     "emitDeclarationOnly": false,
     "declaration": true,
     "composite": true,
-    "types": ["vitest/globals"],
-    "rootDir": "../.."
+    "types": ["vitest/globals"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "../../libs/shared-types/src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }
