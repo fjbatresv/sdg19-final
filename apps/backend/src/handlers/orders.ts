@@ -213,7 +213,7 @@ export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
       items,
       limit,
       nextToken,
-      totalCount: result.Count ?? items.length,
+      returnedCount: items.length,
     });
   } catch (error: unknown) {
     const message =

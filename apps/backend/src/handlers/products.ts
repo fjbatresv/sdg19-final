@@ -29,6 +29,6 @@ export async function productsHandler(event: APIGatewayProxyEventV2) {
     items,
     limit,
     nextToken,
-    totalCount: products.length,
+    returnedCount: items.length,
   });
 }
