@@ -126,6 +126,16 @@ Para actualizar el contrato OpenAPI publicado en Mintlify:
 npm run docs:sync-openapi
 ```
 
+### Frontend Docs (Compodoc)
+
+```bash
+npx nx run web:docs
+npx nx run web:docs:coverage
+npx nx run web:docs:check
+```
+
+Guia completa: `docs/compodoc.md`.
+
 ## Deploy (local)
 
 ```bash
