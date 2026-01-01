@@ -303,7 +303,6 @@ components:
         - name
         - price
         - availableQuantity
-        - inStock
       properties:
         id:
           type: string
@@ -330,10 +329,6 @@ components:
           minimum: 0
           description: Number of units currently available
           example: 12
-        inStock:
-          type: boolean
-          description: Whether the product is currently in stock
-          example: true
     CreateOrderRequest:
       type: object
       required:

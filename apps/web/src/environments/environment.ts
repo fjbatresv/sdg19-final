@@ -1,3 +1,8 @@
+/**
+ * Default environment configuration for local development.
+ */
+import { resolveApiBaseUrl } from './runtime';
+
 export const environment = {
-  apiBaseUrl: 'https://finalapi.javierba3.com',
+  apiBaseUrl: resolveApiBaseUrl('http://localhost:3000'),
 };

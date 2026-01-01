@@ -4,6 +4,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
+const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/;
+
+/**
+ * Registration screen for new users.
+ */
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -48,19 +53,47 @@ import { AuthService } from '../services/auth.service';
   `,
 })
 export class RegisterComponent {
+  /**
+   * Form builder for the registration form.
+   */
   private readonly fb = inject(FormBuilder);
+  /**
+   * Auth service used to create the user.
+   */
   private readonly auth = inject(AuthService);
+  /**
+   * Router used to navigate after registration.
+   */
   private readonly router = inject(Router);
 
+  /**
+   * Loading state while submitting the registration form.
+   */
   busy = signal(false);
+  /**
+   * Error message to display on failed registration.
+   */
   error = signal('');
 
+  /**
+   * Registration form controls.
+   */
   form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.pattern(PASSWORD_POLICY),
+      ],
+    ],
   });
 
+  /**
+   * Submit registration and navigate to the shop on success.
+   */
   submit() {
     if (this.form.invalid || this.busy()) {
       return;

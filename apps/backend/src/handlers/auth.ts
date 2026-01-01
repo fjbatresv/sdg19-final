@@ -3,6 +3,8 @@ import { jsonResponse } from '../lib/response';
 import { requireEnv } from '../lib/env';
 import { loginUser, refreshUser, registerUser } from '../lib/cognito';
 
+const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}$/;
+
 /**
  * Parse JSON body from an API Gateway event.
  */
@@ -51,6 +53,12 @@ export async function registerHandler(event: APIGatewayProxyEventV2) {
       message: 'La contraseña debe tener al menos 10 caracteres',
     });
   }
+  if (!PASSWORD_POLICY.test(body.password)) {
+    return jsonResponse(400, {
+      message:
+        'La contraseña debe incluir mayúsculas, minúsculas, números y un símbolo',
+    });
+  }
 
   const userPoolId = requireEnv('USER_POOL_ID');
   const clientId = requireEnv('USER_POOL_CLIENT_ID');
@@ -91,11 +99,6 @@ export async function loginHandler(event: APIGatewayProxyEventV2) {
   const body = parseBody(event);
   if (!body?.email || !body?.password) {
     return jsonResponse(400, { message: 'email y password son requeridos' });
-  }
-  if (body.password.length < 10) {
-    return jsonResponse(400, {
-      message: 'La contraseña debe tener al menos 10 caracteres',
-    });
   }
 
   const clientId = requireEnv('USER_POOL_CLIENT_ID');

@@ -1,0 +1,8 @@
+{
+  "tsconfig": "apps/web/tsconfig.app.json",
+  "output": "dist/compodoc/web",
+  "name": "SDG19 Web Docs",
+  "routes": "apps/web/src/app/app.routes.ts",
+  "routingModule": "apps/web/src/app/app-routing.module.ts",
+  "routesTitle": "Rutas"
+}

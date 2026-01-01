@@ -3,6 +3,9 @@ import { inject } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { AuthService } from './services/auth.service';
 
+/**
+ * Attaches a bearer token to API requests when available.
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
   return auth.getValidIdToken$().pipe(

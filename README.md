@@ -37,6 +37,10 @@ Proyecto final del curso de Arquitecto de Soluciones AWS. Monorepo con Angular, 
 
 Los dominios se definen via contexto CDK o variables de entorno (`ROOT_DOMAIN_NAME`, `API_DOMAIN_NAME`, `WEB_DOMAIN_NAME`).
 
+## Frontend API base URL
+
+El frontend lee la URL de la API desde `window.__env.apiBaseUrl` cargado en `apps/web/src/assets/env.js`. En despliegues, reemplaza ese archivo (o inyecta la variable) para apuntar a tu API. En local, el fallback es `http://localhost:3000`.
+
 ## Arquitectura
 
 Ver `ARCHITECTURE.md` y `architecture.drawio`.
@@ -125,6 +129,16 @@ Para actualizar el contrato OpenAPI publicado en Mintlify:
 ```bash
 npm run docs:sync-openapi
 ```
+
+### Frontend Docs (Compodoc)
+
+```bash
+npx nx run web:docs
+npx nx run web:docs:coverage
+npx nx run web:docs:check
+```
+
+Guia completa: `docs/compodoc.md`.
 
 ## Deploy (local)
 

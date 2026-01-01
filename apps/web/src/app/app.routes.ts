@@ -5,6 +5,9 @@ import { RegisterComponent } from './pages/register.component';
 import { ShopComponent } from './pages/shop.component';
 import { OrdersComponent } from './pages/orders.component';
 
+/**
+ * Application routes for the web storefront.
+ */
 export const appRoutes: Route[] = [
   {
     path: '',
