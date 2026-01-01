@@ -26,7 +26,8 @@ AWS_ACCOUNT_ID=$DUMMY_AWS_ACCOUNT_ID \
     -c webDomainName=$DUMMY_WEB_DOMAIN \
     -c sesFromAddress=$DUMMY_SES_FROM \
     -c sesMailFromDomain=$DUMMY_SES_MAIL_FROM \
-    -c enableLambdaVpc=$DUMMY_ENABLE_LAMBDA_VPC
+    -c enableLambdaVpc=$DUMMY_ENABLE_LAMBDA_VPC \
+    --silent
 
 echo "🧹 Pre-push: sanitizando cdk.out..."
 if [ -d "cdk.out" ]; then
@@ -40,7 +41,12 @@ if [ -d "cdk.out" ]; then
     fi
 
     git add cdk.out/
-    git commit -m "cdk.out updated and sanitized" --no-verify
+    if git diff --cached --quiet -- cdk.out; then
+        echo "ℹ️  cdk.out sin cambios, no hay commit"
+    else
+        git commit -m "cdk.out updated and sanitized" --no-verify
+    fi
+
 
     echo "✅ cdk.out sanitizado y agregado al commit"
 else
