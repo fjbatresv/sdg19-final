@@ -18,6 +18,24 @@ export interface OrderItem {
 }
 
 /**
+ * Line item details returned in order summaries.
+ */
+export interface OrderSummaryItem {
+  /**
+   * Product identifier.
+   */
+  productId: string;
+  /**
+   * Quantity requested for the product.
+   */
+  quantity: number;
+  /**
+   * Unit price in cents for the item.
+   */
+  unitPrice: number;
+}
+
+/**
  * Summary fields used to render order history.
  */
 export interface OrderSummary {
@@ -36,7 +54,7 @@ export interface OrderSummary {
   /**
    * Line items included in the order.
    */
-  items: Array<{ productId: string; quantity: number; unitPrice: number }>;
+  items: OrderSummaryItem[];
   /**
    * Total order value in cents.
    */
