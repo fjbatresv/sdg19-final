@@ -9,10 +9,6 @@ servers:
     variables:
       baseUrl:
         default: finalapi.javierba3.com
-        enum:
-          - finalapi-dev.javierba3.com
-          - finalapi-staging.javierba3.com
-          - finalapi.javierba3.com
 paths:
   /auth/register:
     post:
