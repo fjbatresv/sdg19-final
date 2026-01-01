@@ -3,6 +3,9 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OrdersService, OrderSummary } from '../services/orders.service';
 
+/**
+ * Displays the authenticated user's recent orders.
+ */
 @Component({
   selector: 'app-orders',
   standalone: true,
@@ -43,8 +46,11 @@ import { OrdersService, OrderSummary } from '../services/orders.service';
 export class OrdersComponent {
   private readonly ordersService = inject(OrdersService);
 
+  /** Orders returned for the current user. */
   orders = signal<OrderSummary[]>([]);
+  /** Loading flag while fetching order history. */
   loading = signal(true);
+  /** Error message when loading fails. */
   error = signal('');
 
   constructor() {
@@ -60,6 +66,9 @@ export class OrdersComponent {
     });
   }
 
+  /**
+   * Formats cents into a localized currency string.
+   */
   formatMoney(value: number, currency = 'USD') {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

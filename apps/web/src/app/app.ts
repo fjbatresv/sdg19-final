@@ -10,10 +10,16 @@ import { AuthService } from './services/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
+/**
+ * Root shell for the storefront, exposes auth state and navigation actions.
+ */
 export class App {
   protected auth = inject(AuthService);
   private router = inject(Router);
 
+  /**
+   * Ends the current session and returns the user to the login screen.
+   */
   logout() {
     this.auth.logout();
     this.router.navigateByUrl('/login');

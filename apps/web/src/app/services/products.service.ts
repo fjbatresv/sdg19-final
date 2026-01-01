@@ -3,6 +3,9 @@ import { inject, Injectable } from '@angular/core';
 import { catchError, map, of } from 'rxjs';
 import { API_BASE_URL } from '../app.tokens';
 
+/**
+ * Product entry displayed in the catalog.
+ */
 export type Product = {
   id: string;
   name: string;
@@ -14,6 +17,9 @@ export type Product = {
   inStock: boolean;
 };
 
+/**
+ * Paginated products response from the backend API.
+ */
 type ProductsResponse = {
   items: Product[];
   limit: number;
@@ -21,6 +27,9 @@ type ProductsResponse = {
   returnedCount?: number;
 };
 
+/**
+ * Local fallback catalog used when the API is unavailable.
+ */
 const FALLBACK_PRODUCTS: Product[] = [
   {
     id: 'prod-001',
@@ -51,11 +60,17 @@ const FALLBACK_PRODUCTS: Product[] = [
   },
 ];
 
+/**
+ * Provides access to the product catalog API.
+ */
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
   private readonly http = inject(HttpClient);
   private readonly apiBase = inject(API_BASE_URL);
 
+  /**
+   * Fetches the catalog of available products.
+   */
   getProducts() {
     return this.http
       .get<ProductsResponse>(`${this.apiBase}/products`)

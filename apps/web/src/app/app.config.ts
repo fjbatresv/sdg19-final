@@ -9,6 +9,9 @@ import { API_BASE_URL } from './app.tokens';
 import { authInterceptor } from './auth.interceptor';
 import { environment } from '../environments/environment';
 
+/**
+ * Application-level providers and router configuration.
+ */
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),

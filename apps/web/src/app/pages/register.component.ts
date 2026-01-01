@@ -4,6 +4,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
+/**
+ * Registration screen for new users.
+ */
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -52,15 +55,21 @@ export class RegisterComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
+  /** Loading state while submitting the registration form. */
   busy = signal(false);
+  /** Error message to display on failed registration. */
   error = signal('');
 
+  /** Registration form controls. */
   form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
+  /**
+   * Submit registration and navigate to the shop on success.
+   */
   submit() {
     if (this.form.invalid || this.busy()) {
       return;

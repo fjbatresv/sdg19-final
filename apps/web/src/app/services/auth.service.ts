@@ -12,6 +12,9 @@ import {
 } from 'rxjs';
 import { API_BASE_URL } from '../app.tokens';
 
+/**
+ * Token response returned by the auth API.
+ */
 type AuthResponse = {
   userId?: string;
   accessToken?: string;
@@ -20,6 +23,9 @@ type AuthResponse = {
   expiresIn?: number;
 };
 
+/**
+ * Persisted auth session used by the UI.
+ */
 type AuthSession = {
   userId?: string;
   email?: string;
@@ -31,8 +37,14 @@ type AuthSession = {
   expiresAt?: number;
 };
 
+/**
+ * LocalStorage key used to persist the auth session.
+ */
 const STORAGE_KEY = 'sdg19.auth';
 
+/**
+ * Manages authentication state and token refresh for the frontend.
+ */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -43,8 +55,12 @@ export class AuthService {
   );
   private refreshRequest?: Observable<AuthSession | null>;
 
+  /** Observable of the current auth session (or null). */
   session$ = this.sessionSubject.asObservable();
 
+  /**
+   * Authenticate a user with email/password and persist the session.
+   */
   login(email: string, password: string) {
     return this.http
       .post<AuthResponse>(`${this.apiBase}/auth/login`, {
@@ -57,6 +73,9 @@ export class AuthService {
       );
   }
 
+  /**
+   * Register a new user and persist the session on success.
+   */
   register(name: string, email: string, password: string) {
     return this.http
       .post<AuthResponse>(`${this.apiBase}/auth/register`, {
@@ -70,19 +89,31 @@ export class AuthService {
       );
   }
 
+  /**
+   * Clears local session state and storage.
+   */
   logout() {
     localStorage.removeItem(STORAGE_KEY);
     this.sessionSubject.next(null);
   }
 
+  /**
+   * Returns true when an ID token is available in memory.
+   */
   isAuthenticated() {
     return Boolean(this.sessionSubject.value?.idToken);
   }
 
+  /**
+   * Returns the current ID token if present.
+   */
   getIdToken() {
     return this.sessionSubject.value?.idToken;
   }
 
+  /**
+   * Returns a valid ID token, refreshing if needed.
+   */
   getValidIdToken$() {
     const session = this.sessionSubject.value;
     if (!session?.idToken) {

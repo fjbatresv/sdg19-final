@@ -4,11 +4,17 @@ import { RouterLink } from '@angular/router';
 import { OrdersService } from '../services/orders.service';
 import { Product, ProductsService } from '../services/products.service';
 
+/**
+ * Shopping cart line item.
+ */
 type CartItem = {
   product: Product;
   quantity: number;
 };
 
+/**
+ * Catalog and cart experience for creating orders.
+ */
 @Component({
   selector: 'app-shop',
   standalone: true,
@@ -116,18 +122,28 @@ export class ShopComponent {
   private readonly productsService = inject(ProductsService);
   private readonly ordersService = inject(OrdersService);
 
+  /** Catalog of products loaded from the API. */
   products = signal<Product[]>([]);
+  /** Cart state for the current session. */
   cart = signal<CartItem[]>([]);
+  /** Loading flag for the catalog request. */
   loading = signal(true);
+  /** Error message when catalog load fails. */
   error = signal('');
+  /** Flag while submitting an order. */
   ordering = signal(false);
+  /** Success message when an order is created. */
   noticeMessage = '';
+  /** Error message when order creation fails. */
   orderErrorMessage = '';
+  /** Error message when currencies are mixed in the cart. */
   cartCurrencyError = '';
 
+  /** Total number of items in the cart. */
   cartCount = computed(() =>
     this.cart().reduce((sum, item) => sum + item.quantity, 0)
   );
+  /** Total cost (in cents) of the cart for a single currency. */
   cartTotal = computed(() =>
     this.cartCurrency() === 'MIXED'
       ? 0
@@ -136,6 +152,7 @@ export class ShopComponent {
           0
         )
   );
+  /** Canonical cart currency, or MIXED if multiple currencies are present. */
   cartCurrency = computed(() => {
     const currencies = new Set(
       this.cart().map((item) => item.product.currency)
@@ -162,6 +179,9 @@ export class ShopComponent {
     });
   }
 
+  /**
+   * Adds a product to the cart while enforcing a single currency.
+   */
   addToCart(product: Product) {
     const items = [...this.cart()];
     const currentCurrency = this.cartCurrency();
@@ -188,6 +208,9 @@ export class ShopComponent {
     this.cart.set(items);
   }
 
+  /**
+   * Updates the quantity of a cart item.
+   */
   adjustQty(productId: string, delta: number) {
     const items = [...this.cart()];
     const item = items.find((entry) => entry.product.id === productId);
@@ -202,6 +225,9 @@ export class ShopComponent {
     this.cart.set(items);
   }
 
+  /**
+   * Submits the cart as a new order.
+   */
   placeOrder() {
     if (!this.cart().length) {
       return;
@@ -227,6 +253,9 @@ export class ShopComponent {
     });
   }
 
+  /**
+   * Formats cents into a localized currency string.
+   */
   formatMoney(value: number, currency = 'USD') {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

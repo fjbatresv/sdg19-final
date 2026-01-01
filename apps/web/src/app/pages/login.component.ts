@@ -4,6 +4,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
+/**
+ * Login screen for existing users.
+ */
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -52,14 +55,20 @@ export class LoginComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
+  /** Loading state while submitting the login form. */
   busy = signal(false);
+  /** Error message to display on failed login. */
   error = signal('');
 
+  /** Login form controls. */
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
+  /**
+   * Submit the login form and redirect on success.
+   */
   submit() {
     if (this.form.invalid || this.busy()) {
       return;
