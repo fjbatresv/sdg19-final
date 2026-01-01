@@ -259,7 +259,7 @@ export class PrimaryStack extends Stack {
         minLength: 10,
         requireUppercase: true,
         requireLowercase: true,
-        requireNumbers: true,
+        requireDigits: true,
         requireSymbols: true,
       },
     });
