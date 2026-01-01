@@ -236,10 +236,29 @@ jobs:
             echo "env.js not found at ${ENV_PATH}"
             exit 1
           fi
-          cat <<EOF > "$ENV_PATH"
-          window.__env = window.__env || {};
-          window.__env.apiBaseUrl = "https://${API_DOMAIN_NAME}";
-          EOF
+          export ENV_PATH
+          export API_DOMAIN_NAME
+          node <<'NODE'
+          const fs = require('node:fs');
+          const envPath = process.env.ENV_PATH;
+          const apiDomainName = process.env.API_DOMAIN_NAME ?? '';
+          const safeHostname = /^[A-Za-z0-9.-]+(:\d{1,5})?$/;
+
+          if (!safeHostname.test(apiDomainName)) {
+            console.error(`Invalid API_DOMAIN_NAME: "${apiDomainName}"`);
+            process.exit(1);
+          }
+
+          const apiBaseUrl = `https://${apiDomainName}`;
+          const content = fs.readFileSync(envPath, 'utf8');
+          const assignment = `window.__env.apiBaseUrl = ${JSON.stringify(apiBaseUrl)};`;
+
+          const updated = /window\.__env\.apiBaseUrl\s*=/.test(content)
+            ? content.replace(/window\.__env\.apiBaseUrl\s*=.*?;\s*/g, `${assignment}\n`)
+            : `${content.trimEnd()}\n${assignment}\n`;
+
+          fs.writeFileSync(envPath, updated);
+          NODE
 
       - name: Publish web to S3 and invalidate CloudFront
         run: |
