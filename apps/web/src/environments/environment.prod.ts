@@ -1,6 +1,8 @@
 /**
  * Production environment configuration.
  */
+import { resolveApiBaseUrl } from './runtime';
+
 export const environment = {
-  apiBaseUrl: 'https://finalapi.javierba3.com',
+  apiBaseUrl: resolveApiBaseUrl('https://finalapi.javierba3.com'),
 };
