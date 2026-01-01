@@ -100,17 +100,6 @@ export async function loginHandler(event: APIGatewayProxyEventV2) {
   if (!body?.email || !body?.password) {
     return jsonResponse(400, { message: 'email y password son requeridos' });
   }
-  if (body.password.length < 10) {
-    return jsonResponse(400, {
-      message: 'La contraseña debe tener al menos 10 caracteres',
-    });
-  }
-  if (!PASSWORD_POLICY.test(body.password)) {
-    return jsonResponse(400, {
-      message:
-        'La contraseña debe incluir mayúsculas, minúsculas, números y un símbolo',
-    });
-  }
 
   const clientId = requireEnv('USER_POOL_CLIENT_ID');
 
