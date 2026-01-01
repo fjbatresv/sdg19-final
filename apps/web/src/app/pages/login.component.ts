@@ -51,16 +51,31 @@ import { AuthService } from '../services/auth.service';
   `,
 })
 export class LoginComponent {
+  /**
+   * Form builder for the login form.
+   */
   private readonly fb = inject(FormBuilder);
+  /**
+   * Auth service used to authenticate the user.
+   */
   private readonly auth = inject(AuthService);
+  /**
+   * Router used for navigation after login.
+   */
   private readonly router = inject(Router);
 
-  /** Loading state while submitting the login form. */
+  /**
+   * Loading state while submitting the login form.
+   */
   busy = signal(false);
-  /** Error message to display on failed login. */
+  /**
+   * Error message to display on failed login.
+   */
   error = signal('');
 
-  /** Login form controls. */
+  /**
+   * Login form controls.
+   */
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],

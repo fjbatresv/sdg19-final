@@ -15,27 +15,66 @@ import { API_BASE_URL } from '../app.tokens';
 /**
  * Token response returned by the auth API.
  */
-type AuthResponse = {
+interface AuthResponse {
+  /**
+   * User identifier returned by Cognito.
+   */
   userId?: string;
+  /**
+   * Access token for API requests.
+   */
   accessToken?: string;
+  /**
+   * ID token with profile claims.
+   */
   idToken?: string;
+  /**
+   * Refresh token for session renewal.
+   */
   refreshToken?: string;
+  /**
+   * Expiration time (seconds) for the tokens.
+   */
   expiresIn?: number;
-};
+}
 
 /**
  * Persisted auth session used by the UI.
  */
-type AuthSession = {
+interface AuthSession {
+  /**
+   * Cognito user id.
+   */
   userId?: string;
+  /**
+   * User email address.
+   */
   email?: string;
+  /**
+   * Display name.
+   */
   name?: string;
+  /**
+   * Access token for API calls.
+   */
   accessToken?: string;
+  /**
+   * ID token used for auth guard.
+   */
   idToken?: string;
+  /**
+   * Refresh token used to renew the session.
+   */
   refreshToken?: string;
+  /**
+   * Expiration time (seconds) for the tokens.
+   */
   expiresIn?: number;
+  /**
+   * Absolute expiry timestamp in milliseconds.
+   */
   expiresAt?: number;
-};
+}
 
 /**
  * LocalStorage key used to persist the auth session.
@@ -47,15 +86,32 @@ const STORAGE_KEY = 'sdg19.auth';
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  /**
+   * Http client for authenticated requests.
+   */
   private readonly http = inject(HttpClient);
+  /**
+   * Raw HTTP client bypassing interceptors for refresh.
+   */
   private readonly rawHttp = new HttpClient(inject(HttpBackend));
+  /**
+   * Base URL for the auth API.
+   */
   private readonly apiBase = inject(API_BASE_URL);
+  /**
+   * Subject holding the latest session state.
+   */
   private readonly sessionSubject = new BehaviorSubject<AuthSession | null>(
     this.loadSession()
   );
+  /**
+   * In-flight refresh request to deduplicate calls.
+   */
   private refreshRequest?: Observable<AuthSession | null>;
 
-  /** Observable of the current auth session (or null). */
+  /**
+   * Observable of the current auth session (or null).
+   */
   session$ = this.sessionSubject.asObservable();
 
   /**
@@ -134,6 +190,9 @@ export class AuthService {
     );
   }
 
+  /**
+   * Refreshes the session using the stored refresh token.
+   */
   private refreshSession() {
     if (this.refreshRequest) {
       return this.refreshRequest;
@@ -167,6 +226,9 @@ export class AuthService {
     return this.refreshRequest;
   }
 
+  /**
+   * Builds and persists a session from the auth response.
+   */
   private persistSession(
     response: AuthResponse,
     meta: { email?: string; name?: string; refreshToken?: string }
@@ -189,6 +251,9 @@ export class AuthService {
     return session;
   }
 
+  /**
+   * Calculates absolute expiration time from token claims or TTL.
+   */
   private getExpiresAt(idToken?: string, expiresIn?: number) {
     if (idToken) {
       const payload = this.decodeJwtPayload(idToken);
@@ -202,6 +267,9 @@ export class AuthService {
     return undefined;
   }
 
+  /**
+   * Decodes the JWT payload section to extract claims.
+   */
   private decodeJwtPayload(token: string) {
     const parts = token.split('.');
     if (parts.length < 2) {
@@ -216,6 +284,9 @@ export class AuthService {
     }
   }
 
+  /**
+   * Loads any persisted session from local storage.
+   */
   private loadSession(): AuthSession | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {

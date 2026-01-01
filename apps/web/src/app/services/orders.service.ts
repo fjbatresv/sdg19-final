@@ -6,39 +6,81 @@ import { API_BASE_URL } from '../app.tokens';
 /**
  * Line item payload sent to the orders API.
  */
-export type OrderItem = {
+export interface OrderItem {
+  /**
+   * Product identifier.
+   */
   productId: string;
+  /**
+   * Quantity requested for the product.
+   */
   quantity: number;
-};
+}
 
 /**
  * Summary fields used to render order history.
  */
-export type OrderSummary = {
+export interface OrderSummary {
+  /**
+   * Order identifier.
+   */
   orderId: string;
+  /**
+   * Status label of the order.
+   */
   status: string;
+  /**
+   * ISO timestamp for when the order was created.
+   */
   createdAt: string;
+  /**
+   * Line items included in the order.
+   */
   items: Array<{ productId: string; quantity: number; unitPrice: number }>;
+  /**
+   * Total order value in cents.
+   */
   total: number;
+  /**
+   * Currency code for the order totals.
+   */
   currency: string;
-};
+}
 
 /**
  * Paginated orders response from the backend API.
  */
-type PaginatedOrdersResponse = {
+interface PaginatedOrdersResponse {
+  /**
+   * Page items returned by the API.
+   */
   items: OrderSummary[];
+  /**
+   * Page size limit used by the API.
+   */
   limit: number;
+  /**
+   * Pagination cursor for the next page.
+   */
   nextToken?: string;
+  /**
+   * Count of items returned in this page.
+   */
   returnedCount?: number;
-};
+}
 
 /**
  * Provides API access for creating and listing orders.
  */
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
+  /**
+   * Http client for orders API requests.
+   */
   private readonly http = inject(HttpClient);
+  /**
+   * Base URL for the orders API.
+   */
   private readonly apiBase = inject(API_BASE_URL);
 
   /**

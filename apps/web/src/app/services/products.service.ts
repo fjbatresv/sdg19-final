@@ -6,26 +6,62 @@ import { API_BASE_URL } from '../app.tokens';
 /**
  * Product entry displayed in the catalog.
  */
-export type Product = {
+export interface Product {
+  /**
+   * Product identifier.
+   */
   id: string;
+  /**
+   * Display name for the catalog.
+   */
   name: string;
+  /**
+   * Optional description shown in the UI.
+   */
   description?: string;
+  /**
+   * Optional image URL for the product.
+   */
   imageUrl?: string;
+  /**
+   * Price in cents.
+   */
   price: number;
+  /**
+   * Currency code for the price.
+   */
   currency: string;
+  /**
+   * Quantity available for purchase.
+   */
   availableQuantity: number;
+  /**
+   * Whether the product is currently in stock.
+   */
   inStock: boolean;
-};
+}
 
 /**
  * Paginated products response from the backend API.
  */
-type ProductsResponse = {
+interface ProductsResponse {
+  /**
+   * Page items returned by the API.
+   */
   items: Product[];
+  /**
+   * Page size limit used by the API.
+   */
   limit: number;
+  /**
+   * Pagination cursor for the next page.
+   */
   nextToken?: string;
+  /**
+   * Count of items returned in this page.
+   */
   returnedCount?: number;
-};
+}
 
 /**
  * Local fallback catalog used when the API is unavailable.
@@ -65,7 +101,13 @@ const FALLBACK_PRODUCTS: Product[] = [
  */
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
+  /**
+   * Http client for catalog requests.
+   */
   private readonly http = inject(HttpClient);
+  /**
+   * Base URL for the products API.
+   */
   private readonly apiBase = inject(API_BASE_URL);
 
   /**

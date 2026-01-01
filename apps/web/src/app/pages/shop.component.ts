@@ -7,10 +7,16 @@ import { Product, ProductsService } from '../services/products.service';
 /**
  * Shopping cart line item.
  */
-type CartItem = {
+interface CartItem {
+  /**
+   * Product data from the catalog.
+   */
   product: Product;
+  /**
+   * Quantity for this cart line.
+   */
   quantity: number;
-};
+}
 
 /**
  * Catalog and cart experience for creating orders.
@@ -119,31 +125,57 @@ type CartItem = {
   `,
 })
 export class ShopComponent {
+  /**
+   * Service for loading product catalog data.
+   */
   private readonly productsService = inject(ProductsService);
+  /**
+   * Service for submitting orders.
+   */
   private readonly ordersService = inject(OrdersService);
 
-  /** Catalog of products loaded from the API. */
+  /**
+   * Catalog of products loaded from the API.
+   */
   products = signal<Product[]>([]);
-  /** Cart state for the current session. */
+  /**
+   * Cart state for the current session.
+   */
   cart = signal<CartItem[]>([]);
-  /** Loading flag for the catalog request. */
+  /**
+   * Loading flag for the catalog request.
+   */
   loading = signal(true);
-  /** Error message when catalog load fails. */
+  /**
+   * Error message when catalog load fails.
+   */
   error = signal('');
-  /** Flag while submitting an order. */
+  /**
+   * Flag while submitting an order.
+   */
   ordering = signal(false);
-  /** Success message when an order is created. */
+  /**
+   * Success message when an order is created.
+   */
   noticeMessage = '';
-  /** Error message when order creation fails. */
+  /**
+   * Error message when order creation fails.
+   */
   orderErrorMessage = '';
-  /** Error message when currencies are mixed in the cart. */
+  /**
+   * Error message when currencies are mixed in the cart.
+   */
   cartCurrencyError = '';
 
-  /** Total number of items in the cart. */
+  /**
+   * Total number of items in the cart.
+   */
   cartCount = computed(() =>
     this.cart().reduce((sum, item) => sum + item.quantity, 0)
   );
-  /** Total cost (in cents) of the cart for a single currency. */
+  /**
+   * Total cost (in cents) of the cart for a single currency.
+   */
   cartTotal = computed(() =>
     this.cartCurrency() === 'MIXED'
       ? 0
@@ -152,7 +184,9 @@ export class ShopComponent {
           0
         )
   );
-  /** Canonical cart currency, or MIXED if multiple currencies are present. */
+  /**
+   * Canonical cart currency, or MIXED if multiple currencies are present.
+   */
   cartCurrency = computed(() => {
     const currencies = new Set(
       this.cart().map((item) => item.product.currency)
@@ -166,6 +200,9 @@ export class ShopComponent {
     return currencies.values().next().value ?? 'USD';
   });
 
+  /**
+   * Loads product catalog data when the component is constructed.
+   */
   constructor() {
     this.productsService.getProducts().subscribe({
       next: (products) => {

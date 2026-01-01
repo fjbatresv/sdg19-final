@@ -4,17 +4,23 @@ import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
+/**
+ * Root shell for the storefront, exposes auth state and navigation actions.
+ */
 @Component({
   imports: [CommonModule, RouterModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-/**
- * Root shell for the storefront, exposes auth state and navigation actions.
- */
 export class App {
+  /**
+   * Auth service used for session state in the shell.
+   */
   protected auth = inject(AuthService);
+  /**
+   * Router used to redirect on logout.
+   */
   private router = inject(Router);
 
   /**
