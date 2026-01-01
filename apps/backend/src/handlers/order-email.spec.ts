@@ -62,14 +62,14 @@ describe('orderEmailHandler', () => {
       orderId: 'order-123',
       createdAt: '2025-12-29T12:00:00Z',
       status: 'CREATED',
-      total: 99.5,
+      total: 9950,
       email: 'user@example.com',
       items: [
         {
           productId: 'p1',
           productName: 'Starter Pack',
           quantity: 1,
-          unitPrice: 9.99,
+          unitPrice: 999,
         },
       ],
     };

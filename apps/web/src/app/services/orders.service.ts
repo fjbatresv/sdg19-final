@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { map } from 'rxjs';
 import { API_BASE_URL } from '../app.tokens';
 
 export type OrderItem = {
@@ -13,6 +14,14 @@ export type OrderSummary = {
   createdAt: string;
   items: Array<{ productId: string; quantity: number; unitPrice: number }>;
   total: number;
+  currency: string;
+};
+
+type PaginatedOrdersResponse = {
+  items: OrderSummary[];
+  limit: number;
+  nextToken?: string;
+  returnedCount?: number;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +36,8 @@ export class OrdersService {
   }
 
   listOrders() {
-    return this.http.get<OrderSummary[]>(`${this.apiBase}/orders`);
+    return this.http
+      .get<PaginatedOrdersResponse>(`${this.apiBase}/orders`)
+      .pipe(map((response) => response.items ?? []));
   }
 }

@@ -11,6 +11,11 @@ type JwtClaims = {
   email?: string;
 };
 
+const EXCLUSIVE_START_KEY_FIELDS = ['PK', 'SK', 'GSI1PK', 'GSI1SK'];
+
+/**
+ * Extract JWT claims from API Gateway authorizer context.
+ */
 function getUserClaims(event: APIGatewayProxyEventV2): JwtClaims | null {
   const claims = (event.requestContext as any)?.authorizer?.jwt?.claims;
   if (!claims) {
@@ -19,6 +24,9 @@ function getUserClaims(event: APIGatewayProxyEventV2): JwtClaims | null {
   return claims as JwtClaims;
 }
 
+/**
+ * Parse JSON body from an API Gateway event.
+ */
 function parseBody(event: APIGatewayProxyEventV2) {
   if (!event.body) {
     return null;
@@ -30,6 +38,40 @@ function parseBody(event: APIGatewayProxyEventV2) {
   }
 }
 
+/**
+ * Decode and validate a DynamoDB ExclusiveStartKey token.
+ */
+function parseExclusiveStartKey(token: string) {
+  try {
+    const decoded = Buffer.from(token, 'base64').toString('utf8');
+    const parsed = JSON.parse(decoded) as Record<string, unknown>;
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return null;
+    }
+    const keys = Object.keys(parsed);
+    if (keys.length !== EXCLUSIVE_START_KEY_FIELDS.length) {
+      return null;
+    }
+    for (const key of EXCLUSIVE_START_KEY_FIELDS) {
+      if (!Object.prototype.hasOwnProperty.call(parsed, key)) {
+        return null;
+      }
+      const value = parsed[key];
+      if (typeof value !== 'string' || value.trim().length === 0) {
+        return null;
+      }
+    }
+    return parsed as Record<string, string>;
+  } catch {
+    return null;
+  }
+}
+
+const MAX_ITEM_QUANTITY = Number(process.env.MAX_ITEM_QUANTITY ?? 1000);
+
+/**
+ * Create an order for the authenticated user.
+ */
 export async function createOrderHandler(event: APIGatewayProxyEventV2) {
   const claims = getUserClaims(event);
   if (!claims?.sub) {
@@ -42,14 +84,26 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
   }
 
   try {
+    let orderCurrency: string | undefined;
     const orderItems = body.items.map((item: any) => {
       const product = products.find((p) => p.id === item.productId);
       if (!product) {
         throw new Error(`Producto invalido: ${item.productId}`);
       }
       const quantity = Number(item.quantity);
-      if (!Number.isFinite(quantity) || quantity < 1) {
-        throw new Error(`Cantidad invalida para ${item.productId}`);
+      if (
+        !Number.isFinite(quantity) ||
+        quantity < 1 ||
+        quantity > MAX_ITEM_QUANTITY
+      ) {
+        throw new Error(
+          `Cantidad invalida para ${item.productId}. Maximo ${MAX_ITEM_QUANTITY}.`
+        );
+      }
+      if (!orderCurrency) {
+        orderCurrency = product.currency;
+      } else if (product.currency !== orderCurrency) {
+        throw new Error('Todos los productos deben usar la misma moneda');
       }
       return {
         productId: product.id,
@@ -81,6 +135,7 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
       email: claims.email,
       items: orderItems,
       total,
+      currency: orderCurrency ?? 'USD',
     };
 
     await docClient.send(
@@ -96,6 +151,7 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
       createdAt,
       items: orderItems,
       total,
+      currency: order.currency,
     });
   } catch (error: unknown) {
     const message =
@@ -104,10 +160,29 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
   }
 }
 
+/**
+ * List orders for the authenticated user.
+ */
 export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
   const claims = getUserClaims(event);
   if (!claims?.sub) {
     return jsonResponse(401, { message: 'No autorizado' });
+  }
+
+  const limitParam = event.queryStringParameters?.limit;
+  const nextTokenParam = event.queryStringParameters?.nextToken;
+  const limit = limitParam ? Number(limitParam) : 20;
+  if (!Number.isFinite(limit) || limit < 1 || limit > 100) {
+    return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
+  }
+
+  let exclusiveStartKey: Record<string, unknown> | undefined;
+  if (nextTokenParam) {
+    const parsedKey = parseExclusiveStartKey(nextTokenParam);
+    if (!parsedKey) {
+      return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
+    }
+    exclusiveStartKey = parsedKey;
   }
 
   try {
@@ -123,7 +198,8 @@ export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
           ':pk': pk,
         },
         ScanIndexForward: false,
-        Limit: 50,
+        Limit: limit,
+        ExclusiveStartKey: exclusiveStartKey,
       })
     );
 
@@ -134,9 +210,19 @@ export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
         createdAt: item.createdAt,
         items: item.items,
         total: item.total,
+        currency: item.currency ?? 'USD',
       })) ?? [];
 
-    return jsonResponse(200, items);
+    const nextToken = result.LastEvaluatedKey
+      ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString('base64')
+      : undefined;
+
+    return jsonResponse(200, {
+      items,
+      limit,
+      nextToken,
+      returnedCount: items.length,
+    });
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : 'Error leyendo ordenes';

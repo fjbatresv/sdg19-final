@@ -24,6 +24,9 @@ type OrderItem = {
 const s3 = new S3Client({});
 const ses = new SESClient({});
 
+/**
+ * Obfuscate the email to avoid logging full addresses.
+ */
 function maskEmail(email: string) {
   const [local, domain] = email.split('@');
   if (!local || !domain) {
@@ -33,6 +36,9 @@ function maskEmail(email: string) {
   return `${visible}***@${domain}`;
 }
 
+/**
+ * Parse an SNS-wrapped or raw order message from SQS.
+ */
 function parseOrderMessage(body: string): OrderMessage | null {
   try {
     const parsed = JSON.parse(body);
@@ -45,6 +51,9 @@ function parseOrderMessage(body: string): OrderMessage | null {
   }
 }
 
+/**
+ * Validate the minimum fields required to send an email.
+ */
 function isValidOrderMessage(
   payload: unknown
 ): payload is OrderMessage & { orderId: string; email: string } {
@@ -71,6 +80,9 @@ function isValidOrderMessage(
   return true;
 }
 
+/**
+ * Validate item shape coming from the order payload.
+ */
 function isOrderItem(value: unknown): value is OrderItem {
   if (!value || typeof value !== 'object') {
     return false;
@@ -83,6 +95,9 @@ function isOrderItem(value: unknown): value is OrderItem {
   );
 }
 
+/**
+ * Send SES templated email for each order message and store a copy in S3.
+ */
 export async function orderEmailHandler(event: SQSEvent) {
   const bucketName = requireEnv('EMAILS_BUCKET_NAME');
   const templateName = requireEnv('SES_TEMPLATE_NAME');
@@ -109,7 +124,9 @@ export async function orderEmailHandler(event: SQSEvent) {
     });
 
     const formattedTotal =
-      typeof message.total === 'number' ? message.total.toFixed(2) : undefined;
+      typeof message.total === 'number'
+        ? (message.total / 100).toFixed(2)
+        : undefined;
     const templateData = {
       orderId: message.orderId,
       status: message.status,
@@ -124,7 +141,7 @@ export async function orderEmailHandler(event: SQSEvent) {
             : item.productId;
           const unitPrice =
             typeof item.unitPrice === 'number'
-              ? item.unitPrice.toFixed(2)
+              ? (item.unitPrice / 100).toFixed(2)
               : item.unitPrice;
           return `<tr>
               <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">

@@ -1,0 +1,34 @@
+{
+  "name": "docs",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "targets": {
+    "coverage": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/doc-coverage"],
+      "options": {
+        "command": "node tools/doc-coverage/doc-coverage.js"
+      }
+    },
+    "api": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/docs/api-typedoc"],
+      "options": {
+        "command": "typedoc --options typedoc.json"
+      }
+    },
+    "check": {
+      "executor": "nx:run-commands",
+      "outputs": [
+        "{workspaceRoot}/doc-coverage",
+        "{workspaceRoot}/docs/api-typedoc"
+      ],
+      "options": {
+        "commands": [
+          "nx run docs:coverage",
+          "nx run docs:api"
+        ]
+      }
+    }
+  }
+}

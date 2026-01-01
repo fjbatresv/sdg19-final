@@ -110,6 +110,22 @@ npx nx run @org/infra:build:production
 npx nx run web:build:production
 ```
 
+## Documentación
+
+La documentacion vive en `docs/` (Mintlify) y `docs/api-typedoc/` (TypeDoc).
+
+```bash
+npm run docs:dev
+npm run docs:check
+npm run docs:coverage
+```
+
+Para actualizar el contrato OpenAPI publicado en Mintlify:
+
+```bash
+npm run docs:sync-openapi
+```
+
 ## Deploy (local)
 
 ```bash
@@ -210,7 +226,7 @@ AWS_REGION=<PRINCIPAL_REGION> npx cdk deploy Sdg19PrimaryStack \
 Despues del deploy:
 
 1. Verifica que los registros de Route53 se creen (DKIM + MAIL FROM).
-2. Solicita salida de SES sandbox para enviar a cualquier correo. Guia oficial: <https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html>
+2. Solicita salida de SES sandbox para enviar a cualquier correo. Guia oficial: [request production access](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html)
 
 ## Data lake (Fase 3)
 

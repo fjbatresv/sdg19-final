@@ -1,0 +1,17 @@
+---
+title: Seguridad
+description: Controles de seguridad en infraestructura.
+---
+
+## Controles clave
+
+- IAM con minimo privilegio para Lambdas y roles de deploy.
+- KMS para cifrado en DynamoDB, S3, SNS y SQS.
+- WAF en CloudFront para web y API.
+- CloudTrail habilitado para auditoria.
+- Bucket policies que bloquean cargas sin SSE-KMS.
+
+## CI/CD
+
+GitHub Actions usa OIDC para asumir roles de deploy sin llaves estaticas.
+Ver `DEPLOY.md` para el flujo de configuracion.

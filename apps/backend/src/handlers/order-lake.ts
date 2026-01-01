@@ -19,6 +19,9 @@ const kinesis = new KinesisClient({
 const ISO_8601_REGEX =
   /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|[+-]\d{2}:\d{2})$/;
 
+/**
+ * Parse an SNS-wrapped or raw order message from SQS.
+ */
 function parseOrderMessage(body: string): OrderMessage | null {
   try {
     const parsed = JSON.parse(body);
@@ -33,6 +36,9 @@ function parseOrderMessage(body: string): OrderMessage | null {
   }
 }
 
+/**
+ * Validate the order payload before sending to Kinesis.
+ */
 function isValidOrderMessage(
   payload: unknown
 ): payload is OrderMessage & { orderId: string } {
@@ -56,6 +62,9 @@ function isValidOrderMessage(
   return true;
 }
 
+/**
+ * Ship order events to Kinesis for the data lake pipeline.
+ */
 export async function orderLakeHandler(event: SQSEvent) {
   const streamName = requireEnv('KINESIS_STREAM_NAME');
   const batchItemFailures: { itemIdentifier: string }[] = [];

@@ -48,3 +48,6 @@ Thumbs.db
 cdk.out
 
 __screenshots__/
+
+docs/api-typedoc/
+doc-coverage/

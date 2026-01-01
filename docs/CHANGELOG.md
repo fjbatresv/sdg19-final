@@ -1,0 +1,4 @@
+# Changelog
+
+## Unreleased
+- Removed explicit NX_* flags from the docs:check target to let Nx manage caching/daemon defaults.

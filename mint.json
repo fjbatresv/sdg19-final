@@ -1,0 +1,55 @@
+{
+  "name": "SDG19 Final",
+  "theme": "prism",
+  "favicon": "docs/assets/favicon.svg",
+  "colors": {
+    "primary": "#0F766E"
+  },
+  "openapi": "docs/openapi.yaml",
+  "api": {
+    "playground": {
+      "mode": "show"
+    }
+  },
+  "tabs": [
+    {
+      "name": "API",
+      "url": "api",
+      "openapi": "/docs/openapi.yaml"
+    }
+  ],
+  "primaryTab": {
+    "name": "Docs"
+  },
+  "navigation": [
+    {
+      "group": "Inicio",
+      "pages": [
+        "docs/index"
+      ]
+    },
+    {
+      "group": "Infraestructura",
+      "pages": [
+        "docs/infra/overview",
+        "docs/infra/data-lake",
+        "docs/infra/costs",
+        "docs/infra/security"
+      ]
+    },
+    {
+      "group": "Backend",
+      "pages": [
+        "docs/backend/overview",
+        "docs/backend/email"
+      ]
+    },
+    {
+      "group": "Deployment",
+      "pages": [
+        "docs/deploy",
+        "docs/code-docs"
+      ]
+    }
+  ]
+}

@@ -32,6 +32,8 @@ project owner with:
   stored in the repo. The OIDC provider definition plus trust/permission
   policies live in `oidc_role/` to bootstrap roles in other accounts. See
   `DEPLOY.md` for the setup sequence and placeholder replacement.
+- **Documentation**: Docs are published from `docs/` and `docs/api-typedoc/`,
+  which must not include secrets or internal credentials.
 - **Tagging**: All stacks include required tags for cost allocation and audit.
 
 ## Supported Versions

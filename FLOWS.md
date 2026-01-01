@@ -2,6 +2,8 @@
 
 Diagramas de secuencia para los flujos principales.
 
+La documentacion navegable (Mintlify + API) vive en `docs/`.
+
 ## Registro
 
 ```mermaid
