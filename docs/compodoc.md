@@ -29,7 +29,7 @@ npx nx run web:docs:check
 
 El sitio se publica en GitHub Pages bajo la ruta del repositorio:
 
-```
+```text
 https://<org>.github.io/<repo>/
 ```
 
