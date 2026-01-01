@@ -1,10 +1,16 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import remarkMermaid from '../tools/docs/remark-mermaid.mjs';
+
+const base = process.env.ASTRO_BASE ?? '/';
 
 export default defineConfig({
   site: 'https://fjbatresv.github.io',
-  base: '/sdg19-final/',
+  base,
   outDir: '../dist/docs-site',
+  markdown: {
+    remarkPlugins: [remarkMermaid],
+  },
   integrations: [
     starlight({
       title: 'SDG19 Final',
@@ -13,7 +19,7 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Inicio',
-          items: [{ label: 'Overview', slug: '' }],
+          items: [{ label: 'Overview', slug: 'index' }],
         },
         {
           label: 'Infraestructura',
@@ -38,6 +44,7 @@ export default defineConfig({
             { label: 'Code Docs', slug: 'code-docs' },
             { label: 'Compodoc', slug: 'compodoc' },
             { label: 'API Reference', slug: 'api-reference' },
+            { label: 'API Playground', slug: 'api-playground' },
           ],
         },
       ],

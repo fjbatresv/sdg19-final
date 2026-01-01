@@ -3,6 +3,8 @@ title: Emails
 description: Plantilla SES y almacenamiento en S3.
 ---
 
+import Mermaid from '../../_components/Mermaid.astro';
+
 El sistema de correos procesa las ordenes desde SQS y envia via SES.
 
 Flujo:
@@ -20,6 +22,7 @@ sequenceDiagram
   Lambda->>SES: SendTemplatedEmail
   Lambda->>S3: Guardar copia JSON
 ```
+<Mermaid />
 
 Notas:
 

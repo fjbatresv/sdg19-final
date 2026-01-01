@@ -3,6 +3,8 @@ title: Backend
 description: Resumen de endpoints y flujo de ordenes.
 ---
 
+import Mermaid from '../../_components/Mermaid.astro';
+
 ## Endpoints
 
 - `POST /auth/register`
@@ -29,3 +31,5 @@ sequenceDiagram
   Stream->>OrderStream: Invoke
   OrderStream->>SNS: Publish
 ```
+
+<Mermaid />

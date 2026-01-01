@@ -3,6 +3,8 @@ title: Data Lake
 description: Flujo de ingest y almacenamiento en S3.
 ---
 
+import Mermaid from '../../_components/Mermaid.astro';
+
 El flujo de data lake toma las órdenes desde SNS y las persiste en S3:
 
 ```mermaid
@@ -20,6 +22,8 @@ sequenceDiagram
   Kinesis->>Firehose: Stream
   Firehose->>S3: Parquet particionado
 ```
+
+<Mermaid />
 
 Notas:
 

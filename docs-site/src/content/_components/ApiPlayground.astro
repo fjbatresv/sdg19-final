@@ -1,0 +1,61 @@
+---
+const rawBase = import.meta.env.BASE_URL ?? '/';
+const normalizedBase = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+const specUrl = `${normalizedBase}openapi.yaml`;
+---
+
+<div id="swagger-ui" data-spec-url={specUrl} style="min-height: 75vh;"></div>
+
+<script type="module">
+  const loadStyle = (href) => {
+    if (document.querySelector(`link[href="${href}"]`)) {
+      return;
+    }
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+  };
+
+  const loadScript = (src) =>
+    new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.head.appendChild(script);
+    });
+
+  const initSwagger = async () => {
+    loadStyle('https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css');
+    await loadScript(
+      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js'
+    );
+    await loadScript(
+      'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-standalone-preset.js'
+    );
+
+    const container = document.getElementById('swagger-ui');
+    if (!container || !window.SwaggerUIBundle) {
+      return;
+    }
+
+    const specUrl = container.getAttribute('data-spec-url') ?? '/openapi.yaml';
+    window.ui = window.SwaggerUIBundle({
+      url: specUrl,
+      dom_id: '#swagger-ui',
+      presets: [
+        window.SwaggerUIBundle.presets.apis,
+        window.SwaggerUIStandalonePreset,
+      ],
+      deepLinking: true,
+      displayRequestDuration: true,
+    });
+  };
+
+  initSwagger().catch((error) => console.error(error));
+</script>

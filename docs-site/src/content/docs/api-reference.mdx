@@ -12,3 +12,21 @@ mismo archivo. Ejemplo rápido:
 ```bash
 curl -X GET https://finalapi.tu-dominio.com/products
 ```
+
+## Resumen por endpoint
+
+- `POST /auth/register`: crea una cuenta de usuario y retorna los tokens de
+  autenticación. Existe para habilitar el onboarding inmediato y permitir el
+  acceso a órdenes sin flujos de verificación adicionales en entornos
+  controlados.
+- `POST /auth/login`: valida credenciales y emite tokens de sesión. Existe para
+  iniciar sesiones y renovar el acceso a recursos protegidos.
+- `POST /auth/refresh`: intercambia un refresh token por nuevos tokens. Existe
+  para mantener sesiones activas sin pedir credenciales repetidamente.
+- `GET /products`: lista el catálogo disponible y soporta paginación. Existe
+  para mostrar la tienda en el frontend y reducir llamadas al backend con
+  cacheo en CloudFront.
+- `POST /orders`: crea una orden con los productos seleccionados. Existe para
+  iniciar el flujo de órdenes y disparar el pipeline de email/data lake.
+- `GET /orders`: lista las órdenes del usuario autenticado con paginación.
+  Existe para el historial de compras y seguimiento de estado.

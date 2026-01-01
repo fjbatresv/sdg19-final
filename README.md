@@ -140,6 +140,12 @@ Para generar el sitio estático de documentación:
 npm run docs:build
 ```
 
+Para levantar el preview local del build estático:
+
+```bash
+npm run docs:preview
+```
+
 ### Frontend Docs (Compodoc)
 
 ![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/images/coverage-badge-documentation.svg)

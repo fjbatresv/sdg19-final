@@ -42,6 +42,8 @@ jobs:
         run: npm run docs:check
 
       - name: Build Starlight site
+        env:
+          ASTRO_BASE: /${{ github.event.repository.name }}/
         run: npm run docs:build
 
       - name: Assemble GitHub Pages site
