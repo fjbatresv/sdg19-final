@@ -91,6 +91,9 @@ type CartItem = {
               {{ formatMoney(cartTotal(), cartCurrency()) }}
             </p>
           </div>
+          @if (cartCurrencyError) {
+            <p class="error">{{ cartCurrencyError }}</p>
+          }
           <button
             class="primary"
             [disabled]="cart().length === 0 || ordering()"
@@ -120,17 +123,31 @@ export class ShopComponent {
   ordering = signal(false);
   noticeMessage = '';
   orderErrorMessage = '';
+  cartCurrencyError = '';
 
   cartCount = computed(() =>
     this.cart().reduce((sum, item) => sum + item.quantity, 0)
   );
   cartTotal = computed(() =>
-    this.cart().reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
-      0
-    )
+    this.cartCurrency() === 'MIXED'
+      ? 0
+      : this.cart().reduce(
+          (sum, item) => sum + item.product.price * item.quantity,
+          0
+        )
   );
-  cartCurrency = computed(() => this.cart()[0]?.product.currency ?? 'USD');
+  cartCurrency = computed(() => {
+    const currencies = new Set(
+      this.cart().map((item) => item.product.currency)
+    );
+    if (currencies.size === 0) {
+      return 'USD';
+    }
+    if (currencies.size > 1) {
+      return 'MIXED';
+    }
+    return currencies.values().next().value ?? 'USD';
+  });
 
   constructor() {
     this.productsService.getProducts().subscribe({
@@ -147,6 +164,21 @@ export class ShopComponent {
 
   addToCart(product: Product) {
     const items = [...this.cart()];
+    const currentCurrency = this.cartCurrency();
+    if (currentCurrency !== 'USD' && currentCurrency !== product.currency) {
+      this.cartCurrencyError =
+        'No puedes mezclar monedas en el carrito.';
+      return;
+    }
+    if (currentCurrency === 'USD' && items.length > 0) {
+      const existingCurrency = items[0]?.product.currency ?? 'USD';
+      if (existingCurrency !== product.currency) {
+        this.cartCurrencyError =
+          'No puedes mezclar monedas en el carrito.';
+        return;
+      }
+    }
+    this.cartCurrencyError = '';
     const existing = items.find((item) => item.product.id === product.id);
     if (existing) {
       existing.quantity += 1;
