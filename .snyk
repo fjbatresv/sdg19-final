@@ -1,5 +1,25 @@
-# Snyk policy file
-# Use this to track ignores/patches. CLI flags in CI set severity threshold and project detection.
-version: v1.22.0
-ignore: {}
-patch: {}
+# Snyk configuration for CDK project
+# Exclude sensitive CloudFormation templates but include compiled assets
+
+exclude:
+  code:
+    # Exclude CloudFormation templates (contain sensitive info)
+    - 'cdk.out/**/*.template.json'
+    - 'cdk.out/manifest.json'
+    - 'cdk.out/**/*.assets.json'
+    - 'cdk.out/tree.json'
+    
+  # Include compiled Lambda assets for vulnerability scanning
+  include:
+    - 'cdk.out/asset.*/**/*.js'
+    - 'cdk.out/asset.*/**/package.json'
+    - 'cdk.out/asset.*/**/package-lock.json'
+    - 'cdk.out/asset.*/**/yarn.lock'
+
+# Snyk test configuration
+test:
+  # Focus on high and critical vulnerabilities
+  severity-threshold: high
+  
+  # Exclude dev dependencies from Lambda assets
+  dev: false
