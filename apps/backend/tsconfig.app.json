@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist",
     "types": ["node", "aws-lambda"],
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "rootDir": "../.."
   },
   "include": ["src/**/*.ts", "../../libs/shared-types/src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
