@@ -259,16 +259,7 @@ components:
         expiresIn:
           type: integer
           format: int32
-    PaginationQuery:
-      type: object
-      properties:
-        limit:
-          type: integer
-          minimum: 1
-          maximum: 100
-          default: 20
-        nextToken:
-          type: string
+    # PaginationQuery removed; use parameters LimitParam and NextTokenParam.
     PaginatedProducts:
       type: object
       required:
