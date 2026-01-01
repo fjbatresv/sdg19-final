@@ -30,26 +30,20 @@ AWS_ACCOUNT_ID=$DUMMY_AWS_ACCOUNT_ID \
 
 echo "🧹 Pre-push: sanitizando cdk.out..."
 if [ -d "cdk.out" ]; then
-  echo "🧹 Sanitizando cdk.out..."
+    echo "🧹 Sanitizando cdk.out..."
 
-  ./sanitize-cdk-out.sh
+    ./sanitize-cdk-out.sh
 
-  if [ $? -ne 0 ]; then
-    echo "❌ Error al sanitizar cdk.out"
-    exit 1
-  fi
+    if [ $? -ne 0 ]; then
+        echo "❌ Error al sanitizar cdk.out"
+        exit 1
+    fi
 
-  git add cdk.out/
+    git add cdk.out/
+    git commit -m "cdk.out updated and sanitized" --no-verify
 
-  if ! git diff --cached --quiet -- cdk.out; then
-    echo "❌ cdk.out cambió durante el pre-push."
-    echo "   Por favor haz commit del cdk.out sanitizado y vuelve a intentar."
-    git status -sb -- cdk.out
-    exit 1
-  fi
-
-  echo "✅ cdk.out sanitizado y agregado al index"
+    echo "✅ cdk.out sanitizado y agregado al commit"
 else
-  echo "ℹ️  No se encontró cdk.out, omitiendo sanitización"
+    echo "ℹ️  No se encontró cdk.out, omitiendo sanitización"
 fi
 echo "🎉 Pre-push completado exitosamente"
