@@ -11,6 +11,8 @@ type JwtClaims = {
   email?: string;
 };
 
+const EXCLUSIVE_START_KEY_FIELDS = ['PK', 'SK', 'GSI1PK', 'GSI1SK'];
+
 /**
  * Extract JWT claims from API Gateway authorizer context.
  */
@@ -31,6 +33,35 @@ function parseBody(event: APIGatewayProxyEventV2) {
   }
   try {
     return JSON.parse(event.body);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Decode and validate a DynamoDB ExclusiveStartKey token.
+ */
+function parseExclusiveStartKey(token: string) {
+  try {
+    const decoded = Buffer.from(token, 'base64').toString('utf8');
+    const parsed = JSON.parse(decoded) as Record<string, unknown>;
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return null;
+    }
+    const keys = Object.keys(parsed);
+    if (keys.length !== EXCLUSIVE_START_KEY_FIELDS.length) {
+      return null;
+    }
+    for (const key of EXCLUSIVE_START_KEY_FIELDS) {
+      if (!Object.prototype.hasOwnProperty.call(parsed, key)) {
+        return null;
+      }
+      const value = parsed[key];
+      if (typeof value !== 'string' || value.trim().length === 0) {
+        return null;
+      }
+    }
+    return parsed as Record<string, string>;
   } catch {
     return null;
   }
@@ -139,16 +170,11 @@ export async function listOrdersHandler(event: APIGatewayProxyEventV2) {
 
   let exclusiveStartKey: Record<string, unknown> | undefined;
   if (nextTokenParam) {
-    try {
-      const decoded = Buffer.from(nextTokenParam, 'base64').toString('utf8');
-      const parsed = JSON.parse(decoded);
-      if (!parsed || typeof parsed !== 'object') {
-        throw new Error('Token invalido');
-      }
-      exclusiveStartKey = parsed;
-    } catch {
+    const parsedKey = parseExclusiveStartKey(nextTokenParam);
+    if (!parsedKey) {
       return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
     }
+    exclusiveStartKey = parsedKey;
   }
 
   try {
