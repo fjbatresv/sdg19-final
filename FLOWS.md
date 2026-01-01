@@ -2,7 +2,7 @@
 
 Diagramas de secuencia para los flujos principales.
 
-La documentacion navegable (Mintlify + API) vive en `docs/`.
+La documentacion navegable (Starlight + API) vive en `docs-site/`.
 
 ## Registro
 

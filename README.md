@@ -116,7 +116,11 @@ npx nx run web:build:production
 
 ## Documentación
 
-La documentacion vive en `docs/` (Mintlify) y `docs/api-typedoc/` (TypeDoc).
+La documentacion vive en `docs-site/` (Astro Starlight) y `docs/api-typedoc/`
+(TypeDoc).
+
+Sitio publicado: https://fjbatresv.github.io/sdg19-final/
+Compodoc: https://fjbatresv.github.io/sdg19-final/compodoc/
 
 ```bash
 npm run docs:dev
@@ -124,10 +128,16 @@ npm run docs:check
 npm run docs:coverage
 ```
 
-Para actualizar el contrato OpenAPI publicado en Mintlify:
+Para actualizar el contrato OpenAPI publicado en Starlight:
 
 ```bash
 npm run docs:sync-openapi
+```
+
+Para generar el sitio estático de documentación:
+
+```bash
+npm run docs:build
 ```
 
 ### Frontend Docs (Compodoc)
@@ -142,7 +152,7 @@ npx nx run web:docs:coverage
 npx nx run web:docs:check
 ```
 
-Guia completa: `docs/compodoc.md`.
+Guia completa: `docs-site/src/content/docs/compodoc.md`.
 
 ## Deploy (local)
 

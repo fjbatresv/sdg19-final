@@ -1,0 +1,46 @@
+---
+title: Code Documentation Coverage
+---
+
+## Why we replaced doc-coverage
+
+`doc-coverage` scans a generic `src/` folder and mixes internal helpers with
+public APIs. In this repo, public APIs live in entrypoints such as `main.ts`
+and (when present) `index.ts` or `public-api.ts`. We replaced it with a
+ts-morph-based check that focuses on exported symbols from those entrypoints.
+
+## What counts as public API
+
+The metric only counts exported declarations from:
+
+- `libs/**/src/index.ts`
+- `libs/**/src/public-api.ts`
+- `packages/**/src/index.ts`
+- `apps/**/src/main.ts`
+
+Only these declaration kinds are counted:
+
+- functions
+- classes
+- interfaces
+- types
+- enums
+
+## Run locally
+
+```bash
+npm run docs:coverage
+npm run docs:check
+```
+
+## Fixing failures
+
+When coverage is below the threshold, the script lists missing docs with
+`file:line`. Add a short JSDoc description to the exported declaration:
+
+```ts
+/**
+ * Creates a new order for the authenticated user.
+ */
+export async function createOrderHandler(...) { ... }
+```
