@@ -26,7 +26,7 @@ import { OrdersService, OrderSummary } from '../services/orders.service';
           </div>
           <div class="order-meta">
             <span class="pill">{{ order.status }}</span>
-            <strong>{{ formatMoney(order.total) }}</strong>
+            <strong>{{ formatMoney(order.total, order.currency) }}</strong>
           </div>
         </article>
         }
@@ -60,10 +60,10 @@ export class OrdersComponent {
     });
   }
 
-  formatMoney(value: number) {
+  formatMoney(value: number, currency = 'USD') {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
-    }).format(value);
+      currency,
+    }).format(value / 100);
   }
 }

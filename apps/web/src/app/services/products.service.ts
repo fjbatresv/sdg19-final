@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, of } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { API_BASE_URL } from '../app.tokens';
 
 export type Product = {
@@ -10,6 +10,15 @@ export type Product = {
   imageUrl?: string;
   price: number;
   currency: string;
+  availableQuantity: number;
+  inStock: boolean;
+};
+
+type ProductsResponse = {
+  items: Product[];
+  limit: number;
+  nextToken?: string;
+  returnedCount?: number;
 };
 
 const FALLBACK_PRODUCTS: Product[] = [
@@ -17,22 +26,28 @@ const FALLBACK_PRODUCTS: Product[] = [
     id: 'prod-001',
     name: 'Starter Pack',
     description: 'Paquete inicial',
-    price: 29.99,
+    price: 2999,
     currency: 'USD',
+    availableQuantity: 25,
+    inStock: true,
   },
   {
     id: 'prod-002',
     name: 'Pro Pack',
     description: 'Paquete profesional',
-    price: 59.99,
+    price: 5999,
     currency: 'USD',
+    availableQuantity: 12,
+    inStock: true,
   },
   {
     id: 'prod-003',
     name: 'Enterprise Pack',
     description: 'Paquete empresarial',
-    price: 129.99,
+    price: 12999,
     currency: 'USD',
+    availableQuantity: 4,
+    inStock: true,
   },
 ];
 
@@ -43,7 +58,10 @@ export class ProductsService {
 
   getProducts() {
     return this.http
-      .get<Product[]>(`${this.apiBase}/products`)
-      .pipe(catchError(() => of(FALLBACK_PRODUCTS)));
+      .get<ProductsResponse>(`${this.apiBase}/products`)
+      .pipe(
+        map((response) => response.items ?? []),
+        catchError(() => of(FALLBACK_PRODUCTS))
+      );
   }
 }

@@ -124,7 +124,9 @@ export async function orderEmailHandler(event: SQSEvent) {
     });
 
     const formattedTotal =
-      typeof message.total === 'number' ? message.total.toFixed(2) : undefined;
+      typeof message.total === 'number'
+        ? (message.total / 100).toFixed(2)
+        : undefined;
     const templateData = {
       orderId: message.orderId,
       status: message.status,
@@ -139,7 +141,7 @@ export async function orderEmailHandler(event: SQSEvent) {
             : item.productId;
           const unitPrice =
             typeof item.unitPrice === 'number'
-              ? item.unitPrice.toFixed(2)
+              ? (item.unitPrice / 100).toFixed(2)
               : item.unitPrice;
           return `<tr>
               <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">

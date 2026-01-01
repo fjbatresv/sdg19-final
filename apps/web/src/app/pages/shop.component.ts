@@ -33,7 +33,9 @@ type CartItem = {
                   <p class="subtle">{{ product.description }}</p>
                 </div>
                 <div class="product-footer">
-                  <span class="price">{{ formatMoney(product.price) }}</span>
+                  <span class="price">
+                    {{ formatMoney(product.price, product.currency) }}
+                  </span>
                   <button class="primary" (click)="addToCart(product)">
                     Agregar
                   </button>
@@ -63,7 +65,8 @@ type CartItem = {
                 <div>
                   <p class="cart-title">{{ item.product.name }}</p>
                   <p class="subtle">
-                    {{ formatMoney(item.product.price) }} c/u
+                    {{ formatMoney(item.product.price, item.product.currency) }}
+                    c/u
                   </p>
                 </div>
                 <div class="qty">
@@ -84,7 +87,9 @@ type CartItem = {
         <div class="cart-summary">
           <div>
             <p class="subtle">Total</p>
-            <p class="total">{{ formatMoney(cartTotal()) }}</p>
+            <p class="total">
+              {{ formatMoney(cartTotal(), cartCurrency()) }}
+            </p>
           </div>
           <button
             class="primary"
@@ -125,6 +130,7 @@ export class ShopComponent {
       0
     )
   );
+  cartCurrency = computed(() => this.cart()[0]?.product.currency ?? 'USD');
 
   constructor() {
     this.productsService.getProducts().subscribe({
@@ -189,10 +195,10 @@ export class ShopComponent {
     });
   }
 
-  formatMoney(value: number) {
+  formatMoney(value: number, currency = 'USD') {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
-    }).format(value);
+      currency,
+    }).format(value / 100);
   }
 }

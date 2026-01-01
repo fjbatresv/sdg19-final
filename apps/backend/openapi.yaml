@@ -312,8 +312,10 @@ components:
         imageUrl:
           type: string
         price:
-          type: number
-          format: float
+          type: integer
+          format: int64
+          description: Precio en centavos (ej. 1000 = $10.00).
+          example: 2999
         currency:
           type: string
           enum:
@@ -358,8 +360,10 @@ components:
           minimum: 1
           maximum: 10000
         unitPrice:
-          type: number
-          format: float
+          type: integer
+          format: int64
+          description: Precio unitario en centavos.
+          example: 2999
     Order:
       type: object
       required:
@@ -383,8 +387,10 @@ components:
           items:
             $ref: '#/components/schemas/OrderItem'
         total:
-          type: number
-          format: float
+          type: integer
+          format: int64
+          description: Total de la orden en centavos.
+          example: 5999
         currency:
           type: string
           enum:
