@@ -26,5 +26,4 @@ find cdk.out -name "*.json" -exec sed -i.bak 's/cdk-hnb659fds/cdk-bootstrap/g' {
 find cdk.out -name "*.bak" -delete
 
 echo "✅ Sanitización completada"
-echo "💾 Backup guardado en cdk.out.backup"
 echo "🔍 Ahora puedes commitear cdk.out para Snyk"
