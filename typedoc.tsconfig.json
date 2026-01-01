@@ -4,6 +4,7 @@
     "**/*.spec.ts",
     "**/*.test.ts",
     "apps/web/**",
+    "docs-site/**",
     "node_modules",
     "dist",
     "tmp"
