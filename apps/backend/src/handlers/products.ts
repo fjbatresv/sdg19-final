@@ -14,15 +14,26 @@ export async function productsHandler(event: APIGatewayProxyEventV2) {
     return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
   }
 
-  const start = nextTokenParam ? Number(nextTokenParam) : 0;
-  if (!Number.isFinite(start) || start < 0 || start > products.length) {
+  let start = 0;
+  if (nextTokenParam) {
+    try {
+      const decoded = Buffer.from(nextTokenParam, 'base64').toString('utf8');
+      start = Number(decoded);
+      if (!Number.isFinite(start)) {
+        throw new Error('Invalid token');
+      }
+    } catch {
+      return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
+    }
+  }
+  if (start < 0 || start > products.length) {
     return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
   }
 
   const items = products.slice(start, start + limit);
   const nextToken =
     start + items.length < products.length
-      ? String(start + items.length)
+      ? Buffer.from(String(start + items.length)).toString('base64')
       : undefined;
 
   return jsonResponse(200, {
