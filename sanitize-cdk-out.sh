@@ -10,12 +10,6 @@ if [ ! -d "cdk.out" ]; then
     exit 1
 fi
 
-# Crear backup limpio
-if [ -e "cdk.out.backup" ]; then
-    rm -rf cdk.out.backup
-fi
-cp -r cdk.out cdk.out.backup
-
 # Reemplazar Account ID
 echo "🔄 Reemplazando Account ID..."
 find cdk.out -name "*.json" -exec sed -i.bak 's/605134457500/123456789012/g' {} +
