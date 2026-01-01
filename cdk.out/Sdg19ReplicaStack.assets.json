@@ -8,7 +8,7 @@
         "packaging": "zip"
       },
       "destinations": {
-        "123456789012-us-east-2-d3f6881d": {
+        "123456789012-us-east-2-2d5a1772": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
           "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
           "region": "us-east-2",
@@ -23,7 +23,7 @@
         "packaging": "zip"
       },
       "destinations": {
-        "123456789012-us-east-2-916b1a39": {
+        "123456789012-us-east-2-f4b3f583": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
           "objectKey": "8a17fb3ceee821f797100bf65fa3047c164a08c03aa5a07fbcff9a676fb73b97.zip",
           "region": "us-east-2",
@@ -31,16 +31,16 @@
         }
       }
     },
-    "fa21b662939a7983628a1c8894b871a69b53164a2a2682890e3b5f51c48d79a0": {
+    "90065772b25196f40e6fecf65b0ef384e0ef391b7aa5c1197cc0c906e74ae5dd": {
       "displayName": "Sdg19ReplicaStack Template",
       "source": {
         "path": "Sdg19ReplicaStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "123456789012-us-east-2-e4e0508b": {
+        "123456789012-us-east-2-0f249829": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
-          "objectKey": "fa21b662939a7983628a1c8894b871a69b53164a2a2682890e3b5f51c48d79a0.json",
+          "objectKey": "90065772b25196f40e6fecf65b0ef384e0ef391b7aa5c1197cc0c906e74ae5dd.json",
           "region": "us-east-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
         }

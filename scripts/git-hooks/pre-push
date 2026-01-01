@@ -41,7 +41,14 @@ if [ -d "cdk.out" ]; then
 
   git add cdk.out/
 
-  echo "✅ cdk.out sanitizado y agregado al commit"
+  if ! git diff --cached --quiet -- cdk.out; then
+    echo "❌ cdk.out cambió durante el pre-push."
+    echo "   Por favor haz commit del cdk.out sanitizado y vuelve a intentar."
+    git status -sb -- cdk.out
+    exit 1
+  fi
+
+  echo "✅ cdk.out sanitizado y agregado al index"
 else
   echo "ℹ️  No se encontró cdk.out, omitiendo sanitización"
 fi

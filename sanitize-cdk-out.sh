@@ -10,7 +10,10 @@ if [ ! -d "cdk.out" ]; then
     exit 1
 fi
 
-# Crear backup
+# Crear backup limpio
+if [ -e "cdk.out.backup" ]; then
+    rm -rf cdk.out.backup
+fi
 cp -r cdk.out cdk.out.backup
 
 # Reemplazar Account ID
