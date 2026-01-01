@@ -1,7 +1,7 @@
 # Proyecto Final - Curso de Arquitecto de Soluciones AWS
 
-[![CI](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml)
-[![Deploy](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml/badge.svg?branch=develop)](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml)
+[![CI](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml)
+[![Deploy](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 ![Nx](https://img.shields.io/badge/Nx-143055?logo=nx&logoColor=white)
 ![Angular](https://img.shields.io/badge/Angular-DD0031?logo=angular&logoColor=white)
@@ -131,6 +131,10 @@ npm run docs:sync-openapi
 ```
 
 ### Frontend Docs (Compodoc)
+
+![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/images/coverage-badge-documentation.svg)
+
+Publicado en GitHub Pages: https://fjbatresv.github.io/sdg19-final/
 
 ```bash
 npx nx run web:docs

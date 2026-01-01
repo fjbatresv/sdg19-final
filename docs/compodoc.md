@@ -1,5 +1,9 @@
 # Compodoc (Frontend)
 
+![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/images/coverage-badge-documentation.svg)
+
+Disponible en github pages: <https://fjbatresv.github.io/sdg19-final>
+
 ## Generar documentación local
 
 ```bash
