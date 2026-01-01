@@ -157,15 +157,15 @@ export class ShopComponent {
   /**
    * Success message when an order is created.
    */
-  noticeMessage = '';
+  noticeMessage = signal('');
   /**
    * Error message when order creation fails.
    */
-  orderErrorMessage = '';
+  orderErrorMessage = signal('');
   /**
    * Error message when currencies are mixed in the cart.
    */
-  cartCurrencyError = '';
+  cartCurrencyError = signal('');
 
   /**
    * Total number of items in the cart.
@@ -223,19 +223,17 @@ export class ShopComponent {
     const items = [...this.cart()];
     const currentCurrency = this.cartCurrency();
     if (currentCurrency !== 'USD' && currentCurrency !== product.currency) {
-      this.cartCurrencyError =
-        'No puedes mezclar monedas en el carrito.';
+      this.cartCurrencyError.set('No puedes mezclar monedas en el carrito.');
       return;
     }
     if (currentCurrency === 'USD' && items.length > 0) {
       const existingCurrency = items[0]?.product.currency ?? 'USD';
       if (existingCurrency !== product.currency) {
-        this.cartCurrencyError =
-          'No puedes mezclar monedas en el carrito.';
+        this.cartCurrencyError.set('No puedes mezclar monedas en el carrito.');
         return;
       }
     }
-    this.cartCurrencyError = '';
+    this.cartCurrencyError.set('');
     const existing = items.find((item) => item.product.id === product.id);
     if (existing) {
       existing.quantity += 1;
@@ -270,8 +268,8 @@ export class ShopComponent {
       return;
     }
     this.ordering.set(true);
-    this.noticeMessage = '';
-    this.orderErrorMessage = '';
+    this.noticeMessage.set('');
+    this.orderErrorMessage.set('');
     const items = this.cart().map((item) => ({
       productId: item.product.id,
       quantity: item.quantity,
@@ -280,12 +278,13 @@ export class ShopComponent {
       next: (order) => {
         this.ordering.set(false);
         this.cart.set([]);
-        this.noticeMessage = `Orden ${order.orderId} creada.`;
+        this.noticeMessage.set(`Orden ${order.orderId} creada.`);
       },
       error: (err) => {
         this.ordering.set(false);
-        this.orderErrorMessage =
-          err?.error?.message ?? 'No pudimos crear la orden.';
+        this.orderErrorMessage.set(
+          err?.error?.message ?? 'No pudimos crear la orden.'
+        );
       },
     });
   }
