@@ -109,6 +109,26 @@
       "options": {
         "command": "tsc -p apps/web/tsconfig.app.json --noEmit"
       }
+    },
+    "docs": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/compodoc/web"],
+      "options": {
+        "command": "npx compodoc -c .compodocrc.json"
+      }
+    },
+    "docs:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx compodoc -c .compodocrc.json --coverageTest=80 --coverageTestShowOnlyFailed --coverageTestThresholdFail true --coverageMinimumPerFile 25"
+      }
+    },
+    "docs:check": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/compodoc/web"],
+      "options": {
+        "commands": ["nx run web:docs:coverage", "nx run web:docs"]
+      }
     }
   }
 }

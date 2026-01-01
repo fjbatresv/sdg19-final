@@ -1,0 +1,5 @@
+{
+  "tsconfig": "apps/web/tsconfig.app.json",
+  "output": "dist/compodoc/web",
+  "name": "SDG19 Web Docs"
+}
