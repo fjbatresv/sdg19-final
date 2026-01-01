@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+echo "🧪 Pre-commit: ejecutando lint, test, build y docs:check para cambios afectados..."
+
+npx nx affected -t lint test build docs:check --parallel=3
+
+echo "🎉 Pre-commit completado exitosamente"
