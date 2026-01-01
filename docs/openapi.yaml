@@ -200,6 +200,8 @@ components:
       name: nextToken
       schema:
         type: string
+        minLength: 1
+        maxLength: 1024
       description: Cursor de paginacion devuelto por la respuesta previa.
   schemas:
     RegisterRequest:
