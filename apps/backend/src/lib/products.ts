@@ -1,13 +1,6 @@
-export interface Product {
-  id: string;
-  name: string;
-  description?: string;
-  imageUrl?: string;
-  price: number;
-  currency: string;
-  availableQuantity: number;
-  inStock: boolean;
-}
+import type { Product } from '@org/shared-types';
+
+export type { Product } from '@org/shared-types';
 
 export const products: Product[] = [
   {
