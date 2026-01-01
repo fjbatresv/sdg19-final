@@ -77,7 +77,7 @@ interface AuthSession {
 }
 
 /**
- * LocalStorage key used to persist the auth session.
+ * SessionStorage key used to persist the auth session.
  */
 const STORAGE_KEY = 'sdg19.auth';
 
@@ -149,7 +149,7 @@ export class AuthService {
    * Clears local session state and storage.
    */
   logout() {
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
     this.sessionSubject.next(null);
   }
 
@@ -247,7 +247,7 @@ export class AuthService {
       email: meta.email,
       name: meta.name,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
     return session;
   }
 
@@ -288,7 +288,7 @@ export class AuthService {
    * Loads any persisted session from local storage.
    */
   private loadSession(): AuthSession | null {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) {
       return null;
     }
