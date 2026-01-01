@@ -1,0 +1,34 @@
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+  mermaid.initialize({ startOnLoad: false, theme: 'default' });
+
+  const renderMermaid = async () => {
+    const blocks = document.querySelectorAll('.mermaid');
+    if (!blocks.length) {
+      return;
+    }
+
+    for (const container of blocks) {
+      const text = container.textContent?.trim() ?? '';
+      if (!text) {
+        continue;
+      }
+
+      const id = `mermaid-${Math.random().toString(36).slice(2)}`;
+      try {
+        const { svg } = await mermaid.render(id, text);
+        container.innerHTML = svg;
+      } catch (error) {
+        console.warn('Mermaid render failed', error);
+      }
+    }
+  };
+
+  document.addEventListener('astro:page-load', renderMermaid);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderMermaid);
+  } else {
+    renderMermaid();
+  }
+</script>

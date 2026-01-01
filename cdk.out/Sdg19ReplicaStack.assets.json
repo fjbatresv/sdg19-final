@@ -1,0 +1,51 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6": {
+      "displayName": "Sdg19ReplicaStack/Custom::S3AutoDeleteObjectsCustomResourceProvider Code",
+      "source": {
+        "path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "123456789012-us-east-2-2d5a1772": {
+          "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
+          "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "region": "us-east-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
+        }
+      }
+    },
+    "8a17fb3ceee821f797100bf65fa3047c164a08c03aa5a07fbcff9a676fb73b97": {
+      "displayName": "Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider Code",
+      "source": {
+        "path": "asset.8a17fb3ceee821f797100bf65fa3047c164a08c03aa5a07fbcff9a676fb73b97",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "123456789012-us-east-2-f4b3f583": {
+          "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
+          "objectKey": "8a17fb3ceee821f797100bf65fa3047c164a08c03aa5a07fbcff9a676fb73b97.zip",
+          "region": "us-east-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
+        }
+      }
+    },
+    "e4b640d82e00e9ac6fd24daa8b310784448c4e4887f4199f8560b1140029d218": {
+      "displayName": "Sdg19ReplicaStack Template",
+      "source": {
+        "path": "Sdg19ReplicaStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "123456789012-us-east-2-63e9a3b5": {
+          "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
+          "objectKey": "e4b640d82e00e9ac6fd24daa8b310784448c4e4887f4199f8560b1140029d218.json",
+          "region": "us-east-2",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

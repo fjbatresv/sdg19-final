@@ -45,7 +45,8 @@ Thumbs.db
 .github/instructions/nx.instructions.md
 
 .angular
-cdk.out
+# cdk.out - Commented out to allow Snyk scanning of sanitized templates
+# cdk.out
 
 __screenshots__/
 

@@ -1,0 +1,70 @@
+name: Docs (Starlight + Compodoc)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Use npm 11.6.2
+        run: npm i -g npm@11.6.2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Compodoc and enforce coverage
+        run: npx nx run web:docs:check
+
+      - name: Patch Compodoc base href for GitHub Pages
+        run: COMPODOC_BASE_PATH=/${{ github.event.repository.name }}/compodoc/ node tools/compodoc/patch-base.js
+
+      - name: Generate TypeDoc and OpenAPI
+        run: npm run docs:check
+
+      - name: Build Starlight site
+        env:
+          ASTRO_BASE: /${{ github.event.repository.name }}/
+        run: npm run docs:build
+
+      - name: Assemble GitHub Pages site
+        run: |
+          mkdir -p dist/gh-pages/compodoc dist/gh-pages/api-typedoc
+          cp -R dist/docs-site/. dist/gh-pages/
+          cp -R dist/compodoc/web/. dist/gh-pages/compodoc/
+          cp -R docs/api-typedoc/. dist/gh-pages/api-typedoc/
+
+      - name: Configure Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: dist/gh-pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
