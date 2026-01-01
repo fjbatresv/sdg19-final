@@ -43,6 +43,16 @@ export default defineConfig({
             { label: 'Deploy', slug: 'deploy' },
             { label: 'Code Docs', slug: 'code-docs' },
             { label: 'Compodoc', slug: 'compodoc' },
+            {
+              label: 'Compodoc (web)',
+              link: '/compodoc/',
+              attrs: { target: '_blank', rel: 'noopener' },
+            },
+            {
+              label: 'TypeDoc',
+              link: '/api-typedoc/',
+              attrs: { target: '_blank', rel: 'noopener' },
+            },
             { label: 'API Reference', slug: 'api-reference' },
             { label: 'API Playground', slug: 'api-playground' },
           ],
