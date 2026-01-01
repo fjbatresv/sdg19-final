@@ -7,6 +7,6 @@
     "composite": true,
     "types": []
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "../../libs/shared-types/src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }
