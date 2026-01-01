@@ -1,3 +1,6 @@
+/**
+ * Normalizes runtime strings, returning undefined for empty values.
+ */
 const normalize = (value?: string) => {
   const trimmed = value?.trim();
   return trimmed ? trimmed : undefined;

@@ -3,6 +3,9 @@
  */
 import { resolveApiBaseUrl } from './runtime';
 
+/**
+ * Environment settings used by the app at runtime.
+ */
 export const environment = {
   apiBaseUrl: resolveApiBaseUrl('http://localhost:3000'),
 };
