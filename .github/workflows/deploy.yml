@@ -229,6 +229,18 @@ jobs:
           name: web-dist
           path: dist/web
 
+      - name: Inject API base URL
+        run: |
+          ENV_PATH="dist/web/assets/env.js"
+          if [ ! -f "$ENV_PATH" ]; then
+            echo "env.js not found at ${ENV_PATH}"
+            exit 1
+          fi
+          cat <<EOF > "$ENV_PATH"
+          window.__env = window.__env || {};
+          window.__env.apiBaseUrl = "https://${API_DOMAIN_NAME}";
+          EOF
+
       - name: Publish web to S3 and invalidate CloudFront
         run: |
           WEB_BUCKET=$(aws cloudformation describe-stacks \
