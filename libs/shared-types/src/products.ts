@@ -1,10 +1,10 @@
 /**
- * Product entry shared between backend and web clients.
+ * Currency codes supported by the storefront.
  */
 export type CurrencyCode = 'USD' | 'EUR' | 'GTQ';
 
 /**
- * Currency codes supported by the storefront.
+ * Product entry shared between backend and web clients.
  */
 export interface Product {
   /** Product identifier. */
