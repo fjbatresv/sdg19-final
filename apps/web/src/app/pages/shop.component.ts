@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OrdersService } from '../services/orders.service';
-import { Product, ProductsService } from '../services/products.service';
+import { ProductsService } from '../services/products.service';
+import type { Product } from '@org/shared-types';
 
 /**
  * Shopping cart line item.
@@ -103,8 +104,8 @@ interface CartItem {
               {{ formatMoney(cartTotal(), cartCurrency()) }}
             </p>
           </div>
-          @if (cartCurrencyError) {
-            <p class="error">{{ cartCurrencyError }}</p>
+          @if (cartCurrencyError()) {
+            <p class="error">{{ cartCurrencyError() }}</p>
           }
           <button
             class="primary"
@@ -113,11 +114,11 @@ interface CartItem {
           >
             {{ ordering() ? 'Enviando...' : 'Crear orden' }}
           </button>
-          @if (noticeMessage) {
-            <p class="success">{{ noticeMessage }}</p>
+          @if (noticeMessage()) {
+            <p class="success">{{ noticeMessage() }}</p>
           }
-          @if (orderErrorMessage) {
-            <p class="error">{{ orderErrorMessage }}</p>
+          @if (orderErrorMessage()) {
+            <p class="error">{{ orderErrorMessage() }}</p>
           }
         </div>
       </aside>
