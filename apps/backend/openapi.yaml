@@ -358,7 +358,7 @@ components:
           type: integer
           format: int32
           minimum: 1
-          maximum: 10000
+          maximum: 1000
         unitPrice:
           type: integer
           format: int64

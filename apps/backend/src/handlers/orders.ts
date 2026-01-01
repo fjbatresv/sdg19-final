@@ -67,6 +67,8 @@ function parseExclusiveStartKey(token: string) {
   }
 }
 
+const MAX_ITEM_QUANTITY = Number(process.env.MAX_ITEM_QUANTITY ?? 1000);
+
 /**
  * Create an order for the authenticated user.
  */
@@ -89,8 +91,14 @@ export async function createOrderHandler(event: APIGatewayProxyEventV2) {
         throw new Error(`Producto invalido: ${item.productId}`);
       }
       const quantity = Number(item.quantity);
-      if (!Number.isFinite(quantity) || quantity < 1 || quantity > 10000) {
-        throw new Error(`Cantidad invalida para ${item.productId}`);
+      if (
+        !Number.isFinite(quantity) ||
+        quantity < 1 ||
+        quantity > MAX_ITEM_QUANTITY
+      ) {
+        throw new Error(
+          `Cantidad invalida para ${item.productId}. Maximo ${MAX_ITEM_QUANTITY}.`
+        );
       }
       if (!orderCurrency) {
         orderCurrency = product.currency;
