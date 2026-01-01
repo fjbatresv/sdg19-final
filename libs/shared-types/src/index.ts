@@ -1,1 +1,1 @@
-export type { Product } from './products.js';
+export type { CurrencyCode, Product } from './products.js';

@@ -1,6 +1,11 @@
 /**
  * Product entry shared between backend and web clients.
  */
+export type CurrencyCode = 'USD' | 'EUR' | 'GTQ';
+
+/**
+ * Currency codes supported by the storefront.
+ */
 export interface Product {
   /** Product identifier. */
   id: string;
@@ -13,9 +18,7 @@ export interface Product {
   /** Price in cents. */
   price: number;
   /** Currency code for the price. */
-  currency: string;
+  currency: CurrencyCode;
   /** Quantity available for purchase. */
   availableQuantity: number;
-  /** Whether the product is currently in stock. */
-  inStock: boolean;
 }

@@ -37,7 +37,6 @@ const FALLBACK_PRODUCTS: Product[] = [
     price: 2999,
     currency: 'USD',
     availableQuantity: 25,
-    inStock: true,
   },
   {
     id: 'prod-002',
@@ -46,7 +45,6 @@ const FALLBACK_PRODUCTS: Product[] = [
     price: 5999,
     currency: 'USD',
     availableQuantity: 12,
-    inStock: true,
   },
   {
     id: 'prod-003',
@@ -55,7 +53,6 @@ const FALLBACK_PRODUCTS: Product[] = [
     price: 12999,
     currency: 'USD',
     availableQuantity: 4,
-    inStock: true,
   },
 ];
 
