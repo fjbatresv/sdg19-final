@@ -257,6 +257,10 @@ export class PrimaryStack extends Stack {
       accountRecovery: AccountRecovery.EMAIL_ONLY,
       passwordPolicy: {
         minLength: 10,
+        requireUppercase: true,
+        requireLowercase: true,
+        requireNumbers: true,
+        requireSymbols: true,
       },
     });
 
