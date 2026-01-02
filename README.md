@@ -156,6 +156,12 @@ Para levantar el preview local del build estático:
 npm run docs:preview
 ```
 
+Guías en Starlight:
+
+- Astro Starlight: `docs-site/src/content/docs/astro.mdx`
+- Compodoc: `docs-site/src/content/docs/compodoc.md`
+- TypeDoc: `docs-site/src/content/docs/typedoc.mdx`
+
 ### Frontend Docs (Compodoc)
 
 ![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/compodoc/images/coverage-badge-documentation.svg)
@@ -184,6 +190,10 @@ npx nx run backend:test --configuration=ci
 npx nx run web:test:ci
 npx nx run infra:test --configuration=ci
 ```
+
+Notas:
+- `web:test:ci` corre unit tests (Vitest). No hay e2e configurado todavía.
+- Los thresholds aplican a lines/statements/branches/functions.
 
 Guia completa: `docs/testing.md`.
 

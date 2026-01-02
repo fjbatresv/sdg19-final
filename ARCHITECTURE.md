@@ -45,6 +45,18 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
 - SNS -> SQS (orders lake queue) -> Lambda (order-lake)
 - Lambda (order-lake) -> Kinesis Data Stream -> Firehose -> S3 (DataBucket)
 
+## Documentación
+
+- Astro Starlight: portal principal (guías y arquitectura).
+- API reference/playground: Swagger UI con OpenAPI sincronizado.
+- TypeDoc: API del backend en `docs/api-typedoc/`.
+- Compodoc: documentación del frontend con cobertura.
+
+## Testing y calidad
+
+- Cobertura mínima >= 80% por proyecto (backend, web e infra) con LCOV.
+- SonarCloud consume los reportes y aplica Quality Gates.
+
 ## Fases
 
 - Fase 1: registro, autenticación, productos, órdenes, lectura de órdenes.

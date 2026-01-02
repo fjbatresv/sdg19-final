@@ -42,6 +42,11 @@ https://<org>.github.io/<repo>/
 Para asegurar que el sitio funcione bajo subpath, el workflow aplica un patch
 del `<base href>` usando `tools/compodoc/patch-base.js`.
 
+## CI
+
+- El workflow `docs-pages.yml` genera Compodoc y lo publica en GitHub Pages.
+- En CI se valida la cobertura con `nx run web:docs:coverage`.
+
 ## Cómo corregir fallos de cobertura
 
 - Añade JSDoc (`/** ... */`) a componentes, servicios y otros artefactos

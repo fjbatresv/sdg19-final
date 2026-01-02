@@ -1,0 +1,25 @@
+---
+title: TypeDoc (Backend)
+---
+
+TypeDoc genera la documentación del API del backend.
+
+## Generar documentación local
+
+```bash
+npx nx run docs:api
+```
+
+Salida: `docs/api-typedoc/`.
+
+## Validar en CI
+
+```bash
+npx nx run docs:check
+```
+
+El target `docs:check` ejecuta la cobertura de JSDoc y TypeDoc.
+
+## GitHub Pages
+
+Publicado en: <https://fjbatresv.github.io/sdg19-final/api-typedoc/>.
