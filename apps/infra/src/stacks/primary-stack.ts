@@ -332,9 +332,12 @@ export class PrimaryStack extends Stack {
       }
     );
 
-    const backendCode = Code.fromAsset(
-      path.resolve(process.cwd(), 'apps/backend/dist')
-    );
+    const backendCodePath =
+      this.node.tryGetContext('backendDistPath') ??
+      process.env.BACKEND_DIST_PATH ??
+      path.resolve(process.cwd(), 'apps/backend/dist');
+
+    const backendCode = Code.fromAsset(backendCodePath);
 
     const registerFn = new Function(this, 'RegisterFn', {
       runtime: Runtime.NODEJS_20_X,

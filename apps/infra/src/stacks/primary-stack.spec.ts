@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { App } from 'aws-cdk-lib';
 import { Match, Template } from 'aws-cdk-lib/assertions';
+import path from 'node:path';
 import { PrimaryStack } from './primary-stack';
 import { ReplicaStack } from './replica-stack';
 
@@ -12,6 +13,7 @@ const createApp = (context: Record<string, string> = {}) =>
       enableLambdaVpc: 'false',
       sesFromAddress: 'no-reply@example.com',
       sesMailFromDomain: 'mail.example.com',
+      backendDistPath: path.resolve(__dirname, '../test-assets/backend-dist'),
       ...context,
     },
   });
