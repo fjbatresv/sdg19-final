@@ -23,6 +23,7 @@ reviews:
     - "!**/dist/**"
     - "!**/node_modules/**"
     - "!**/coverage/**"
+    - "!**/cdk.out/**"
     - "!**/*.lock"
     - "!**/*.map"
 

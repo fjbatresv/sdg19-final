@@ -7,12 +7,12 @@
         <target>Historial</target>
       </trans-unit>
       <trans-unit id="orders.recent">
-        <source>Tus ordenes recientes</source>
-        <target>Tus ordenes recientes</target>
+        <source>Tus órdenes recientes</source>
+        <target>Tus órdenes recientes</target>
       </trans-unit>
       <trans-unit id="orders.backToCatalog">
-        <source>Volver al catalogo</source>
-        <target>Volver al catalogo</target>
+        <source>Volver al catálogo</source>
+        <target>Volver al catálogo</target>
       </trans-unit>
       <trans-unit id="orders.orderId">
         <source>Orden {$INTERPOLATION}</source>
@@ -39,8 +39,8 @@
         <target>Completada</target>
       </trans-unit>
       <trans-unit id="orders.loading">
-        <source>Cargando ordenes...</source>
-        <target>Cargando ordenes...</target>
+        <source>Cargando órdenes...</source>
+        <target>Cargando órdenes...</target>
       </trans-unit>
     </body>
   </file>

@@ -7,10 +7,14 @@ import { APIGatewayProxyEventV2 } from 'aws-lambda';
  */
 export async function optionsHandler(event: APIGatewayProxyEventV2) {
   const origin = event.headers?.origin ?? event.headers?.Origin;
+  const webDomain = process.env.WEB_DOMAIN_NAME;
+  const allowedOrigin = webDomain ? `https://${webDomain}` : undefined;
+  const responseOrigin =
+    allowedOrigin && origin === allowedOrigin ? origin : allowedOrigin ?? '*';
   return {
     statusCode: 204,
     headers: {
-      'access-control-allow-origin': origin ?? '*',
+      'access-control-allow-origin': responseOrigin,
       'access-control-allow-headers':
         'authorization,content-type,x-amz-date,x-api-key,x-amz-security-token,x-amz-user-agent',
       'access-control-allow-methods': 'GET,POST,OPTIONS',

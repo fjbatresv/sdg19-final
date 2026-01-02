@@ -210,7 +210,7 @@ describe('AuthService', () => {
     expect(token).toBeNull();
   });
 
-  it('logs out when refresh token is missing', async () => {
+  it('logs out when refresh token is missing and token is expired', async () => {
     sessionStorage.setItem(
       'sdg19.auth',
       JSON.stringify({

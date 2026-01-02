@@ -52,4 +52,20 @@ describe('AppRoutingModule', () => {
 
     expect(location.path()).toBe('/shop');
   });
+
+  it('redirects unauthenticated users to login', async () => {
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule.withRoutes(appRoutes)],
+      providers: [
+        { provide: API_BASE_URL, useValue: 'https://example.com' },
+        { provide: AuthService, useValue: { isAuthenticated: () => false } },
+      ],
+    });
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+
+    await router.navigateByUrl('/shop');
+
+    expect(location.path()).toBe('/login');
+  });
 });

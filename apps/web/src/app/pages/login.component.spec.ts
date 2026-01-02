@@ -1,23 +1,15 @@
-import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
-import { AuthService } from '../services/auth.service';
+import { setupAuthComponentTest } from '../testing/auth-test-utils';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
   it('submits credentials and navigates on success', () => {
     const auth = { login: vi.fn(() => of({})) };
 
-    TestBed.configureTestingModule({
-      imports: [LoginComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(LoginComponent, auth);
     const router = TestBed.inject(Router);
     const navigateSpy = vi.spyOn(router, 'navigateByUrl');
 
@@ -40,14 +32,7 @@ describe('LoginComponent', () => {
         throwError(() => ({ error: { message: 'bad' } }))
       ),
     };
-    TestBed.configureTestingModule({
-      imports: [LoginComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(LoginComponent, auth);
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
@@ -64,14 +49,7 @@ describe('LoginComponent', () => {
   it('does not submit when form is invalid', () => {
     const auth = { login: vi.fn(() => of({})) };
 
-    TestBed.configureTestingModule({
-      imports: [LoginComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(LoginComponent, auth);
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;
@@ -85,14 +63,7 @@ describe('LoginComponent', () => {
   it('uses default error message when missing', () => {
     const auth = { login: vi.fn(() => throwError(() => ({}))) };
 
-    TestBed.configureTestingModule({
-      imports: [LoginComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(LoginComponent, auth);
 
     const fixture = TestBed.createComponent(LoginComponent);
     const component = fixture.componentInstance;

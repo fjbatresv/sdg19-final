@@ -1,23 +1,15 @@
-import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
-import { AuthService } from '../services/auth.service';
+import { setupAuthComponentTest } from '../testing/auth-test-utils';
 import { RegisterComponent } from './register.component';
 
 describe('RegisterComponent', () => {
   it('submits registration and navigates on success', () => {
     const auth = { register: vi.fn(() => of({})) };
 
-    TestBed.configureTestingModule({
-      imports: [RegisterComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(RegisterComponent, auth);
     const router = TestBed.inject(Router);
     const navigateSpy = vi.spyOn(router, 'navigateByUrl');
 
@@ -41,14 +33,7 @@ describe('RegisterComponent', () => {
         throwError(() => ({ error: { message: 'bad' } }))
       ),
     };
-    TestBed.configureTestingModule({
-      imports: [RegisterComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(RegisterComponent, auth);
 
     const fixture = TestBed.createComponent(RegisterComponent);
     const component = fixture.componentInstance;
@@ -66,14 +51,7 @@ describe('RegisterComponent', () => {
   it('does not submit when form is invalid', () => {
     const auth = { register: vi.fn(() => of({})) };
 
-    TestBed.configureTestingModule({
-      imports: [RegisterComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(RegisterComponent, auth);
 
     const fixture = TestBed.createComponent(RegisterComponent);
     const component = fixture.componentInstance;
@@ -87,14 +65,7 @@ describe('RegisterComponent', () => {
   it('uses default error message when missing', () => {
     const auth = { register: vi.fn(() => throwError(() => ({}))) };
 
-    TestBed.configureTestingModule({
-      imports: [RegisterComponent],
-      providers: [
-        { provide: AuthService, useValue: auth },
-        provideRouter([]),
-        provideLocationMocks(),
-      ],
-    });
+    setupAuthComponentTest(RegisterComponent, auth);
 
     const fixture = TestBed.createComponent(RegisterComponent);
     const component = fixture.componentInstance;

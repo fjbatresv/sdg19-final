@@ -92,7 +92,10 @@ describe('orderLakeHandler', () => {
     const { orderLakeHandler } = await import('./order-lake');
     const message = {
       orderId: 'order-456',
+      userPk: 'user-456',
       createdAt: 'invalid-date',
+      status: 'CREATED',
+      total: 1200,
     };
     const event = buildEvent(JSON.stringify(message));
 

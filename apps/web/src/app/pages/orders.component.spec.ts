@@ -31,6 +31,7 @@ describe('OrdersComponent', () => {
     });
 
     const fixture = TestBed.createComponent(OrdersComponent);
+    fixture.detectChanges();
     const component = fixture.componentInstance;
     expect(component.loading()).toBe(false);
     expect(component.orders().length).toBe(1);
@@ -54,7 +55,9 @@ describe('OrdersComponent', () => {
     });
 
     const fixture = TestBed.createComponent(OrdersComponent);
+    fixture.detectChanges();
     const component = fixture.componentInstance;
+    expect(ordersService.listOrders).toHaveBeenCalled();
     expect(component.error()).toBe('bad');
   });
 
@@ -72,6 +75,7 @@ describe('OrdersComponent', () => {
     });
 
     const fixture = TestBed.createComponent(OrdersComponent);
+    fixture.detectChanges();
     const component = fixture.componentInstance;
     expect(component.error()).toBe('No pudimos cargar las ordenes.');
   });

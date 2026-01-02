@@ -25,6 +25,7 @@ describe('authInterceptor', () => {
     );
 
     await firstValueFrom(response$);
+    expect(next).toHaveBeenCalledTimes(1);
     const calledRequest = next.mock.calls[0][0] as HttpRequest<unknown>;
     expect(calledRequest.headers.get('authorization')).toBe('Bearer token-123');
   });
@@ -48,6 +49,7 @@ describe('authInterceptor', () => {
     );
 
     await firstValueFrom(response$);
+    expect(next).toHaveBeenCalledTimes(1);
     const calledRequest = next.mock.calls[0][0] as HttpRequest<unknown>;
     expect(calledRequest.headers.has('authorization')).toBe(false);
   });

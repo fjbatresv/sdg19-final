@@ -8,5 +8,5 @@ import { resolveApiBaseUrl } from './runtime';
  */
 export const environment = {
   apiBaseUrl: resolveApiBaseUrl('http://localhost:3000'),
-  frontendDomain: 'sdg19final.link',
+  frontendDomain: 'localhost',
 };
