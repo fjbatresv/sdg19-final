@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fjbatresv/sdg19-final/actions/workflows/ci.yml)
 [![Deploy](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/fjbatresv/sdg19-final/actions/workflows/deploy.yml)
+[![Docs Pages](https://github.com/fjbatresv/sdg19-final/actions/workflows/docs-pages.yml/badge.svg?branch=main)](https://github.com/fjbatresv/sdg19-final/actions/workflows/docs-pages.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 ![Nx](https://img.shields.io/badge/Nx-143055?logo=nx&logoColor=white)
 ![Angular](https://img.shields.io/badge/Angular-DD0031?logo=angular&logoColor=white)
@@ -116,11 +117,20 @@ npx nx run web:build:production
 
 ## Documentación
 
-La documentacion vive en `docs-site/` (Astro Starlight) y `docs/api-typedoc/`
+La documentación vive en `docs-site/` (Astro Starlight) y `docs/api-typedoc/`
 (TypeDoc).
 
-Sitio publicado: https://fjbatresv.github.io/sdg19-final/
-Compodoc: https://fjbatresv.github.io/sdg19-final/compodoc/
+GitHub Pages publica las docs en:
+
+- Sitio principal (Starlight): https://fjbatresv.github.io/sdg19-final/
+- API reference / playground: https://fjbatresv.github.io/sdg19-final/api-reference/
+- Compodoc (frontend): https://fjbatresv.github.io/sdg19-final/compodoc/
+- TypeDoc (backend): https://fjbatresv.github.io/sdg19-final/api-typedoc/
+
+Badges de documentación:
+
+- Compodoc coverage: <https://fjbatresv.github.io/sdg19-final/compodoc/images/coverage-badge-documentation.svg>
+- Docs Pages workflow: <https://github.com/fjbatresv/sdg19-final/actions/workflows/docs-pages.yml>
 
 ```bash
 npm run docs:dev
@@ -148,7 +158,7 @@ npm run docs:preview
 
 ### Frontend Docs (Compodoc)
 
-![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/images/coverage-badge-documentation.svg)
+![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/compodoc/images/coverage-badge-documentation.svg)
 
 Publicado en GitHub Pages: https://fjbatresv.github.io/sdg19-final/
 

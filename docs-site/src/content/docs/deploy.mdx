@@ -9,4 +9,38 @@ Para configurar el deploy:
 2. Crear el Identity Provider OIDC de GitHub Actions.
 3. Crear el role y adjuntar la policy de permisos.
 
-Ver `DEPLOY.md` para los pasos completos y los JSON de referencia.
+### Requisitos
+
+- Hosted Zone y subdominios configurados (root, api, web).
+- OIDC provider de GitHub Actions.
+- Role con permisos mínimos para CDK y despliegue.
+- Variables/inputs para el pipeline (account, regiones, dominios, SES).
+
+### Inputs esperados (workflow deploy)
+
+El workflow `deploy.yml` consume un `config_json` con los valores de despliegue:
+
+```json
+{
+  "aws_account_id": "123456789012",
+  "aws_region_primary": "us-east-1",
+  "aws_region_replica": "us-east-2",
+  "hosted_zone_id": "Z0ABCDEF1234567XYZ",
+  "domains": {
+    "root": "example.dev",
+    "api": "api.example.dev",
+    "web": "web.example.dev"
+  },
+  "ses": {
+    "from": "no-reply@example.dev",
+    "mail_from": "mail.example.dev"
+  },
+  "enable_lambda_vpc": false,
+  "aws_role_name": "sdg19-deploy-role"
+}
+```
+
+### Referencias
+
+- `DEPLOY.md`: pasos completos y configuración detallada.
+- `oidc_role/`: JSON para crear el OIDC provider, trust policy y permisos.

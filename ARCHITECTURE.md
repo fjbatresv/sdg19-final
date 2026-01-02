@@ -25,6 +25,7 @@ Este documento resume la implementación en AWS basada en `architecture.drawio`.
   - `EmailsReplicaBucket` (us-east-2): replica del bucket de emails
 - SES: identidad de dominio + DKIM + MAIL FROM (subdominio mail.*) para envío.
 - X-Ray: trazas activas para Lambdas.
+- GitHub Pages: hosting de documentación (Starlight, API reference/playground, TypeDoc y Compodoc).
 
 ## Flujo API
 

@@ -1,46 +1,48 @@
 ---
-title: Code Documentation Coverage
+title: Cobertura de documentación de código
 ---
 
-## Why we replaced doc-coverage
+## Por qué reemplazamos doc-coverage
 
-`doc-coverage` scans a generic `src/` folder and mixes internal helpers with
-public APIs. In this repo, public APIs live in entrypoints such as `main.ts`
-and (when present) `index.ts` or `public-api.ts`. We replaced it with a
-ts-morph-based check that focuses on exported symbols from those entrypoints.
+`doc-coverage` escanea un `src/` genérico y mezcla helpers internos con APIs
+públicas. En este repositorio, las APIs públicas viven en entrypoints como
+`main.ts` y (cuando aplica) `index.ts` o `public-api.ts`. Lo reemplazamos por
+una verificación basada en ts-morph que se enfoca en símbolos exportados desde
+esos entrypoints.
 
-## What counts as public API
+## Qué se considera API pública
 
-The metric only counts exported declarations from:
+La métrica solo cuenta declaraciones exportadas desde:
 
 - `libs/**/src/index.ts`
 - `libs/**/src/public-api.ts`
 - `packages/**/src/index.ts`
 - `apps/**/src/main.ts`
 
-Only these declaration kinds are counted:
+Solo se cuentan estos tipos de declaraciones:
 
-- functions
-- classes
+- funciones
+- clases
 - interfaces
-- types
+- tipos
 - enums
 
-## Run locally
+## Ejecutar en local
 
 ```bash
 npm run docs:coverage
 npm run docs:check
 ```
 
-## Fixing failures
+## Cómo corregir fallos
 
-When coverage is below the threshold, the script lists missing docs with
-`file:line`. Add a short JSDoc description to the exported declaration:
+Cuando la cobertura está por debajo del umbral, el script lista las
+declaraciones sin documentación con `file:line`. Agrega una descripción
+corta de JSDoc al export:
 
 ```ts
 /**
- * Creates a new order for the authenticated user.
+ * Crea una nueva orden para el usuario autenticado.
  */
 export async function createOrderHandler(...) { ... }
 ```
