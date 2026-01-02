@@ -105,6 +105,23 @@ describe('PrimaryStack', () => {
     ).toThrowError(/hostedZoneId is required/);
   });
 
+  it('throws when emailsReplicaKmsKeyArn is missing', () => {
+    const app = createApp();
+    const replica = new ReplicaStack(app, 'ReplicaMissingKms', {
+      env: { account: '111111111111', region: 'us-east-2' },
+    });
+
+    expect(
+      () =>
+        new PrimaryStack(app, 'PrimaryMissingKms', {
+          env: { account: '111111111111', region: 'us-east-1' },
+          crossRegionReferences: true,
+          emailsReplicaBucket: replica.emailsReplicaBucket,
+          emailsReplicaKmsKeyArn: undefined as unknown as string,
+        })
+    ).toThrowError(/emailsReplicaKmsKeyArn is required/);
+  });
+
   it('throws when SES configuration is missing', () => {
     const app = createApp({
       sesFromAddress: '',
@@ -123,6 +140,26 @@ describe('PrimaryStack', () => {
           emailsReplicaKmsKeyArn: replica.emailsReplicaKmsKeyArn,
         })
     ).toThrowError(/sesFromAddress is required/);
+  });
+
+  it('throws when SES mail-from domain is empty', () => {
+    const app = createApp({
+      sesFromAddress: 'no-reply@example.com',
+      sesMailFromDomain: '',
+    });
+    const replica = new ReplicaStack(app, 'ReplicaNoMailFrom', {
+      env: { account: '111111111111', region: 'us-east-2' },
+    });
+
+    expect(
+      () =>
+        new PrimaryStack(app, 'PrimaryNoMailFrom', {
+          env: { account: '111111111111', region: 'us-east-1' },
+          crossRegionReferences: true,
+          emailsReplicaBucket: replica.emailsReplicaBucket,
+          emailsReplicaKmsKeyArn: replica.emailsReplicaKmsKeyArn,
+        })
+    ).toThrowError(/sesMailFromDomain is required/);
   });
 
   it('creates resources when VPC is enabled and hosted zone is supplied', () => {
