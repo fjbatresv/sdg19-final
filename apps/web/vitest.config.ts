@@ -6,7 +6,7 @@ export default defineConfig({
     globals: true,
     coverage: {
       provider: 'v8',
-      reportsDirectory: '../../coverage/apps/web',
+      reportsDirectory: 'coverage/apps/web',
       reporter: ['lcov', 'text', 'text-summary'],
       exclude: [
         '**/*.spec.ts',
