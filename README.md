@@ -170,6 +170,23 @@ npx nx run web:docs:check
 
 Guia completa: `docs-site/src/content/docs/compodoc.md`.
 
+## Testing y coverage
+
+Los tests se ejecutan por proyecto con cobertura >= 80% y generan LCOV en:
+
+- Backend: `coverage/apps/backend/lcov.info`
+- Frontend: `coverage/apps/web/lcov.info`
+- Infra: `coverage/apps/infra/lcov.info`
+
+```bash
+npm run test:ci
+npx nx run backend:test --configuration=ci
+npx nx run web:test:ci
+npx nx run infra:test --configuration=ci
+```
+
+Guia completa: `docs/testing.md`.
+
 ## Deploy (local)
 
 ```bash
