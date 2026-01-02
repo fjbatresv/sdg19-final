@@ -34,7 +34,10 @@ describe('OrdersComponent', () => {
     const component = fixture.componentInstance;
     expect(component.loading()).toBe(false);
     expect(component.orders().length).toBe(1);
-    expect(component.formatMoney(1000, 'USD')).toContain('$');
+    expect(component.formatMoney(1000, 'USD')).toBe('$10.00');
+    expect(component.formatMoney(0, 'USD')).toBe('$0.00');
+    expect(component.formatMoney(250, 'EUR')).toBe('€2.50');
+    expect(component.formatMoney(-500, 'USD')).toBe('-$5.00');
   });
 
   it('sets an error when loading fails', () => {

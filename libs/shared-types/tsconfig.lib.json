@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "../../dist/libs/shared-types",
-    "rootDir": "src",
+    "rootDir": ".",
     "declaration": true,
     "composite": true,
     "tsBuildInfoFile": "../../dist/libs/shared-types/tsconfig.lib.tsbuildinfo"

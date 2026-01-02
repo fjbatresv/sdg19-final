@@ -105,6 +105,9 @@ describe('orderLakeHandler', () => {
     const { orderLakeHandler } = await import('./order-lake');
     const message = {
       orderId: 'order-456',
+      userPk: 'user-456',
+      createdAt: '2025-12-29T12:00:00Z',
+      status: 'CREATED',
       total: 'bad' as unknown as number,
     };
     const event = buildEvent(JSON.stringify(message));
@@ -134,10 +137,13 @@ describe('orderLakeHandler', () => {
     const message = {
       orderId: 'order-789',
       createdAt: '2025-12-29T12:00:00Z',
+      userPk: 'user-789',
+      status: 'CREATED',
     };
     const event = buildEvent(JSON.stringify(message));
 
     const response = await orderLakeHandler(event);
     expect(response.batchItemFailures).toEqual([]);
+    expect(kinesisSendMock).toHaveBeenCalledTimes(1);
   });
 });

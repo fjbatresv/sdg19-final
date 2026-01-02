@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 /**
  * Enforces the frontend password complexity requirements.
@@ -40,6 +41,10 @@ export class RegisterComponent {
    * Error message to display on failed registration.
    */
   error = signal('');
+  /**
+   * Domain used in email placeholders.
+   */
+  readonly frontendDomain = environment.frontendDomain;
 
   /**
    * Registration form controls.

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+  <file source-language="es" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="orders.history">
+        <source>Historial</source>
+      </trans-unit>
+      <trans-unit id="orders.recent">
+        <source>Tus ordenes recientes</source>
+      </trans-unit>
+      <trans-unit id="orders.backToCatalog">
+        <source>Volver al catalogo</source>
+      </trans-unit>
+      <trans-unit id="orders.orderId">
+        <source>Orden {$INTERPOLATION}</source>
+      </trans-unit>
+      <trans-unit id="orders.createdAt">
+        <source>Creada {$INTERPOLATION}</source>
+      </trans-unit>
+      <trans-unit id="orders.status.created">
+        <source>Creada</source>
+      </trans-unit>
+      <trans-unit id="orders.status.pending">
+        <source>Pendiente</source>
+      </trans-unit>
+      <trans-unit id="orders.status.failed">
+        <source>Fallida</source>
+      </trans-unit>
+      <trans-unit id="orders.status.completed">
+        <source>Completada</source>
+      </trans-unit>
+      <trans-unit id="orders.loading">
+        <source>Cargando ordenes...</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

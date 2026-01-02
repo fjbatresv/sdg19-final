@@ -17,7 +17,7 @@ Salida de cobertura:
 
 ```bash
 npx nx run web:test
-npx nx run web:test:ci
+npx nx run web:test --configuration=ci
 ```
 
 Salida de cobertura:

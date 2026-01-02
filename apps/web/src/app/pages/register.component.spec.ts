@@ -1,6 +1,6 @@
+import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { AuthService } from '../services/auth.service';
@@ -11,8 +11,12 @@ describe('RegisterComponent', () => {
     const auth = { register: vi.fn(() => of({})) };
 
     TestBed.configureTestingModule({
-      imports: [RegisterComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [RegisterComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
     const router = TestBed.inject(Router);
     const navigateSpy = vi.spyOn(router, 'navigateByUrl');
@@ -38,8 +42,12 @@ describe('RegisterComponent', () => {
       ),
     };
     TestBed.configureTestingModule({
-      imports: [RegisterComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [RegisterComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
 
     const fixture = TestBed.createComponent(RegisterComponent);
@@ -59,8 +67,12 @@ describe('RegisterComponent', () => {
     const auth = { register: vi.fn(() => of({})) };
 
     TestBed.configureTestingModule({
-      imports: [RegisterComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [RegisterComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
 
     const fixture = TestBed.createComponent(RegisterComponent);
@@ -76,8 +88,12 @@ describe('RegisterComponent', () => {
     const auth = { register: vi.fn(() => throwError(() => ({}))) };
 
     TestBed.configureTestingModule({
-      imports: [RegisterComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [RegisterComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
 
     const fixture = TestBed.createComponent(RegisterComponent);

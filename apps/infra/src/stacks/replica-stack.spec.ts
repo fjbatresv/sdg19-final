@@ -27,6 +27,38 @@ describe('ReplicaStack', () => {
         IgnorePublicAcls: true,
         RestrictPublicBuckets: true,
       },
+      VersioningConfiguration: {
+        Status: 'Enabled',
+      },
+      LifecycleConfiguration: {
+        Rules: Match.arrayWith([
+          Match.objectLike({
+            Status: 'Enabled',
+            Transitions: Match.arrayWith([
+              Match.objectLike({
+                StorageClass: 'GLACIER',
+                TransitionInDays: 365,
+              }),
+            ]),
+            ExpirationInDays: 3650,
+          }),
+        ]),
+      },
+    });
+
+    template.hasResourceProperties('AWS::S3::BucketPolicy', {
+      PolicyDocument: {
+        Statement: Match.arrayWith([
+          Match.objectLike({
+            Effect: 'Deny',
+            Condition: {
+              Bool: {
+                'aws:SecureTransport': 'false',
+              },
+            },
+          }),
+        ]),
+      },
     });
   });
 });

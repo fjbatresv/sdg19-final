@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { createOrderHandler, listOrdersHandler } from './orders';
 import { docClient } from '../lib/dynamo';
@@ -95,6 +95,10 @@ describe('orders handlers', () => {
   beforeEach(() => {
     process.env.TABLE_NAME = 'OrdersTable';
     vi.resetAllMocks();
+  });
+
+  afterEach(() => {
+    delete process.env.TABLE_NAME;
   });
 
   it('rejects unauthenticated order creation', async () => {

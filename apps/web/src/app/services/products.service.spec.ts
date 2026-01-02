@@ -59,6 +59,12 @@ describe('ProductsService', () => {
 
     const items = await promise;
     expect(items.length).toBeGreaterThan(0);
+    const first = items[0];
+    expect(first.id).toBeTruthy();
+    expect(typeof first.name).toBe('string');
+    expect(first.name.length).toBeGreaterThan(0);
+    expect(typeof first.price).toBe('number');
+    expect(first.price).toBeGreaterThanOrEqual(0);
   });
 
   it('returns empty list when items are missing', async () => {

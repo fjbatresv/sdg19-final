@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+  <file source-language="es" target-language="es" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="orders.history">
+        <source>Historial</source>
+        <target>Historial</target>
+      </trans-unit>
+      <trans-unit id="orders.recent">
+        <source>Tus ordenes recientes</source>
+        <target>Tus ordenes recientes</target>
+      </trans-unit>
+      <trans-unit id="orders.backToCatalog">
+        <source>Volver al catalogo</source>
+        <target>Volver al catalogo</target>
+      </trans-unit>
+      <trans-unit id="orders.orderId">
+        <source>Orden {$INTERPOLATION}</source>
+        <target>Orden {$INTERPOLATION}</target>
+      </trans-unit>
+      <trans-unit id="orders.createdAt">
+        <source>Creada {$INTERPOLATION}</source>
+        <target>Creada {$INTERPOLATION}</target>
+      </trans-unit>
+      <trans-unit id="orders.status.created">
+        <source>Creada</source>
+        <target>Creada</target>
+      </trans-unit>
+      <trans-unit id="orders.status.pending">
+        <source>Pendiente</source>
+        <target>Pendiente</target>
+      </trans-unit>
+      <trans-unit id="orders.status.failed">
+        <source>Fallida</source>
+        <target>Fallida</target>
+      </trans-unit>
+      <trans-unit id="orders.status.completed">
+        <source>Completada</source>
+        <target>Completada</target>
+      </trans-unit>
+      <trans-unit id="orders.loading">
+        <source>Cargando ordenes...</source>
+        <target>Cargando ordenes...</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

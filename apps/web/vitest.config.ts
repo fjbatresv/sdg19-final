@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    setupFiles: ['apps/web/src/vitest.setup.ts'],
     coverage: {
       provider: 'v8',
       reportsDirectory: 'coverage/apps/web',
@@ -11,8 +12,10 @@ export default defineConfig({
       exclude: [
         '**/*.spec.ts',
         '**/*.test.ts',
+        '**/*.config.js',
         '**/dist/**',
         '**/node_modules/**',
+        'scripts/**',
       ],
     },
   },

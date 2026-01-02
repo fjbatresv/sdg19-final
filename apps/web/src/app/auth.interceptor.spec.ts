@@ -1,4 +1,4 @@
-import { HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
 import { vi } from 'vitest';
@@ -50,5 +50,33 @@ describe('authInterceptor', () => {
     await firstValueFrom(response$);
     const calledRequest = next.mock.calls[0][0] as HttpRequest<unknown>;
     expect(calledRequest.headers.has('authorization')).toBe(false);
+  });
+
+  it('does not override an existing authorization header', async () => {
+    const next = vi.fn(
+      (req: HttpRequest<unknown>) => of(new HttpResponse({ body: req }))
+    );
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: AuthService,
+          useValue: { getValidIdToken$: () => of('token-123') },
+        },
+      ],
+    });
+
+    const req = new HttpRequest('GET', '/test', undefined, {
+      headers: new HttpHeaders({
+        authorization: 'Bearer preexisting',
+      }),
+    });
+    const response$ = TestBed.runInInjectionContext(() =>
+      authInterceptor(req, next)
+    );
+
+    await firstValueFrom(response$);
+    expect(next).toHaveBeenCalledTimes(1);
+    const calledRequest = next.mock.calls[0][0] as HttpRequest<unknown>;
+    expect(calledRequest.headers.get('authorization')).toBe('Bearer preexisting');
   });
 });

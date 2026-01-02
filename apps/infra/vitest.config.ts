@@ -12,8 +12,10 @@ export default defineConfig({
       exclude: [
         '**/*.spec.ts',
         '**/*.test.ts',
+        '**/*.config.js',
         '**/dist/**',
         '**/node_modules/**',
+        'scripts/**',
       ],
       thresholds: {
         lines: 80,

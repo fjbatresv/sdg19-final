@@ -1,5 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+  provideRouter,
+} from '@angular/router';
 import { authGuard } from './auth.guard';
 import { AuthService } from './services/auth.service';
 
@@ -11,10 +17,7 @@ describe('authGuard', () => {
           provide: AuthService,
           useValue: { isAuthenticated: () => true },
         },
-        {
-          provide: Router,
-          useValue: { createUrlTree: () => ({}) },
-        },
+        provideRouter([]),
       ],
     });
 
@@ -25,23 +28,21 @@ describe('authGuard', () => {
   });
 
   it('redirects unauthenticated users', () => {
-    const urlTree = { url: '/login' };
     TestBed.configureTestingModule({
       providers: [
         {
           provide: AuthService,
           useValue: { isAuthenticated: () => false },
         },
-        {
-          provide: Router,
-          useValue: { createUrlTree: () => urlTree },
-        },
+        provideRouter([]),
       ],
     });
+    const router = TestBed.inject(Router);
+    const urlTree = router.createUrlTree(['/login']);
 
     const route = {} as ActivatedRouteSnapshot;
     const state = { url: '/shop' } as RouterStateSnapshot;
     const result = TestBed.runInInjectionContext(() => authGuard(route, state));
-    expect(result).toBe(urlTree);
+    expect(result).toEqual(urlTree as UrlTree);
   });
 });

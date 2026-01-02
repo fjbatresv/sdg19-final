@@ -187,15 +187,15 @@ Los tests se ejecutan por proyecto con cobertura >= 80% y generan LCOV en:
 ```bash
 npm run test:ci
 npx nx run backend:test --configuration=ci
-npx nx run web:test:ci
+npx nx run web:test --configuration=ci
 npx nx run infra:test --configuration=ci
 ```
 
 Notas:
-- `web:test:ci` corre unit tests (Vitest). No hay e2e configurado todavía.
+- `web:test --configuration=ci` corre unit tests (Vitest). No hay E2E configurado todavía.
 - Los thresholds aplican a lines/statements/branches/functions.
 
-Guia completa: `docs/testing.md`.
+Guía completa: `docs/testing.md`.
 
 ## Deploy (local)
 

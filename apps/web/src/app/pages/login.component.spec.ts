@@ -1,6 +1,6 @@
+import { provideLocationMocks } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { Router, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { AuthService } from '../services/auth.service';
@@ -11,8 +11,12 @@ describe('LoginComponent', () => {
     const auth = { login: vi.fn(() => of({})) };
 
     TestBed.configureTestingModule({
-      imports: [LoginComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [LoginComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
     const router = TestBed.inject(Router);
     const navigateSpy = vi.spyOn(router, 'navigateByUrl');
@@ -37,8 +41,12 @@ describe('LoginComponent', () => {
       ),
     };
     TestBed.configureTestingModule({
-      imports: [LoginComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [LoginComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
 
     const fixture = TestBed.createComponent(LoginComponent);
@@ -57,8 +65,12 @@ describe('LoginComponent', () => {
     const auth = { login: vi.fn(() => of({})) };
 
     TestBed.configureTestingModule({
-      imports: [LoginComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [LoginComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
 
     const fixture = TestBed.createComponent(LoginComponent);
@@ -74,8 +86,12 @@ describe('LoginComponent', () => {
     const auth = { login: vi.fn(() => throwError(() => ({}))) };
 
     TestBed.configureTestingModule({
-      imports: [LoginComponent, RouterTestingModule.withRoutes([])],
-      providers: [{ provide: AuthService, useValue: auth }],
+      imports: [LoginComponent],
+      providers: [
+        { provide: AuthService, useValue: auth },
+        provideRouter([]),
+        provideLocationMocks(),
+      ],
     });
 
     const fixture = TestBed.createComponent(LoginComponent);

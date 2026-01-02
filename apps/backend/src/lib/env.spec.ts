@@ -1,7 +1,20 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { requireEnv } from './env';
 
 describe('requireEnv', () => {
+  const originalEnv = { ...process.env };
+
+  afterEach(() => {
+    for (const key of Object.keys(process.env)) {
+      if (!(key in originalEnv)) {
+        delete process.env[key];
+      }
+    }
+    for (const [key, value] of Object.entries(originalEnv)) {
+      process.env[key] = value;
+    }
+  });
+
   it('returns the environment value when set', () => {
     process.env.TEST_ENV = 'value';
     expect(requireEnv('TEST_ENV')).toBe('value');

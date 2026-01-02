@@ -4,6 +4,7 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
+import { decodeJwtPayload, getExpiresAt } from './auth.utils';
 import { API_BASE_URL } from '../app.tokens';
 import { firstValueFrom } from 'rxjs';
 
@@ -272,28 +273,37 @@ describe('AuthService', () => {
     await tokenPromise2;
   });
 
-  it('returns null when refreshSession has no token', () => {
-    const service = TestBed.inject(AuthService) as unknown as {
-      refreshSession: () => unknown;
-      sessionSubject: { next: (value: unknown) => void };
-    };
-    service.sessionSubject.next({ refreshToken: undefined });
-    const result = service.refreshSession();
-    expect(result).toBeTruthy();
+  it('logs out when refresh token is missing', async () => {
+    sessionStorage.setItem(
+      'sdg19.auth',
+      JSON.stringify({
+        idToken: buildJwt(Math.floor(Date.now() / 1000) - 10),
+        expiresAt: Date.now() - 1000,
+      })
+    );
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        {
+          provide: API_BASE_URL,
+          useValue: 'http://api.test',
+        },
+      ],
+    });
+    const service = TestBed.inject(AuthService);
+
+    const token = await firstValueFrom(service.getValidIdToken$());
+    expect(token).toBeNull();
+    expect(sessionStorage.getItem('sdg19.auth')).toBeNull();
   });
 
   it('returns undefined expiry when no token info exists', () => {
-    const service = TestBed.inject(AuthService) as unknown as {
-      getExpiresAt: (token?: string, expiresIn?: number) => number | undefined;
-    };
-    expect(service.getExpiresAt()).toBeUndefined();
+    expect(getExpiresAt()).toBeUndefined();
   });
 
   it('handles malformed jwt payloads', () => {
-    const service = TestBed.inject(AuthService) as unknown as {
-      decodeJwtPayload: (token: string) => unknown;
-    };
-    expect(service.decodeJwtPayload('bad')).toBeNull();
+    expect(decodeJwtPayload('bad')).toBeNull();
   });
 
   it('clears session on logout', () => {

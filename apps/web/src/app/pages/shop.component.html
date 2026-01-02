@@ -53,11 +53,25 @@
               </p>
             </div>
             <div class="qty">
-              <button class="ghost" (click)="adjustQty(item.product.id, -1)">
+              <button
+                class="ghost"
+                (click)="adjustQty(item.product.id, -1)"
+                [attr.aria-label]="
+                  'Decrease quantity for ' +
+                  (item.product.name || item.product.id)
+                "
+              >
                 -
               </button>
               <span>{{ item.quantity }}</span>
-              <button class="ghost" (click)="adjustQty(item.product.id, 1)">
+              <button
+                class="ghost"
+                (click)="adjustQty(item.product.id, 1)"
+                [attr.aria-label]="
+                  'Increase quantity for ' +
+                  (item.product.name || item.product.id)
+                "
+              >
                 +
               </button>
             </div>
