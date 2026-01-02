@@ -94,6 +94,20 @@
             "buildTarget": "@org/infra:build:production"
           }
         }
+      },
+      "test": {
+        "executor": "nx:run-commands",
+        "outputs": [
+          "{workspaceRoot}/coverage/apps/infra"
+        ],
+        "options": {
+          "command": "vitest run --config apps/infra/vitest.config.ts"
+        },
+        "configurations": {
+          "ci": {
+            "command": "vitest run --config apps/infra/vitest.config.ts --coverage"
+          }
+        }
       }
     }
   },

@@ -2,12 +2,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: 'node',
+    environment: 'jsdom',
     globals: true,
-    include: ['apps/backend/src/**/*.spec.ts'],
     coverage: {
       provider: 'v8',
-      reportsDirectory: 'coverage/apps/backend',
+      reportsDirectory: '../../coverage/apps/web',
       reporter: ['lcov', 'text', 'text-summary'],
       exclude: [
         '**/*.spec.ts',
@@ -15,12 +14,6 @@ export default defineConfig({
         '**/dist/**',
         '**/node_modules/**',
       ],
-      thresholds: {
-        lines: 80,
-        statements: 80,
-        branches: 80,
-        functions: 80,
-      },
     },
   },
 });

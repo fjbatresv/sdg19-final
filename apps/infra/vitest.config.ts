@@ -4,10 +4,10 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
-    include: ['apps/backend/src/**/*.spec.ts'],
+    include: ['apps/infra/src/**/*.spec.ts'],
     coverage: {
       provider: 'v8',
-      reportsDirectory: 'coverage/apps/backend',
+      reportsDirectory: 'coverage/apps/infra',
       reporter: ['lcov', 'text', 'text-summary'],
       exclude: [
         '**/*.spec.ts',

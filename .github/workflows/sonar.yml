@@ -46,12 +46,25 @@ jobs:
           node -e "const { AsyncLocalStorage } = require('node:async_hooks'); const als = new AsyncLocalStorage(); als.run({ ok: true }, () => { if (!als.getStore()?.ok) { throw new Error('AsyncLocalStorage failed'); } });"
 
       - name: Install dependencies (workspace)
-        if: matrix.app != 'web'
-        run: npm ci --workspace=apps/${{ matrix.app }}
-
-      - name: Install dependencies (root)
-        if: matrix.app == 'web'
         run: npm ci
+
+      - name: Run tests with coverage (${{ matrix.app }})
+        run: |
+          case "${{ matrix.app }}" in
+            web)
+              npx nx run web:test --configuration=ci
+              ;;
+            backend)
+              npx nx run backend:test --configuration=ci
+              ;;
+            infra)
+              npx nx run infra:test --configuration=ci
+              ;;
+            *)
+              echo "Unknown app: ${{ matrix.app }}"
+              exit 1
+              ;;
+          esac
 
       - name: SonarCloud scan (${{ matrix.app }})
         uses: SonarSource/sonarcloud-github-action@ffc3010689be73b8e5ae0c57ce35968afd7909e8
@@ -64,3 +77,5 @@ jobs:
             -Dsonar.organization=fjbatresv
             -Dsonar.sources=${{ matrix.sources }}
             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.spec.ts,**/*.test.ts,**/*.spec.js,**/*.test.js
+            -Dsonar.javascript.lcov.reportPaths=coverage/apps/${{ matrix.app }}/lcov.info
+            -Dsonar.typescript.lcov.reportPaths=coverage/apps/${{ matrix.app }}/lcov.info

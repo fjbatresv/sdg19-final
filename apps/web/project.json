@@ -94,7 +94,37 @@
     },
     "test": {
       "executor": "@angular/build:unit-test",
-      "options": {}
+      "outputs": ["{workspaceRoot}/coverage/apps/web"],
+      "options": {
+        "runner": "vitest",
+        "runnerConfig": "apps/web/vitest.config.ts"
+      },
+      "configurations": {
+        "ci": {
+          "watch": false,
+        "coverage": true,
+        "coverageInclude": ["src/**/*.ts"],
+        "coverageExclude": [
+          "src/**/*.spec.ts",
+          "src/**/*.test.ts",
+          "src/main.ts"
+        ],
+          "coverageReporters": ["lcov", "text", "text-summary"],
+          "coverageThresholds": {
+            "lines": 80,
+            "statements": 80,
+            "branches": 80,
+            "functions": 80
+          }
+        }
+      }
+    },
+    "test:ci": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/apps/web"],
+      "options": {
+        "command": "nx run web:test --configuration=ci"
+      }
     },
     "serve-static": {
       "continuous": true,
