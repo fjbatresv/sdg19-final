@@ -1,25 +1,15 @@
-# Snyk configuration for CDK project
-# Exclude sensitive CloudFormation templates but include compiled assets
-
+# Snyk (https://snyk.io) policy file
+---
 exclude:
+  # Puedes usar `global` o `code`. `code` aplica solo a Snyk Code.
   code:
-    # Exclude CloudFormation templates (contain sensitive info)
-    - 'cdk.out/**/*.template.json'
-    - 'cdk.out/manifest.json'
-    - 'cdk.out/**/*.assets.json'
-    - 'cdk.out/tree.json'
-    
-  # Include compiled Lambda assets for vulnerability scanning
-  include:
-    - 'cdk.out/asset.*/**/*.js'
-    - 'cdk.out/asset.*/**/package.json'
-    - 'cdk.out/asset.*/**/package-lock.json'
-    - 'cdk.out/asset.*/**/yarn.lock'
+    # Ignora carpetas que empiezan con test_ en cualquier nivel
+    - "**/test_*/**"
 
-# Snyk test configuration
-test:
-  # Focus on high and critical vulnerabilities
-  severity-threshold: high
-  
-  # Exclude dev dependencies from Lambda assets
-  dev: false
+    # Ignora archivos que empiezan con test_
+    - "**/test_*.*"
+
+    # (Opcional, recomendado) patrones comunes de tests
+    - "**/__tests__/**"
+    - "**/*.spec.*"
+    - "**/*.test.*"
