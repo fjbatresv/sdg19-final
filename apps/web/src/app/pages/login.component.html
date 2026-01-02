@@ -1,0 +1,36 @@
+<section class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-header">
+      <p class="eyebrow">Bienvenido de nuevo</p>
+      <h1>Inicia sesion</h1>
+      <p class="subtle">Accede para crear ordenes y ver tu historial.</p>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Correo
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="correo@sdg19final.link"
+        />
+      </label>
+      <label>
+        Password
+        <input type="password" formControlName="password" />
+      </label>
+      <button
+        class="primary"
+        type="submit"
+        [disabled]="form.invalid || busy()"
+      >
+        {{ busy() ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+    </form>
+    <p class="inline-link">
+      No tienes cuenta? <a routerLink="/register">Crear cuenta</a>
+    </p>
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+  </div>
+</section>
