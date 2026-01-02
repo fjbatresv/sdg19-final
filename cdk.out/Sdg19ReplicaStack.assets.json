@@ -31,16 +31,16 @@
         }
       }
     },
-    "90065772b25196f40e6fecf65b0ef384e0ef391b7aa5c1197cc0c906e74ae5dd": {
+    "e4b640d82e00e9ac6fd24daa8b310784448c4e4887f4199f8560b1140029d218": {
       "displayName": "Sdg19ReplicaStack Template",
       "source": {
         "path": "Sdg19ReplicaStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "123456789012-us-east-2-0f249829": {
+        "123456789012-us-east-2-63e9a3b5": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
-          "objectKey": "90065772b25196f40e6fecf65b0ef384e0ef391b7aa5c1197cc0c906e74ae5dd.json",
+          "objectKey": "e4b640d82e00e9ac6fd24daa8b310784448c4e4887f4199f8560b1140029d218.json",
           "region": "us-east-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
         }

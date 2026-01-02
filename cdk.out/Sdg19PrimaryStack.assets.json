@@ -46,16 +46,16 @@
         }
       }
     },
-    "6436727edff39703e8f0fabb028ad9c621779270d38a66428b5be65c00795b8d": {
+    "7eadb910fcd06bcef4629622988695541d6bbeb6655c5c8301ec7ff4fdcc71be": {
       "displayName": "Sdg19PrimaryStack Template",
       "source": {
         "path": "Sdg19PrimaryStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "123456789012-us-east-1-7fda0ed9": {
+        "123456789012-us-east-1-8231cd88": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-1",
-          "objectKey": "6436727edff39703e8f0fabb028ad9c621779270d38a66428b5be65c00795b8d.json",
+          "objectKey": "7eadb910fcd06bcef4629622988695541d6bbeb6655c5c8301ec7ff4fdcc71be.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-1"
         }
