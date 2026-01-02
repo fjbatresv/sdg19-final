@@ -1,0 +1,109 @@
+<section class="shop-shell">
+  <div class="shop-main">
+    <div class="shop-header">
+      <div>
+        <p class="eyebrow">Catalogo SDG19</p>
+        <h1>Productos listos para ordenar</h1>
+      </div>
+      <a class="ghost" routerLink="/orders">Ver ordenes</a>
+    </div>
+
+    @if (!loading()) {
+      <div class="grid">
+        @for (product of products(); track product.id) {
+          <article class="product-card">
+            <div class="product-body">
+              <h3>{{ product.name }}</h3>
+              <p class="subtle">{{ product.description }}</p>
+            </div>
+            <div class="product-footer">
+              <span class="price">
+                {{ formatMoney(product.price, product.currency) }}
+              </span>
+              <button class="primary" (click)="addToCart(product)">
+                Agregar
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+
+    @if (loading()) {
+      <p class="subtle">Cargando productos...</p>
+    }
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+  </div>
+
+  <aside class="cart">
+    <div class="cart-header">
+      <h2>Carrito</h2>
+      <span class="pill">{{ cartCount() }} items</span>
+    </div>
+    @if (cart().length) {
+      <div class="cart-list">
+        @for (item of cart(); track item.product.id) {
+          <div class="cart-item">
+            <div>
+              <p class="cart-title">{{ item.product.name }}</p>
+              <p class="subtle">
+                {{ formatMoney(item.product.price, item.product.currency) }} c/u
+              </p>
+            </div>
+            <div class="qty">
+              <button
+                class="ghost"
+                (click)="adjustQty(item.product.id, -1)"
+                [attr.aria-label]="
+                  'Decrease quantity for ' +
+                  (item.product.name || item.product.id)
+                "
+              >
+                -
+              </button>
+              <span>{{ item.quantity }}</span>
+              <button
+                class="ghost"
+                (click)="adjustQty(item.product.id, 1)"
+                [attr.aria-label]="
+                  'Increase quantity for ' +
+                  (item.product.name || item.product.id)
+                "
+              >
+                +
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="subtle">Aun no hay items en el carrito.</p>
+    }
+    <div class="cart-summary">
+      <div>
+        <p class="subtle">Total</p>
+        <p class="total">
+          {{ formatMoney(cartTotal(), cartCurrency()) }}
+        </p>
+      </div>
+      @if (cartCurrencyError()) {
+        <p class="error">{{ cartCurrencyError() }}</p>
+      }
+      <button
+        class="primary"
+        [disabled]="cart().length === 0 || ordering()"
+        (click)="placeOrder()"
+      >
+        {{ ordering() ? 'Enviando...' : 'Crear orden' }}
+      </button>
+      @if (noticeMessage()) {
+        <p class="success">{{ noticeMessage() }}</p>
+      }
+      @if (orderErrorMessage()) {
+        <p class="error">{{ orderErrorMessage() }}</p>
+      }
+    </div>
+  </aside>
+</section>

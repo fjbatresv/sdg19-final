@@ -5,14 +5,20 @@ import { APIGatewayProxyEventV2 } from 'aws-lambda';
  *
  * @returns Response object with status code 204, CORS headers allowing all origins and the headers/methods required for browser preflight, and an empty body.
  */
-export async function optionsHandler(_event: APIGatewayProxyEventV2) {
+export async function optionsHandler(event: APIGatewayProxyEventV2) {
+  const origin = event.headers?.origin ?? event.headers?.Origin;
+  const webDomain = process.env.WEB_DOMAIN_NAME;
+  const allowedOrigin = webDomain ? `https://${webDomain}` : undefined;
+  const responseOrigin =
+    allowedOrigin && origin === allowedOrigin ? origin : allowedOrigin ?? '*';
   return {
     statusCode: 204,
     headers: {
-      'access-control-allow-origin': '*',
+      'access-control-allow-origin': responseOrigin,
       'access-control-allow-headers':
         'authorization,content-type,x-amz-date,x-api-key,x-amz-security-token,x-amz-user-agent',
       'access-control-allow-methods': 'GET,POST,OPTIONS',
+      'access-control-max-age': '86400',
     },
     body: '',
   };

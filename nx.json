@@ -25,6 +25,9 @@
       }
     }
   ],
+  "sync": {
+    "applyChanges": true
+  },
   "workspaceLayout": {
     "appsDir": "apps",
     "libsDir": "libs"

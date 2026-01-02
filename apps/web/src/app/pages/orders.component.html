@@ -1,0 +1,58 @@
+<section class="orders-shell">
+  <div class="orders-header">
+    <div>
+      <p class="eyebrow" i18n="@@orders.history">Historial</p>
+      <h1 i18n="@@orders.recent">Tus ordenes recientes</h1>
+    </div>
+    <a class="ghost" routerLink="/shop" i18n="@@orders.backToCatalog"
+      >Volver al catalogo</a
+    >
+  </div>
+
+  <div class="orders-list">
+    @for (order of orders(); track order.orderId) {
+      <article class="order-card">
+        <div>
+          <p class="order-id" i18n="@@orders.orderId">
+            Orden {{ order.orderId }}
+          </p>
+          <p class="subtle" i18n="@@orders.createdAt">
+            Creada {{ order.createdAt | date : 'medium' }}
+          </p>
+        </div>
+        <div class="order-meta">
+          <span class="pill">
+            @switch (order.status) {
+              @case ('CREATED') {
+                <span i18n="@@orders.status.created">Creada</span>
+              }
+              @case ('PENDING') {
+                <span i18n="@@orders.status.pending">Pendiente</span>
+              }
+              @case ('FAILED') {
+                <span i18n="@@orders.status.failed">Fallida</span>
+              }
+              @case ('COMPLETED') {
+                <span i18n="@@orders.status.completed">Completada</span>
+              }
+              @default {
+                <span>{{ order.status }}</span>
+              }
+            }
+          </span>
+          <strong>{{ formatMoney(order.total, order.currency) }}</strong>
+        </div>
+      </article>
+    }
+  </div>
+
+  @if (loading()) {
+    <p class="subtle" role="status" aria-live="polite" aria-atomic="true" i18n="@@orders.loading">
+      Cargando ordenes...
+    </p>
+  } @if (error()) {
+    <p class="error" role="status" aria-live="polite" aria-atomic="true">
+      {{ error() }}
+    </p>
+  }
+</section>

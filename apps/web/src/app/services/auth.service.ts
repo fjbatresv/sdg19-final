@@ -11,6 +11,7 @@ import {
   tap,
 } from 'rxjs';
 import { API_BASE_URL } from '../app.tokens';
+import { getExpiresAt } from './auth.utils';
 
 /**
  * Token response returned by the auth API.
@@ -233,10 +234,7 @@ export class AuthService {
     response: AuthResponse,
     meta: { email?: string; name?: string; refreshToken?: string }
   ) {
-    const expiresAt = this.getExpiresAt(
-      response.idToken,
-      response.expiresIn
-    );
+    const expiresAt = getExpiresAt(response.idToken, response.expiresIn);
     const session: AuthSession = {
       userId: response.userId,
       accessToken: response.accessToken,
@@ -249,39 +247,6 @@ export class AuthService {
     };
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
     return session;
-  }
-
-  /**
-   * Calculates absolute expiration time from token claims or TTL.
-   */
-  private getExpiresAt(idToken?: string, expiresIn?: number) {
-    if (idToken) {
-      const payload = this.decodeJwtPayload(idToken);
-      if (payload?.exp) {
-        return payload.exp * 1000;
-      }
-    }
-    if (expiresIn) {
-      return Date.now() + expiresIn * 1000;
-    }
-    return undefined;
-  }
-
-  /**
-   * Decodes the JWT payload section to extract claims.
-   */
-  private decodeJwtPayload(token: string) {
-    const parts = token.split('.');
-    if (parts.length < 2) {
-      return null;
-    }
-    try {
-      const payload = parts[1].replaceAll('-', '+').replaceAll('_', '/');
-      const decoded = atob(payload);
-      return JSON.parse(decoded) as { exp?: number };
-    } catch {
-      return null;
-    }
   }
 
   /**

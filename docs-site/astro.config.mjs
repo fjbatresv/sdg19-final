@@ -34,6 +34,15 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Documentación',
+          items: [
+            { label: 'Astro Starlight', slug: 'astro' },
+            { label: 'Compodoc (web)', slug: 'compodoc' },
+            { label: 'TypeDoc (backend)', slug: 'typedoc' },
+            { label: 'Code Docs', slug: 'code-docs' },
+          ],
+        },
+        {
           label: 'Infraestructura',
           items: [
             { label: 'Infraestructura', slug: 'infra/overview' },
@@ -53,7 +62,6 @@ export default defineConfig({
           label: 'Deployment',
           items: [
             { label: 'Deploy', slug: 'deploy' },
-            { label: 'Code Docs', slug: 'code-docs' },
           ],
         },
         {

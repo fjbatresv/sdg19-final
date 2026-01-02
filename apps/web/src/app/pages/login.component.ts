@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 /**
  * Enforces the frontend password complexity requirements.
@@ -16,44 +17,7 @@ const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  template: `
-    <section class="auth-shell">
-      <div class="auth-card">
-        <div class="auth-header">
-          <p class="eyebrow">Bienvenido de nuevo</p>
-          <h1>Inicia sesion</h1>
-          <p class="subtle">Accede para crear ordenes y ver tu historial.</p>
-        </div>
-        <form [formGroup]="form" (ngSubmit)="submit()">
-          <label>
-            Correo
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="correo@sdg19final.link"
-            />
-          </label>
-          <label>
-            Password
-            <input type="password" formControlName="password" />
-          </label>
-          <button
-            class="primary"
-            type="submit"
-            [disabled]="form.invalid || busy()"
-          >
-            {{ busy() ? 'Ingresando...' : 'Ingresar' }}
-          </button>
-        </form>
-        <p class="inline-link">
-          No tienes cuenta? <a routerLink="/register">Crear cuenta</a>
-        </p>
-        @if (error()) {
-        <p class="error">{{ error() }}</p>
-        }
-      </div>
-    </section>
-  `,
+  templateUrl: './login.component.html',
 })
 export class LoginComponent {
   /**
@@ -77,6 +41,10 @@ export class LoginComponent {
    * Error message to display on failed login.
    */
   error = signal('');
+  /**
+   * Domain used in email placeholders.
+   */
+  readonly frontendDomain = environment.frontendDomain;
 
   /**
    * Login form controls.

@@ -156,6 +156,12 @@ Para levantar el preview local del build estático:
 npm run docs:preview
 ```
 
+Guías en Starlight:
+
+- Astro Starlight: `docs-site/src/content/docs/astro.mdx`
+- Compodoc: `docs-site/src/content/docs/compodoc.md`
+- TypeDoc: `docs-site/src/content/docs/typedoc.mdx`
+
 ### Frontend Docs (Compodoc)
 
 ![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/compodoc/images/coverage-badge-documentation.svg)
@@ -169,6 +175,27 @@ npx nx run web:docs:check
 ```
 
 Guia completa: `docs-site/src/content/docs/compodoc.md`.
+
+## Testing y coverage
+
+Los tests se ejecutan por proyecto con cobertura >= 80% y generan LCOV en:
+
+- Backend: `coverage/apps/backend/lcov.info`
+- Frontend: `coverage/apps/web/lcov.info`
+- Infra: `coverage/apps/infra/lcov.info`
+
+```bash
+npm run test:ci
+npx nx run backend:test --configuration=ci
+npx nx run web:test --configuration=ci
+npx nx run infra:test --configuration=ci
+```
+
+Notas:
+- `web:test --configuration=ci` corre unit tests (Vitest). No hay E2E configurado todavía.
+- Los thresholds aplican a lines/statements/branches/functions.
+
+Guía completa: `docs/testing.md`.
 
 ## Deploy (local)
 

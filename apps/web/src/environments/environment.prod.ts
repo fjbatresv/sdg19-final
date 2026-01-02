@@ -8,4 +8,5 @@ import { resolveApiBaseUrl } from './runtime';
  */
 export const environment = {
   apiBaseUrl: resolveApiBaseUrl('https://finalapi.javierba3.com'),
+  frontendDomain: 'sdg19final.link',
 };

@@ -1,0 +1,42 @@
+---
+title: Astro Starlight (portal principal)
+---
+
+El portal principal de documentación se construye con Astro Starlight y vive en
+`docs-site/`.
+
+## Desarrollo local
+
+```bash
+npm run docs:dev
+```
+
+Este comando sincroniza el OpenAPI hacia `docs-site/public/openapi.yaml` y
+levanta el servidor local.
+
+## Build estático
+
+```bash
+npm run docs:build
+```
+
+Salida: `dist/docs-site/`.
+
+## Preview del build
+
+```bash
+npm run docs:preview
+```
+
+## Base path en GitHub Pages
+
+El sitio se publica bajo el subpath del repositorio. El workflow define
+`ASTRO_BASE=/sdg19-final/` para generar rutas correctas en Pages.
+
+## Sincronizar OpenAPI
+
+```bash
+npm run docs:sync-openapi
+```
+
+Si el contrato cambia, ejecuta la sincronización antes del build.

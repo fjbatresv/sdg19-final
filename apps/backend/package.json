@@ -101,8 +101,16 @@
       },
       "test": {
         "executor": "nx:run-commands",
+        "outputs": [
+          "{workspaceRoot}/coverage/apps/backend"
+        ],
         "options": {
           "command": "vitest run --config apps/backend/vitest.config.ts"
+        },
+        "configurations": {
+          "ci": {
+            "command": "vitest run --config apps/backend/vitest.config.ts --coverage"
+          }
         }
       }
     }

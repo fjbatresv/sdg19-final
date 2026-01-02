@@ -1,0 +1,53 @@
+<section class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-header">
+      <p class="eyebrow">Bienvenido de nuevo</p>
+      <h1>Inicia sesión</h1>
+      <p class="subtle">Accede para crear ordenes y ver tu historial.</p>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label for="login-email">Correo</label>
+      <input
+        id="login-email"
+        type="email"
+        formControlName="email"
+        [placeholder]="'correo@' + frontendDomain"
+        autocomplete="email"
+        aria-describedby="login-email-error"
+      />
+      @if (form.controls.email.invalid && form.controls.email.touched) {
+        <p id="login-email-error" class="error" role="alert">
+          Ingresa un correo válido.
+        </p>
+      }
+      <label for="login-password">Password</label>
+      <input
+        id="login-password"
+        type="password"
+        formControlName="password"
+        autocomplete="current-password"
+        aria-describedby="login-password-error"
+      />
+      @if (form.controls.password.invalid && form.controls.password.touched) {
+        <p id="login-password-error" class="error" role="alert">
+          Ingresa una contraseña válida.
+        </p>
+      }
+      <button
+        class="primary"
+        type="submit"
+        [disabled]="form.invalid || busy()"
+        [attr.aria-busy]="busy()"
+        [attr.aria-disabled]="busy()"
+      >
+        {{ busy() ? 'Ingresando...' : 'Ingresar' }}
+      </button>
+    </form>
+    <p class="inline-link">
+      ¿No tienes cuenta? <a routerLink="/register">Crear cuenta</a>
+    </p>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </div>
+</section>

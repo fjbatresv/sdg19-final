@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 /**
  * Enforces the frontend password complexity requirements.
@@ -16,44 +17,7 @@ const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{10,}
   selector: 'app-register',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  template: `
-    <section class="auth-shell">
-      <div class="auth-card">
-        <div class="auth-header">
-          <p class="eyebrow">Nuevo registro</p>
-          <h1>Crea tu cuenta</h1>
-          <p class="subtle">Tu cuenta se activa al instante.</p>
-        </div>
-        <form [formGroup]="form" (ngSubmit)="submit()">
-          <label>
-            Nombre
-            <input type="text" formControlName="name" placeholder="Tu nombre" />
-          </label>
-          <label>
-            Correo
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="correo@sdg19final.link"
-            />
-          </label>
-          <label>
-            Password
-            <input type="password" formControlName="password" />
-          </label>
-          <button class="primary" type="submit" [disabled]="form.invalid || busy()">
-            {{ busy() ? 'Creando...' : 'Crear cuenta' }}
-          </button>
-        </form>
-        <p class="inline-link">
-          Ya tienes cuenta? <a routerLink="/login">Inicia sesion</a>
-        </p>
-        @if (error()) {
-          <p class="error">{{ error() }}</p>
-        }
-      </div>
-    </section>
-  `,
+  templateUrl: './register.component.html',
 })
 export class RegisterComponent {
   /**
@@ -77,6 +41,10 @@ export class RegisterComponent {
    * Error message to display on failed registration.
    */
   error = signal('');
+  /**
+   * Domain used in email placeholders.
+   */
+  readonly frontendDomain = environment.frontendDomain;
 
   /**
    * Registration form controls.

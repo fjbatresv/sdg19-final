@@ -1,0 +1,67 @@
+<section class="auth-shell">
+  <div class="auth-card">
+    <div class="auth-header">
+      <p class="eyebrow">Nuevo registro</p>
+      <h1>Crea tu cuenta</h1>
+      <p class="subtle">Tu cuenta se activa al instante.</p>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label for="register-name">Nombre</label>
+      <input
+        id="register-name"
+        type="text"
+        formControlName="name"
+        placeholder="Tu nombre"
+        autocomplete="name"
+        aria-describedby="register-name-error"
+      />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <p id="register-name-error" class="error" role="alert">
+          Ingresa tu nombre.
+        </p>
+      }
+      <label for="register-email">Correo</label>
+      <input
+        id="register-email"
+        type="email"
+        formControlName="email"
+        [placeholder]="'correo@' + frontendDomain"
+        autocomplete="email"
+        aria-describedby="register-email-error"
+      />
+      @if (form.controls.email.invalid && form.controls.email.touched) {
+        <p id="register-email-error" class="error" role="alert">
+          Ingresa un correo válido.
+        </p>
+      }
+      <label for="register-password">Password</label>
+      <input
+        id="register-password"
+        type="password"
+        formControlName="password"
+        autocomplete="new-password"
+        aria-describedby="register-password-error"
+      />
+      @if (form.controls.password.invalid && form.controls.password.touched) {
+        <p id="register-password-error" class="error" role="alert">
+          Ingresa una contraseña válida.
+        </p>
+      }
+      <button
+        class="primary"
+        type="submit"
+        [disabled]="form.invalid || busy()"
+        [attr.aria-busy]="busy()"
+        [attr.aria-disabled]="busy()"
+      >
+        {{ busy() ? 'Creando...' : 'Crear cuenta' }}
+      </button>
+    </form>
+    <p class="inline-link">
+      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+    </p>
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+  </div>
+</section>
