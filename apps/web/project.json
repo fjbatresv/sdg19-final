@@ -131,6 +131,7 @@
     },
     "typecheck": {
       "executor": "nx:run-commands",
+      "dependsOn": ["shared-types:build"],
       "options": {
         "command": "tsc -p apps/web/tsconfig.app.json --noEmit"
       }
