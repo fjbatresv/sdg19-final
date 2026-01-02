@@ -100,4 +100,102 @@ describe('orderEmailHandler', () => {
     expect(sesSendMock).not.toHaveBeenCalled();
     expect(s3SendMock).not.toHaveBeenCalled();
   });
+
+  it('ignores invalid JSON payloads', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    const event = buildEvent('invalid-json');
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).not.toHaveBeenCalled();
+    expect(s3SendMock).not.toHaveBeenCalled();
+  });
+
+  it('falls back to productId when productName is empty', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    const message = {
+      orderId: 'order-321',
+      email: 'user@example.com',
+      items: [
+        {
+          productId: 'prod-1',
+          productName: '',
+          quantity: 1,
+          unitPrice: 2500,
+        },
+      ],
+    };
+    const event = buildEvent(JSON.stringify(message));
+
+    await orderEmailHandler(event);
+
+    const sesInput = (sesSendMock.mock.calls[0]?.[0] as { input: any }).input;
+    const payload = JSON.parse(sesInput.TemplateData);
+    expect(payload.itemsHtml).toContain('prod-1');
+  });
+
+  it('throws when SES fails', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    sesSendMock.mockRejectedValueOnce(new Error('ses failed'));
+    const event = buildEvent(
+      JSON.stringify({ orderId: 'order-123', email: 'user@example.com' })
+    );
+
+    await expect(orderEmailHandler(event)).rejects.toThrow('ses failed');
+  });
+
+  it('throws when S3 fails', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    s3SendMock.mockRejectedValueOnce(new Error('s3 failed'));
+    const event = buildEvent(
+      JSON.stringify({ orderId: 'order-123', email: 'user@example.com' })
+    );
+
+    await expect(orderEmailHandler(event)).rejects.toThrow('s3 failed');
+  });
+
+  it('skips invalid createdAt values', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    const event = buildEvent(
+      JSON.stringify({
+        orderId: 'order-777',
+        email: 'user@example.com',
+        createdAt: 'invalid-date',
+      })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).not.toHaveBeenCalled();
+  });
+
+  it('skips invalid total values', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    const event = buildEvent(
+      JSON.stringify({
+        orderId: 'order-888',
+        email: 'user@example.com',
+        total: 'bad',
+      })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).not.toHaveBeenCalled();
+  });
+
+  it('handles raw order messages without SNS wrapper', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    const event = buildEvent(
+      JSON.stringify({
+        orderId: 'order-555',
+        email: 'user@example.com',
+        items: [],
+      })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).toHaveBeenCalledTimes(1);
+  });
 });

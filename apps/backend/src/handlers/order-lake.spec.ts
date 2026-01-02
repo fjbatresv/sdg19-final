@@ -79,6 +79,41 @@ describe('orderLakeHandler', () => {
     expect(kinesisSendMock).not.toHaveBeenCalled();
   });
 
+  it('skips invalid JSON payloads', async () => {
+    const { orderLakeHandler } = await import('./order-lake');
+    const event = buildEvent('invalid-json');
+
+    await orderLakeHandler(event);
+
+    expect(kinesisSendMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects invalid createdAt format', async () => {
+    const { orderLakeHandler } = await import('./order-lake');
+    const message = {
+      orderId: 'order-456',
+      createdAt: 'invalid-date',
+    };
+    const event = buildEvent(JSON.stringify(message));
+
+    await orderLakeHandler(event);
+
+    expect(kinesisSendMock).not.toHaveBeenCalled();
+  });
+
+  it('rejects non-numeric totals', async () => {
+    const { orderLakeHandler } = await import('./order-lake');
+    const message = {
+      orderId: 'order-456',
+      total: 'bad' as unknown as number,
+    };
+    const event = buildEvent(JSON.stringify(message));
+
+    await orderLakeHandler(event);
+
+    expect(kinesisSendMock).not.toHaveBeenCalled();
+  });
+
   it('rethrows when kinesis fails', async () => {
     kinesisSendMock.mockRejectedValueOnce(new Error('Kinesis error'));
     const { orderLakeHandler } = await import('./order-lake');
@@ -92,5 +127,17 @@ describe('orderLakeHandler', () => {
     const event = buildEvent(JSON.stringify({ Message: JSON.stringify(message) }));
 
     await expect(orderLakeHandler(event)).rejects.toThrow('Kinesis error');
+  });
+
+  it('returns empty batch item failures', async () => {
+    const { orderLakeHandler } = await import('./order-lake');
+    const message = {
+      orderId: 'order-789',
+      createdAt: '2025-12-29T12:00:00Z',
+    };
+    const event = buildEvent(JSON.stringify(message));
+
+    const response = await orderLakeHandler(event);
+    expect(response.batchItemFailures).toEqual([]);
   });
 });
