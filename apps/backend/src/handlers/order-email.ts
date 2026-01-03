@@ -38,6 +38,27 @@ function maskEmail(email: string) {
   return `${visible}***@${domain}`;
 }
 
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"'/]/g, (char) => {
+    switch (char) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      case "'":
+        return '&#39;';
+      case '/':
+        return '&#x2F;';
+      default:
+        return char;
+    }
+  });
+}
+
 /**
  * Parse an SNS-wrapped or raw order message from SQS.
  */
@@ -98,13 +119,11 @@ function isOrderItem(value: unknown): value is OrderItem {
 function buildItemsHtml(items: OrderItem[]) {
   return items
     .map((item) => {
-      const displayName = item.productName?.trim()
+      const displayNameRaw = item.productName?.trim()
         ? item.productName
         : item.productId;
-      const unitPrice =
-        typeof item.unitPrice === 'number'
-          ? (item.unitPrice / 100).toFixed(2)
-          : item.unitPrice;
+      const displayName = escapeHtml(displayNameRaw);
+      const unitPrice = (item.unitPrice / 100).toFixed(2);
       return `<tr>
               <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
