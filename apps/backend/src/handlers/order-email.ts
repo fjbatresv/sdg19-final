@@ -159,7 +159,6 @@ function buildTemplateData(message: ValidOrderMessage, items: OrderItem[]) {
     orderId: message.orderId,
     status: message.status,
     total: formattedTotal,
-    items,
     userPk: message.userPk,
     year: new Date().getFullYear(),
     itemsHtml: buildItemsHtml(items),
