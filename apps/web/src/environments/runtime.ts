@@ -3,7 +3,7 @@
  */
 const normalize = (value?: string) => {
   const trimmed = value?.trim();
-  return trimmed ? trimmed : undefined;
+  return trimmed || undefined;
 };
 
 /**

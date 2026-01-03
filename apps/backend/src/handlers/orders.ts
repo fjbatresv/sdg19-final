@@ -39,7 +39,14 @@ function parseBody(event: APIGatewayProxyEventV2) {
 }
 
 /**
- * Decode and validate a DynamoDB ExclusiveStartKey token.
+ * Decode and validate a base64-encoded DynamoDB ExclusiveStartKey token.
+ *
+ * The token is decoded as UTF-8 JSON and must be an object (not an array)
+ * containing exactly the keys `PK`, `SK`, `GSI1PK`, and `GSI1SK`, each with a
+ * non-empty string value.
+ *
+ * @param token - Base64-encoded ExclusiveStartKey token
+ * @returns The parsed ExclusiveStartKey as a Record of string values, or `null` if the token is malformed or fails validation
  */
 function parseExclusiveStartKey(token: string) {
   try {
@@ -53,7 +60,7 @@ function parseExclusiveStartKey(token: string) {
       return null;
     }
     for (const key of EXCLUSIVE_START_KEY_FIELDS) {
-      if (!Object.prototype.hasOwnProperty.call(parsed, key)) {
+      if (!Object.hasOwn(parsed, key)) {
         return null;
       }
       const value = parsed[key];

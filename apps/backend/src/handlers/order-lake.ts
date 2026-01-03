@@ -63,7 +63,11 @@ function isValidOrderMessage(
 }
 
 /**
- * Ship order events to Kinesis for the data lake pipeline.
+ * Process SQS records, validate order messages, and send valid orders to a Kinesis stream for the data lake.
+ *
+ * @param event - The SQS event containing records to process.
+ * @returns An object with `batchItemFailures`, an array of entries each containing `itemIdentifier` for records that failed processing.
+ * @throws Error If sending a record to Kinesis fails.
  */
 export async function orderLakeHandler(event: SQSEvent) {
   const streamName = requireEnv('KINESIS_STREAM_NAME');
@@ -78,13 +82,14 @@ export async function orderLakeHandler(event: SQSEvent) {
       continue;
     }
 
+    const items =
+      message.items === undefined ? undefined : JSON.stringify(message.items);
     const payload = {
       orderId: message.orderId,
       createdAt: message.createdAt,
       status: message.status,
       total: message.total,
-      items:
-        message.items !== undefined ? JSON.stringify(message.items) : undefined,
+      items,
       userPk: message.userPk,
     };
 

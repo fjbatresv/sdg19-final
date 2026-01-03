@@ -54,7 +54,10 @@ import {
   StartingPosition,
   Tracing,
 } from 'aws-cdk-lib/aws-lambda';
-import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
+import {
+  DynamoEventSource,
+  SqsEventSource,
+} from 'aws-cdk-lib/aws-lambda-event-sources';
 import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import {
   PublicHostedZone,
@@ -86,11 +89,9 @@ import {
   S3BucketOrigin,
 } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { CfnWebACL } from 'aws-cdk-lib/aws-wafv2';
-import { CfnTemplate } from 'aws-cdk-lib/aws-ses';
-import { EmailIdentity, Identity } from 'aws-cdk-lib/aws-ses';
+import { CfnTemplate, EmailIdentity, Identity } from 'aws-cdk-lib/aws-ses';
 import { Trail } from 'aws-cdk-lib/aws-cloudtrail';
 import { Queue, QueueEncryption } from 'aws-cdk-lib/aws-sqs';
-import { SqsEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 import { SqsSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import {
   Stream,

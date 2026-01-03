@@ -47,12 +47,16 @@
   </div>
 
   @if (loading()) {
-    <p class="subtle" role="status" aria-live="polite" aria-atomic="true" i18n="@@orders.loading">
+    <p
+      class="subtle"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      i18n="@@orders.loading"
+    >
       Cargando ordenes...
     </p>
-  } @if (error()) {
-    <p class="error" role="status" aria-live="polite" aria-atomic="true">
-      {{ error() }}
-    </p>
+  } @else if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
   }
 </section>

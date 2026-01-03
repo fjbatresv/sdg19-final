@@ -31,8 +31,8 @@ Notas:
   timeout de Lambda; batches más grandes reducen costo pero aumentan latencia.
 - Kinesis capacity: on-demand recomendado; en provisioned planear shards
   (1 MB/s write por shard) y auto-scaling/alarms para evitar throttling.
-- S3 partitioning: `s3://<bucket>/orders/year=YYYY/month=MM/day=DD/`; vigila
-  small files y programa compaction si el volumen es alto.
+- S3 partitioning: `s3://<bucket>/orders/year=YYYY/month=MM/day=DD/hour=HH/`;
+  vigila small files y programa compaction si el volumen es alto.
 - Glue Catalog: usa crawler programado o gestión manual con versionado de
   esquema y validación antes de cambios.
 

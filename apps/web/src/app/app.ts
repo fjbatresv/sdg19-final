@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 /**
@@ -21,7 +20,7 @@ export class App {
   /**
    * Router used to redirect on logout.
    */
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   /**
    * Ends the current session and returns the user to the login screen.

@@ -171,6 +171,16 @@ describe('orders handlers', () => {
     expect(body.total).toBe(2000);
   });
 
+  it('returns 400 when TABLE_NAME is missing on create', async () => {
+    delete process.env.TABLE_NAME;
+    const response = await createOrderHandler(
+      asEvent({ items: [{ productId: 'prod-1', quantity: 1 }] })
+    );
+    expect(response.statusCode).toBe(400);
+    const body = parseBody(response);
+    expect(body.message).toContain('TABLE_NAME');
+  });
+
   it('falls back to default currency when email is missing', async () => {
     vi.mocked(docClient.send).mockResolvedValueOnce({});
     const response = await createOrderHandler(
@@ -251,5 +261,13 @@ describe('orders handlers', () => {
     vi.mocked(docClient.send).mockRejectedValueOnce(new Error('fail'));
     const response = await listOrdersHandler(asEvent(undefined, { limit: '10' }));
     expect(response.statusCode).toBe(500);
+  });
+
+  it('returns 500 when TABLE_NAME is missing on list', async () => {
+    delete process.env.TABLE_NAME;
+    const response = await listOrdersHandler(asEvent(undefined, { limit: '10' }));
+    expect(response.statusCode).toBe(500);
+    const body = parseBody(response);
+    expect(body.message).toContain('TABLE_NAME');
   });
 });

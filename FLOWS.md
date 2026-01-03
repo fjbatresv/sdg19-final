@@ -112,8 +112,9 @@ sequenceDiagram
   StreamFn->>SNS: Publish(order)
   SNS-->>SQS: Mensaje
   SQS-->>EmailFn: Evento
+  EmailFn->>S3: Guarda copia (pending)
   EmailFn->>SES: Send templated email
-  EmailFn->>S3: Guarda copia
+  EmailFn->>S3: Marca copia (sent)
 ```
 
 ## Envio a data lake al crear orden

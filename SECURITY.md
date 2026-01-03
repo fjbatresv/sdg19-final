@@ -14,7 +14,8 @@ project owner with:
 - **Identity**: Authentication uses Amazon Cognito User Pools with JWT tokens.
 - **Network**: API is exposed through API Gateway with CloudFront and WAF in front.
 - **Data**: Primary data is stored in DynamoDB (single-table design). Email
-  objects are encrypted with SSE-KMS and bucket policies deny unencrypted writes.
+  objects are encrypted with SSE-KMS, store only non-PII metadata (status
+  `pending`/`sent`), and bucket policies deny unencrypted writes.
 - **Data Lake**: Orders are streamed to Kinesis (KMS-encrypted) and delivered
   to S3 via Firehose.
 - **Replication**: The emails bucket is replicated to the replica region with
