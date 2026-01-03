@@ -56,7 +56,7 @@
     >
       Cargando ordenes...
     </p>
-  } @if (error()) {
+  } @else if (error()) {
     <p class="error" role="alert">{{ error() }}</p>
   }
 </section>
