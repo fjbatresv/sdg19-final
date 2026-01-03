@@ -78,6 +78,8 @@ function parseOrderMessage(body: string): OrderMessage | null {
 /**
  * Validate the minimum fields required to send an email.
  */
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function isValidOrderMessage(payload: unknown): payload is ValidOrderMessage {
   if (!payload || typeof payload !== 'object') {
     return false;
@@ -87,6 +89,9 @@ function isValidOrderMessage(payload: unknown): payload is ValidOrderMessage {
     return false;
   }
   if (typeof message.email !== 'string' || message.email.trim().length === 0) {
+    return false;
+  }
+  if (!EMAIL_REGEX.test(message.email)) {
     return false;
   }
   if (
