@@ -2,7 +2,7 @@
  * Global test shim for Angular's $localize runtime.
  */
 const globalWithLocalize = globalThis as unknown as {
-  $localize?: ((strings: TemplateStringsArray, ...values: unknown[]) => string) | undefined;
+  $localize?: (strings: TemplateStringsArray, ...values: unknown[]) => string;
 };
 
 globalWithLocalize.$localize ??= (strings, ...values) =>
