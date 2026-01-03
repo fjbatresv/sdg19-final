@@ -39,6 +39,13 @@
 
 - Keep `README.md`, `ARCHITECTURE.md`, `FLOWS.md`, `SECURITY.md`, `DEPLOY.md`, and relevant `docs-site/` pages aligned.
 
+## Sonar y cumplimiento (sonar_way)
+
+- Resolver issues/hotspots siguiendo las reglas de SonarCloud y la guía interna `sonar_way`.
+- Priorizar seguridad, hotspots y calidad (bugs > vulnerabilidades > code smells).
+- Mantener el coverage >= 80% por app y subirlo con tests dirigidos si baja.
+- No cambiar reglas/quality gates sin consenso; documentar excepciones con justificación.
+
 <!-- nx configuration start-->
 <!-- Leave the start & end comments to automatically receive updates. -->
 
