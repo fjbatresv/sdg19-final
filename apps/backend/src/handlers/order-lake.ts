@@ -78,13 +78,14 @@ export async function orderLakeHandler(event: SQSEvent) {
       continue;
     }
 
+    const items =
+      message.items === undefined ? undefined : JSON.stringify(message.items);
     const payload = {
       orderId: message.orderId,
       createdAt: message.createdAt,
       status: message.status,
       total: message.total,
-      items:
-        message.items !== undefined ? JSON.stringify(message.items) : undefined,
+      items,
       userPk: message.userPk,
     };
 
