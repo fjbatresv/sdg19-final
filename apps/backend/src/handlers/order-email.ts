@@ -28,7 +28,10 @@ const ses = new SESClient({});
 type ValidOrderMessage = OrderMessage & { orderId: string; email: string };
 
 /**
- * Obfuscate the email to avoid logging full addresses.
+ * Produce a partially masked email address for safe logging.
+ *
+ * @param email - The email address to mask.
+ * @returns The masked email with the local part reduced to its first two characters followed by `***` (or a single `*` if the local part is 1–2 characters), followed by `@` and the original domain; returns `"unknown"` if the input is not a valid `local@domain` address.
  */
 function maskEmail(email: string) {
   const [local, domain] = email.split('@');
@@ -39,6 +42,12 @@ function maskEmail(email: string) {
   return `${visible}***@${domain}`;
 }
 
+/**
+ * Escape characters in a string to their corresponding HTML entities.
+ *
+ * @param value - The string to escape for safe inclusion in HTML
+ * @returns The input string with `&`, `<`, `>`, `"`, `'`, and `/` replaced by their HTML entities
+ */
 function escapeHtml(value: string) {
   return value.replaceAll(/[&<>"'/]/g, (char) => {
     switch (char) {
@@ -80,6 +89,12 @@ function parseOrderMessage(body: string): OrderMessage | null {
  */
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * Validate that a value is a well-formed order message containing the required identifiers and types.
+ *
+ * @param payload - The value to validate as an order message
+ * @returns `true` if `payload` is a `ValidOrderMessage` (has a non-empty `orderId`, a non-empty syntactically valid `email`, an optional `createdAt` that is parseable as a date if present, and an optional `total` that is a number if present), `false` otherwise.
+ */
 function isValidOrderMessage(payload: unknown): payload is ValidOrderMessage {
   if (!payload || typeof payload !== 'object') {
     return false;
@@ -108,7 +123,10 @@ function isValidOrderMessage(payload: unknown): payload is ValidOrderMessage {
 }
 
 /**
- * Validate item shape coming from the order payload.
+ * Check whether a value conforms to the OrderItem structure.
+ *
+ * @param value - The value to validate as an order item
+ * @returns `true` if `value` has `productId` (string), `quantity` (number), and `unitPrice` (number); `false` otherwise.
  */
 function isOrderItem(value: unknown): value is OrderItem {
   if (!value || typeof value !== 'object') {
@@ -122,6 +140,12 @@ function isOrderItem(value: unknown): value is OrderItem {
   );
 }
 
+/**
+ * Build HTML table rows representing the provided order items for inclusion in an email template.
+ *
+ * @param items - Array of order items to render; each item's `productName` is used when present and non-empty, otherwise `productId` is used.
+ * @returns A single HTML string containing concatenated table rows for the given items, with product names HTML-escaped and unit prices formatted as currency (dollars and cents).
+ */
 function buildItemsHtml(items: OrderItem[]) {
   return items
     .map((item) => {
@@ -156,6 +180,19 @@ function buildItemsHtml(items: OrderItem[]) {
     .join('');
 }
 
+/**
+ * Build the data object used to render the order email template.
+ *
+ * @param message - Validated order payload; `orderId`, `status`, `total`, and `userPk` are used to populate template fields
+ * @param items - List of order items to include in the template's HTML line items
+ * @returns An object with the following properties:
+ * - `orderId`: the order identifier
+ * - `status`: order status if provided
+ * - `total`: total formatted as a currency string with two decimals (e.g., "12.34") or `undefined` if not present
+ * - `userPk`: user partition key if provided
+ * - `year`: the current year as a number
+ * - `itemsHtml`: HTML string representing the order items
+ */
 function buildTemplateData(message: ValidOrderMessage, items: OrderItem[]) {
   const formattedTotal =
     typeof message.total === 'number'
@@ -171,10 +208,28 @@ function buildTemplateData(message: ValidOrderMessage, items: OrderItem[]) {
   };
 }
 
+/**
+ * Build the S3 object key used to store an email copy for a specific order.
+ *
+ * @param orderId - The order identifier to include in the key
+ * @param messageId - The message identifier to include in the key
+ * @returns The S3 key in the form `orders/{orderId}/{messageId}.json`
+ */
 function buildEmailCopyKey(orderId: string, messageId: string) {
   return `orders/${orderId}/${messageId}.json`;
 }
 
+/**
+ * Build the JSON body stored in S3 for an email copy of an order.
+ *
+ * @param orderId - The order identifier
+ * @param messageId - The SQS/SNS message identifier used to name the copy
+ * @param templateName - The SES template name used to render the email
+ * @param fromAddress - The email address used as the message sender
+ * @param status - The email copy status (`pending` or `sent`)
+ * @param templateData - Template data supplied to the SES template
+ * @returns An object with keys: `orderId`, `messageId`, `from`, `template`, `status`, `data`, and `updatedAt` (ISO 8601 timestamp)
+ */
 function buildEmailCopyBody(params: {
   orderId: string;
   messageId: string;
@@ -196,6 +251,16 @@ function buildEmailCopyBody(params: {
   };
 }
 
+/**
+ * Retrieve the stored email copy status for an order from S3.
+ *
+ * Reads the JSON object at the specified S3 key and returns its `status` when it equals `'pending'` or `'sent'`.
+ *
+ * @param bucketName - S3 bucket containing the email copy
+ * @param orderId - Order identifier used for logging context
+ * @param key - S3 object key of the email copy
+ * @returns `'pending'` or `'sent'` when present in the stored object, `null` otherwise
+ */
 async function getEmailCopyStatus(params: {
   bucketName: string;
   orderId: string;
@@ -235,6 +300,16 @@ async function getEmailCopyStatus(params: {
   }
 }
 
+/**
+ * Send an order email using an AWS SES template.
+ *
+ * @param params.orderId - Order identifier used for logging and error context.
+ * @param params.templateName - SES template name to render.
+ * @param params.fromAddress - Source (From) email address.
+ * @param params.toAddress - Recipient email address.
+ * @param params.templateData - Data object provided to the template for rendering.
+ * @throws The error thrown by SES when the send operation fails; the original error is rethrown after being logged.
+ */
 async function sendOrderEmail(params: {
   orderId: string;
   templateName: string;
@@ -259,6 +334,21 @@ async function sendOrderEmail(params: {
   }
 }
 
+/**
+ * Store a JSON representation of an email copy (metadata and template data) in S3 using KMS encryption.
+ *
+ * @param params.orderId - The order identifier associated with this email copy.
+ * @param params.messageId - The unique message identifier for the SQS/SNS message.
+ * @param params.key - The S3 object key where the JSON will be written.
+ * @param params.bucketName - The target S3 bucket name.
+ * @param params.kmsKeyId - The KMS key ID used for server-side encryption of the object.
+ * @param params.templateName - The SES template name referenced by this email copy.
+ * @param params.fromAddress - The email address used as the message source.
+ * @param params.status - The current email copy status (`'pending'` or `'sent'`).
+ * @param params.templateData - The template data payload to include in the stored copy.
+ *
+ * @throws Propagates any error encountered while writing the object to S3.
+ */
 async function putEmailCopy(params: {
   orderId: string;
   messageId: string;
@@ -309,7 +399,12 @@ async function putEmailCopy(params: {
 }
 
 /**
- * Send SES templated email for each order message and store a copy in S3.
+ * Processes SQS order messages: sends a templated order confirmation via SES and stores a copy in S3.
+ *
+ * The handler validates each record, skips invalid messages, avoids resending when a copy is already marked `sent`,
+ * and marks stored copies with `pending` then `sent` status as it progresses.
+ *
+ * @param event - The SQS event containing order message records to process
  */
 export async function orderEmailHandler(event: SQSEvent) {
   const bucketName = requireEnv('EMAILS_BUCKET_NAME');
