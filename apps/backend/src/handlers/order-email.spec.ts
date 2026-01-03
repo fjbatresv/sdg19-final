@@ -125,6 +125,18 @@ describe('orderEmailHandler', () => {
     expect(s3SendMock).not.toHaveBeenCalled();
   });
 
+  it('skips malformed email addresses', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    const event = buildEvent(
+      JSON.stringify({ orderId: 'order-999', email: 'not-an-email' })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).not.toHaveBeenCalled();
+    expect(s3SendMock).not.toHaveBeenCalled();
+  });
+
   it('ignores invalid JSON payloads', async () => {
     const { orderEmailHandler } = await import('./order-email');
     const event = buildEvent('invalid-json');
@@ -133,6 +145,59 @@ describe('orderEmailHandler', () => {
 
     expect(sesSendMock).not.toHaveBeenCalled();
     expect(s3SendMock).not.toHaveBeenCalled();
+  });
+
+  it('skips sending when copy is already marked sent', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    s3SendMock.mockImplementation((command: { __type?: string }) => {
+      if (command?.__type === 'GetObjectCommand') {
+        return Promise.resolve({
+          Body: {
+            transformToString: async () => JSON.stringify({ status: 'sent' }),
+          },
+        });
+      }
+      return Promise.resolve({});
+    });
+    const event = buildEvent(
+      JSON.stringify({ orderId: 'order-777', email: 'user@example.com' })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).not.toHaveBeenCalled();
+    const putCalls = s3SendMock.mock.calls.filter(
+      ([command]) => (command as { __type?: string }).__type === 'PutObjectCommand'
+    );
+    expect(putCalls).toHaveLength(0);
+  });
+
+  it('sends when copy is pending and marks sent', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    s3SendMock.mockImplementation((command: { __type?: string }) => {
+      if (command?.__type === 'GetObjectCommand') {
+        return Promise.resolve({
+          Body: {
+            transformToString: async () => JSON.stringify({ status: 'pending' }),
+          },
+        });
+      }
+      return Promise.resolve({});
+    });
+    const event = buildEvent(
+      JSON.stringify({ orderId: 'order-888', email: 'user@example.com' })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).toHaveBeenCalledTimes(1);
+    const putCalls = s3SendMock.mock.calls.filter(
+      ([command]) => (command as { __type?: string }).__type === 'PutObjectCommand'
+    );
+    expect(putCalls).toHaveLength(1);
+    const putInput = (putCalls[0]?.[0] as { input: any }).input;
+    const body = JSON.parse(putInput.Body);
+    expect(body.status).toBe('sent');
   });
 
   it('falls back to productId when productName is empty', async () => {
