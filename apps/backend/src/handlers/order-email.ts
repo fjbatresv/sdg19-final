@@ -1,8 +1,7 @@
 import { SQSEvent } from 'aws-lambda';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { SESClient, SendTemplatedEmailCommand } from '@aws-sdk/client-ses';
 import { requireEnv } from '../lib/env';
-import { randomUUID } from 'node:crypto';
 
 type OrderMessage = {
   orderId?: string;
@@ -13,6 +12,8 @@ type OrderMessage = {
   email?: string;
   status?: string;
 };
+
+type EmailCopyStatus = 'pending' | 'sent';
 
 type OrderItem = {
   productId: string;
@@ -165,6 +166,70 @@ function buildTemplateData(message: ValidOrderMessage, items: OrderItem[]) {
   };
 }
 
+function buildEmailCopyKey(orderId: string, messageId: string) {
+  return `orders/${orderId}/${messageId}.json`;
+}
+
+function buildEmailCopyBody(params: {
+  orderId: string;
+  messageId: string;
+  templateName: string;
+  fromAddress: string;
+  status: EmailCopyStatus;
+  templateData: Record<string, unknown>;
+}) {
+  const { orderId, messageId, templateName, fromAddress, status, templateData } =
+    params;
+  return {
+    orderId,
+    messageId,
+    from: fromAddress,
+    template: templateName,
+    status,
+    data: templateData,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+async function getEmailCopyStatus(params: {
+  bucketName: string;
+  orderId: string;
+  key: string;
+}): Promise<EmailCopyStatus | null> {
+  const { bucketName, orderId, key } = params;
+  try {
+    const { Body } = await s3.send(
+      new GetObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+      })
+    );
+    if (!Body || typeof Body !== 'object' || !('transformToString' in Body)) {
+      return null;
+    }
+    const raw = await (
+      Body as { transformToString: () => Promise<string> }
+    ).transformToString();
+    const parsed = JSON.parse(raw) as { status?: EmailCopyStatus };
+    return parsed.status === 'pending' || parsed.status === 'sent'
+      ? parsed.status
+      : null;
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'name' in error) {
+      const name = (error as { name?: string }).name;
+      if (name === 'NoSuchKey') {
+        return null;
+      }
+    }
+    const reason = error instanceof Error ? error.message : 'unknown';
+    console.warn('order-email: unable to read email copy status', {
+      orderId,
+      reason,
+    });
+    return null;
+  }
+}
+
 async function sendOrderEmail(params: {
   orderId: string;
   templateName: string;
@@ -189,17 +254,28 @@ async function sendOrderEmail(params: {
   }
 }
 
-async function storeEmailCopy(params: {
+async function putEmailCopy(params: {
   orderId: string;
+  messageId: string;
+  key: string;
   bucketName: string;
   kmsKeyId: string;
   templateName: string;
   fromAddress: string;
+  status: EmailCopyStatus;
   templateData: Record<string, unknown>;
 }) {
-  const { orderId, bucketName, kmsKeyId, templateName, fromAddress, templateData } =
-    params;
-  const key = `orders/${orderId}/${Date.now()}-${randomUUID()}.json`;
+  const {
+    orderId,
+    messageId,
+    key,
+    bucketName,
+    kmsKeyId,
+    templateName,
+    fromAddress,
+    status,
+    templateData,
+  } = params;
   try {
     await s3.send(
       new PutObjectCommand({
@@ -209,9 +285,14 @@ async function storeEmailCopy(params: {
         ServerSideEncryption: 'aws:kms',
         SSEKMSKeyId: kmsKeyId,
         Body: JSON.stringify({
-          from: fromAddress,
-          template: templateName,
-          data: templateData,
+          ...buildEmailCopyBody({
+            orderId,
+            messageId,
+            templateName,
+            fromAddress,
+            status,
+            templateData,
+          }),
         }),
       })
     );
@@ -220,7 +301,6 @@ async function storeEmailCopy(params: {
     console.error('order-email: S3 write failed', { orderId, reason });
     throw error;
   }
-  return key;
 }
 
 /**
@@ -241,6 +321,8 @@ export async function orderEmailHandler(event: SQSEvent) {
       continue;
     }
     const orderId = message.orderId;
+    const messageId = record.messageId;
+    const key = buildEmailCopyKey(orderId, messageId);
     const items = Array.isArray(message.items)
       ? message.items.filter(isOrderItem)
       : [];
@@ -252,6 +334,28 @@ export async function orderEmailHandler(event: SQSEvent) {
     });
 
     const templateData = buildTemplateData(message, items);
+    const existingStatus = await getEmailCopyStatus({
+      bucketName,
+      orderId,
+      key,
+    });
+    if (existingStatus === 'sent') {
+      console.info('order-email: copy already marked sent', { orderId, key });
+      continue;
+    }
+    if (!existingStatus) {
+      await putEmailCopy({
+        orderId,
+        messageId,
+        key,
+        bucketName,
+        kmsKeyId,
+        templateName,
+        fromAddress,
+        status: 'pending',
+        templateData,
+      });
+    }
     await sendOrderEmail({
       orderId,
       templateName,
@@ -259,14 +363,22 @@ export async function orderEmailHandler(event: SQSEvent) {
       toAddress: message.email,
       templateData,
     });
-    const key = await storeEmailCopy({
-      orderId,
-      bucketName,
-      kmsKeyId,
-      templateName,
-      fromAddress,
-      templateData,
-    });
-    console.info('order-email: stored email copy', { orderId, key });
+    try {
+      await putEmailCopy({
+        orderId,
+        messageId,
+        key,
+        bucketName,
+        kmsKeyId,
+        templateName,
+        fromAddress,
+        status: 'sent',
+        templateData,
+      });
+      console.info('order-email: stored email copy', { orderId, key });
+    } catch (error: unknown) {
+      const reason = error instanceof Error ? error.message : 'unknown';
+      console.warn('order-email: failed to mark copy as sent', { orderId, reason });
+    }
   }
 }
