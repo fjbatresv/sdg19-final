@@ -40,7 +40,7 @@ function maskEmail(email: string) {
 }
 
 function escapeHtml(value: string) {
-  return value.replace(/[&<>"'/]/g, (char) => {
+  return value.replaceAll(/[&<>"'/]/g, (char) => {
     switch (char) {
       case '&':
         return '&amp;';
