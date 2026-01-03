@@ -20,7 +20,7 @@ export async function productsHandler(event: APIGatewayProxyEventV2) {
       const decoded = Buffer.from(nextTokenParam, 'base64').toString('utf8');
       start = Number(decoded);
       if (!Number.isFinite(start)) {
-        throw new Error('Invalid token');
+        throw new TypeError('Invalid token');
       }
     } catch {
       return jsonResponse(400, { message: 'Parametros de paginacion invalidos' });
