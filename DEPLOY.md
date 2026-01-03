@@ -8,6 +8,7 @@ GitHub Actions.
 - Cuenta AWS con permisos para IAM, Route53 y CDK.
 - Dominio registrado (ej. `tu-dominio.com`).
 - Repo de GitHub donde corre el workflow de deploy.
+- Remitente SES (`ses.from`) con formato de email valido.
 
 ## 1) Hosted Zone en Route53
 

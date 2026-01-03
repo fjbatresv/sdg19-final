@@ -50,6 +50,12 @@ flowchart LR
 
 <Mermaid />
 
+Notas clave:
+
+- `order-email` valida formato de email y guarda copia en S3 con estado `pending`
+  antes de enviar por SES; luego la marca como `sent` para evitar duplicados.
+- Firehose escribe Parquet y particiona por `year/month/day/hour`.
+
 ## Fases completadas
 
 - Fase 1: autenticación, productos y órdenes.

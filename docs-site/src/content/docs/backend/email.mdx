@@ -5,7 +5,10 @@ description: Plantilla SES y almacenamiento en S3.
 
 import Mermaid from '../../_components/Mermaid.astro';
 
-El sistema de correos procesa las ordenes desde SQS y envia via SES.
+El sistema de correos procesa las órdenes desde SQS y envía via SES. Antes de
+enviar, valida el formato de email y guarda una copia en S3 con estado `pending`
+para evitar reenvíos duplicados. Al completar el envío, marca la copia como
+`sent`.
 
 Flujo:
 
@@ -19,8 +22,9 @@ sequenceDiagram
 
   SNS->>SQS: Mensaje de orden
   SQS->>Lambda: Batch SQS
+  Lambda->>S3: Guardar copia (pending)
   Lambda->>SES: SendTemplatedEmail
-  Lambda->>S3: Guardar copia JSON
+  Lambda->>S3: Marcar copia (sent)
 ```
 <Mermaid />
 
@@ -28,3 +32,4 @@ Notas:
 
 - La plantilla SES se versiona en CDK.
 - Los objetos se cifran con SSE-KMS.
+- Las copias en S3 no almacenan el email; solo metadata y status.

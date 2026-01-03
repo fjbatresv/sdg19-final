@@ -272,6 +272,9 @@ El ARN del role se construye con `aws_account_id` + `aws_role_name`.
 
 El stack crea la identidad de dominio SES, DKIM y MAIL FROM usando Route53.
 Para enviar a cualquier destinatario necesitas sacar SES del sandbox.
+La Lambda `order-email` valida formato básico de email, guarda una copia en S3
+con estado `pending` antes del envío y la marca como `sent` al finalizar para
+evitar reintentos duplicados.
 
 Contexto recomendado en `cdk.json`:
 
@@ -304,4 +307,5 @@ Despues del deploy:
 Los eventos de ordenes se publican en SNS y se derivan a una cola SQS dedicada.
 Una Lambda consume esos mensajes, los escribe en un Kinesis Data Stream y un
 Firehose los entrega al bucket de datos (`DataBucket`) bajo el prefijo
-`data-lake/orders/`.
+`data-lake/orders/` en formato Parquet con particiones dinámicas
+`year=YYYY/month=MM/day=DD/hour=HH/`.
