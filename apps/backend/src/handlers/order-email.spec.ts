@@ -200,6 +200,52 @@ describe('orderEmailHandler', () => {
     expect(body.status).toBe('sent');
   });
 
+  it('continues when stored copy status payload is invalid JSON', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    s3SendMock.mockImplementation((command: { __type?: string }) => {
+      if (command?.__type === 'GetObjectCommand') {
+        return Promise.resolve({
+          Body: {
+            transformToString: async () => 'not-json',
+          },
+        });
+      }
+      return Promise.resolve({});
+    });
+    const event = buildEvent(
+      JSON.stringify({ orderId: 'order-999', email: 'user@example.com' })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).toHaveBeenCalledTimes(1);
+    const putCalls = s3SendMock.mock.calls.filter(
+      ([command]) => (command as { __type?: string }).__type === 'PutObjectCommand'
+    );
+    expect(putCalls).toHaveLength(2);
+  });
+
+  it('continues when stored copy payload lacks transformToString', async () => {
+    const { orderEmailHandler } = await import('./order-email');
+    s3SendMock.mockImplementation((command: { __type?: string }) => {
+      if (command?.__type === 'GetObjectCommand') {
+        return Promise.resolve({ Body: {} });
+      }
+      return Promise.resolve({});
+    });
+    const event = buildEvent(
+      JSON.stringify({ orderId: 'order-998', email: 'user@example.com' })
+    );
+
+    await orderEmailHandler(event);
+
+    expect(sesSendMock).toHaveBeenCalledTimes(1);
+    const putCalls = s3SendMock.mock.calls.filter(
+      ([command]) => (command as { __type?: string }).__type === 'PutObjectCommand'
+    );
+    expect(putCalls).toHaveLength(2);
+  });
+
   it('falls back to productId when productName is empty', async () => {
     const { orderEmailHandler } = await import('./order-email');
     const message = {
