@@ -24,6 +24,8 @@ type OrderItem = {
 const s3 = new S3Client({});
 const ses = new SESClient({});
 
+type ValidOrderMessage = OrderMessage & { orderId: string; email: string };
+
 /**
  * Obfuscate the email to avoid logging full addresses.
  */
@@ -54,9 +56,7 @@ function parseOrderMessage(body: string): OrderMessage | null {
 /**
  * Validate the minimum fields required to send an email.
  */
-function isValidOrderMessage(
-  payload: unknown
-): payload is OrderMessage & { orderId: string; email: string } {
+function isValidOrderMessage(payload: unknown): payload is ValidOrderMessage {
   if (!payload || typeof payload !== 'object') {
     return false;
   }
@@ -95,6 +95,116 @@ function isOrderItem(value: unknown): value is OrderItem {
   );
 }
 
+function buildItemsHtml(items: OrderItem[]) {
+  return items
+    .map((item) => {
+      const displayName = item.productName?.trim()
+        ? item.productName
+        : item.productId;
+      const unitPrice =
+        typeof item.unitPrice === 'number'
+          ? (item.unitPrice / 100).toFixed(2)
+          : item.unitPrice;
+      return `<tr>
+              <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;font-weight:800;color:#101828;">
+                      ${displayName}
+                    </td>
+                    <td align="right" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;color:#475467;">
+                      x${item.quantity}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
+                      Precio unitario
+                    </td>
+                    <td align="right" style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
+                      $ ${unitPrice}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>`;
+    })
+    .join('');
+}
+
+function buildTemplateData(message: ValidOrderMessage, items: OrderItem[]) {
+  const formattedTotal =
+    typeof message.total === 'number'
+      ? (message.total / 100).toFixed(2)
+      : undefined;
+  return {
+    orderId: message.orderId,
+    status: message.status,
+    total: formattedTotal,
+    items,
+    userPk: message.userPk,
+    year: new Date().getFullYear(),
+    itemsHtml: buildItemsHtml(items),
+  };
+}
+
+async function sendOrderEmail(params: {
+  orderId: string;
+  templateName: string;
+  fromAddress: string;
+  toAddress: string;
+  templateData: Record<string, unknown>;
+}) {
+  const { orderId, templateName, fromAddress, toAddress, templateData } = params;
+  try {
+    await ses.send(
+      new SendTemplatedEmailCommand({
+        Source: fromAddress,
+        Destination: { ToAddresses: [toAddress] },
+        Template: templateName,
+        TemplateData: JSON.stringify(templateData),
+      })
+    );
+  } catch (error: unknown) {
+    const reason = error instanceof Error ? error.message : 'unknown';
+    console.error('order-email: SES send failed', { orderId, reason });
+    throw error;
+  }
+}
+
+async function storeEmailCopy(params: {
+  orderId: string;
+  bucketName: string;
+  kmsKeyId: string;
+  templateName: string;
+  fromAddress: string;
+  templateData: Record<string, unknown>;
+}) {
+  const { orderId, bucketName, kmsKeyId, templateName, fromAddress, templateData } =
+    params;
+  const key = `orders/${orderId}/${Date.now()}-${randomUUID()}.json`;
+  try {
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+        ContentType: 'application/json',
+        ServerSideEncryption: 'aws:kms',
+        SSEKMSKeyId: kmsKeyId,
+        Body: JSON.stringify({
+          from: fromAddress,
+          template: templateName,
+          data: templateData,
+        }),
+      })
+    );
+  } catch (error: unknown) {
+    const reason = error instanceof Error ? error.message : 'unknown';
+    console.error('order-email: S3 write failed', { orderId, reason });
+    throw error;
+  }
+  return key;
+}
+
 /**
  * Send SES templated email for each order message and store a copy in S3.
  */
@@ -123,88 +233,22 @@ export async function orderEmailHandler(event: SQSEvent) {
       status: message.status ?? 'unknown',
     });
 
-    const formattedTotal =
-      typeof message.total === 'number'
-        ? (message.total / 100).toFixed(2)
-        : undefined;
-    const templateData = {
-      orderId: message.orderId,
-      status: message.status,
-      total: formattedTotal,
-      items,
-      userPk: message.userPk,
-      year: new Date().getFullYear(),
-      itemsHtml: items
-        .map((item) => {
-          const displayName = item.productName?.trim()
-            ? item.productName
-            : item.productId;
-          const unitPrice =
-            typeof item.unitPrice === 'number'
-              ? (item.unitPrice / 100).toFixed(2)
-              : item.unitPrice;
-          return `<tr>
-              <td style="padding:14px 14px;background:#fcfcfd;border:1px solid #eaecf0;border-radius:12px;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-                  <tr>
-                    <td style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:14px;font-weight:800;color:#101828;">
-                      ${displayName}
-                    </td>
-                    <td align="right" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:13px;color:#475467;">
-                      x${item.quantity}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
-                      Precio unitario
-                    </td>
-                    <td align="right" style="padding-top:6px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;font-size:12px;color:#667085;">
-                      $ ${unitPrice}
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>`;
-        })
-        .join(''),
-    };
-
-    try {
-      await ses.send(
-        new SendTemplatedEmailCommand({
-          Source: fromAddress,
-          Destination: { ToAddresses: [message.email] },
-          Template: templateName,
-          TemplateData: JSON.stringify(templateData),
-        })
-      );
-    } catch (error: unknown) {
-      const reason = error instanceof Error ? error.message : 'unknown';
-      console.error('order-email: SES send failed', { orderId, reason });
-      throw error;
-    }
-
-    const key = `orders/${message.orderId}/${Date.now()}-${randomUUID()}.json`;
-    try {
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: bucketName,
-          Key: key,
-          ContentType: 'application/json',
-          ServerSideEncryption: 'aws:kms',
-          SSEKMSKeyId: kmsKeyId,
-          Body: JSON.stringify({
-            from: fromAddress,
-            template: templateName,
-            data: templateData,
-          }),
-        })
-      );
-    } catch (error: unknown) {
-      const reason = error instanceof Error ? error.message : 'unknown';
-      console.error('order-email: S3 write failed', { orderId, reason });
-      throw error;
-    }
+    const templateData = buildTemplateData(message, items);
+    await sendOrderEmail({
+      orderId,
+      templateName,
+      fromAddress,
+      toAddress: message.email,
+      templateData,
+    });
+    const key = await storeEmailCopy({
+      orderId,
+      bucketName,
+      kmsKeyId,
+      templateName,
+      fromAddress,
+      templateData,
+    });
     console.info('order-email: stored email copy', { orderId, key });
   }
 }
