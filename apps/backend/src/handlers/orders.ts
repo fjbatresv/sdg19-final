@@ -53,7 +53,7 @@ function parseExclusiveStartKey(token: string) {
       return null;
     }
     for (const key of EXCLUSIVE_START_KEY_FIELDS) {
-      if (!Object.prototype.hasOwnProperty.call(parsed, key)) {
+      if (!Object.hasOwn(parsed, key)) {
         return null;
       }
       const value = parsed[key];
