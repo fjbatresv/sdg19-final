@@ -1,39 +1,33 @@
 <section class="orders-shell">
   <div class="orders-header">
     <div>
-      <p class="eyebrow" i18n="@@orders.history">Historial</p>
-      <h1 i18n="@@orders.recent">Tus ordenes recientes</h1>
+      <p class="eyebrow">Historial</p>
+      <h1>Tus ordenes recientes</h1>
     </div>
-    <a class="ghost" routerLink="/shop" i18n="@@orders.backToCatalog"
-      >Volver al catalogo</a
-    >
+    <a class="ghost" routerLink="/shop">Volver al catalogo</a>
   </div>
 
   <div class="orders-list">
     @for (order of orders(); track order.orderId) {
       <article class="order-card">
         <div>
-          <p class="order-id" i18n="@@orders.orderId">
-            Orden {{ order.orderId }}
-          </p>
-          <p class="subtle" i18n="@@orders.createdAt">
-            Creada {{ order.createdAt | date : 'medium' }}
-          </p>
+          <p class="order-id">Orden {{ order.orderId }}</p>
+          <p class="subtle">Creada {{ order.createdAt | date : 'medium' }}</p>
         </div>
         <div class="order-meta">
           <span class="pill">
             @switch (order.status) {
               @case ('CREATED') {
-                <span i18n="@@orders.status.created">Creada</span>
+                <span>Creada</span>
               }
               @case ('PENDING') {
-                <span i18n="@@orders.status.pending">Pendiente</span>
+                <span>Pendiente</span>
               }
               @case ('FAILED') {
-                <span i18n="@@orders.status.failed">Fallida</span>
+                <span>Fallida</span>
               }
               @case ('COMPLETED') {
-                <span i18n="@@orders.status.completed">Completada</span>
+                <span>Completada</span>
               }
               @default {
                 <span>{{ order.status }}</span>
@@ -47,13 +41,7 @@
   </div>
 
   @if (loading()) {
-    <p
-      class="subtle"
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
-      i18n="@@orders.loading"
-    >
+    <p class="subtle" role="status" aria-live="polite" aria-atomic="true">
       Cargando ordenes...
     </p>
   } @else if (error()) {
