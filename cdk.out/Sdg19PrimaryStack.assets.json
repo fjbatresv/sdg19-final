@@ -1,5 +1,5 @@
 {
-  "version": "48.0.0",
+  "version": "52.0.0",
   "files": {
     "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d": {
       "displayName": "RegisterFn/Code",
@@ -31,31 +31,31 @@
         }
       }
     },
-    "d41c8e6342cd078b5ea5aec11522bdb605eae00f4bb98a3fb0b44c827e9b5ca9": {
+    "f06f7035054cb2aada184c7c251ec5cb31fb6b5e975284939b9ff097603ea769": {
       "displayName": "Sdg19PrimaryStack/Custom::CrossRegionExportReaderCustomResourceProvider Code",
       "source": {
-        "path": "asset.d41c8e6342cd078b5ea5aec11522bdb605eae00f4bb98a3fb0b44c827e9b5ca9",
+        "path": "asset.f06f7035054cb2aada184c7c251ec5cb31fb6b5e975284939b9ff097603ea769",
         "packaging": "zip"
       },
       "destinations": {
-        "123456789012-us-east-1-1938327e": {
+        "123456789012-us-east-1-2d967871": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-1",
-          "objectKey": "d41c8e6342cd078b5ea5aec11522bdb605eae00f4bb98a3fb0b44c827e9b5ca9.zip",
+          "objectKey": "f06f7035054cb2aada184c7c251ec5cb31fb6b5e975284939b9ff097603ea769.zip",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-1"
         }
       }
     },
-    "4188d04ac401650dd4458f6a288cbfaf399a3c19f0bd8aaedaf365f7629981e5": {
+    "4e40f1ac0851dc1bf7872d775f39e2120ac5ce13367c30e7efb3eae360db3541": {
       "displayName": "Sdg19PrimaryStack Template",
       "source": {
         "path": "Sdg19PrimaryStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "123456789012-us-east-1-0e7bc4b0": {
+        "123456789012-us-east-1-720342c5": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-1",
-          "objectKey": "4188d04ac401650dd4458f6a288cbfaf399a3c19f0bd8aaedaf365f7629981e5.json",
+          "objectKey": "4e40f1ac0851dc1bf7872d775f39e2120ac5ce13367c30e7efb3eae360db3541.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-1"
         }
