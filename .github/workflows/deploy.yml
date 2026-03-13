@@ -44,18 +44,21 @@ jobs:
       - name: Upload backend dist
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
+          if-no-files-found: error
           name: backend-dist
           path: apps/backend/dist
 
       - name: Upload infra dist
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
+          if-no-files-found: error
           name: infra-dist
           path: apps/infra/dist
 
       - name: Upload web dist
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
+          if-no-files-found: error
           name: web-dist
           path: dist/web
 
