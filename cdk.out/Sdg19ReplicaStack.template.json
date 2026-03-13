@@ -285,7 +285,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WLQQqDMBREz+I+/lbtBapLFxU9QEnjr8RoUvITRULuXsSCdDUzb2ZyyIsCrglfKRW9Sif5gtA5LhTjKz2DmglCjRur3rrGLTIqIJReKHQ7+rlDGjNJsZ34yDGyypMzc4tkvBW4D07/VzXWLLJHW3JCdidC1zk+SD3sn4d3H+8i06ZHGOmy5DfIMsiSkaRMrddOzgjtoV8SC0a22AAAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5WMMW7DMAxFzxLPMlvbmbol6ZYhQTwWRaHIbEDbkgqTSmoIunvhaEg7duInH/+roV438LzSNy5NN5QjnSG2os2g9I0/4mAZ4h5ntft0e5yT4gbiNpgBZTnl9BYLS9/kipfit2cRcAN3xJBfN0H8K44oeDj3aISL9K4yOvqRzPyw5v0f7lxoRQtadHd1SmoXWLw9IfswGVz0j/wHHSd/pQ6nrWZUG2aUVvSF3GXpHIJ8BUnK+Q6h56drvYaqgmrVM1E5BSdkEU55/gCrqbCgVQEAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "Sdg19ReplicaStack/CDKMetadata/Default"
@@ -387,7 +387,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-2",
-     "S3Key": "8a17fb3ceee821f797100bf65fa3047c164a08c03aa5a07fbcff9a676fb73b97.zip"
+     "S3Key": "d2191f6f199b95d1c044799f514b1ceca87200b3014c43c34839aad03dc69b8c.zip"
     },
     "Timeout": 900,
     "MemorySize": 128,
@@ -405,7 +405,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider/Handler",
-    "aws:asset:path": "asset.8a17fb3ceee821f797100bf65fa3047c164a08c03aa5a07fbcff9a676fb73b97",
+    "aws:asset:path": "asset.d2191f6f199b95d1c044799f514b1ceca87200b3014c43c34839aad03dc69b8c",
     "aws:asset:property": "Code"
    }
   }

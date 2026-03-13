@@ -1,0 +1,125 @@
+{
+  "/Sdg19ReplicaStack": [
+    {
+      "type": "aws:cdk:stack-tags",
+      "data": [
+        {
+          "key": "project",
+          "value": "sdg19-final"
+        },
+        {
+          "key": "reason",
+          "value": "sdg19"
+        }
+      ]
+    }
+  ],
+  "/Sdg19ReplicaStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+      "data": true
+    }
+  ],
+  "/Sdg19ReplicaStack/EmailsReplicaBucketName": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EmailsReplicaBucketName"
+    }
+  ],
+  "/Sdg19ReplicaStack/EmailsReplicaKmsKeyArn": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EmailsReplicaKmsKeyArn"
+    }
+  ],
+  "/Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider": [
+    {
+      "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+      "data": true
+    }
+  ],
+  "/Sdg19ReplicaStack/BootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "BootstrapVersion"
+    }
+  ],
+  "/Sdg19ReplicaStack/CheckBootstrapVersion": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CheckBootstrapVersion"
+    }
+  ],
+  "/Sdg19ReplicaStack/EmailsReplicaKey/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EmailsReplicaKeyF79649DF"
+    }
+  ],
+  "/Sdg19ReplicaStack/EmailsReplicaBucket/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EmailsReplicaBucket67B3049C"
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
+      }
+    }
+  ],
+  "/Sdg19ReplicaStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+    }
+  ],
+  "/Sdg19ReplicaStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+    }
+  ],
+  "/Sdg19ReplicaStack/CDKMetadata/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CDKMetadata"
+    }
+  ],
+  "/Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider/Role": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomCrossRegionExportWriterCustomResourceProviderRoleC951B1E1"
+    }
+  ],
+  "/Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider/Handler": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "CustomCrossRegionExportWriterCustomResourceProviderHandlerD8786E8A"
+    }
+  ],
+  "/Sdg19ReplicaStack/EmailsReplicaBucket/Policy/Resource": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EmailsReplicaBucketPolicy747BF05C"
+    },
+    {
+      "type": "aws:cdk:analytics:mixin",
+      "data": {
+        "mixin": "aws-cdk-lib.aws_s3.mixins.BucketPolicyStatements"
+      }
+    }
+  ],
+  "/Sdg19ReplicaStack/EmailsReplicaBucket/AutoDeleteObjectsCustomResource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "EmailsReplicaBucketAutoDeleteObjectsCustomResource57CD3A97"
+    }
+  ],
+  "/Sdg19ReplicaStack/ExportsWriteruseast10F67B507/Resource/Default": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "ExportsWriteruseast10F67B507DDE2E818"
+    }
+  ]
+}
