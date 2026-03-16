@@ -91,13 +91,13 @@ jobs:
         run: npm ci
 
       - name: Download backend dist
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: backend-dist
           path: apps/backend/dist
 
       - name: Download infra dist
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: infra-dist
           path: apps/infra/dist
@@ -150,13 +150,13 @@ jobs:
         run: npm ci
 
       - name: Download backend dist
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: backend-dist
           path: apps/backend/dist
 
       - name: Download infra dist
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: infra-dist
           path: apps/infra/dist
@@ -227,7 +227,7 @@ jobs:
         run: npm ci
 
       - name: Download web dist
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: web-dist
           path: dist/web
