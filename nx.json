@@ -67,5 +67,8 @@
       "style": "css",
       "unitTestRunner": "vitest-angular"
     }
+  },
+  "affected": {
+    "legacy": true
   }
 }
