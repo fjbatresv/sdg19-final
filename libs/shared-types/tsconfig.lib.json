@@ -5,7 +5,8 @@
     "rootDir": ".",
     "declaration": true,
     "composite": true,
-    "tsBuildInfoFile": "../../dist/libs/shared-types/tsconfig.lib.tsbuildinfo"
+    "tsBuildInfoFile": "../../dist/libs/shared-types/tsconfig.lib.tsbuildinfo",
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*.ts"]
 }

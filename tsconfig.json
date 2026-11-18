@@ -15,5 +15,8 @@
     {
       "path": "./libs/shared-types"
     }
-  ]
+  ],
+  "compilerOptions": {
+    "ignoreDeprecations": "6.0"
+  }
 }
