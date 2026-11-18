@@ -31,8 +31,6 @@ npx nx run web:test -- --include apps/web/src/app/auth.guard.spec.ts   # web use
 
 CDK synth requires `AWS_ACCOUNT_ID` (or `CDK_DEFAULT_ACCOUNT`) and domain/SES context; build infra and backend first. The pre-push hook (`scripts/git-hooks/pre-push`) shows a working synth invocation with dummy values. Install hooks with `scripts/install-git-hooks.sh`.
 
-`postinstall` runs `scripts/patch-angular-build.js`, which patches `@angular/build` in `node_modules`; rerun `npm install` if web builds break after dependency changes.
-
 ## Architecture notes
 
 - **Single backend bundle, many Lambdas.** `apps/backend/src/main.ts` re-exports every handler; esbuild bundles it into one `main.js`. `apps/infra/src/stacks/primary-stack.ts` creates each Lambda from the same asset (`Code.fromAsset(apps/backend/dist)`) with `handler: 'main.<exportName>'`. Adding a handler means: export it from `main.ts`, wire a `Function` + route/event source in `PrimaryStack`, update `apps/backend/openapi.yaml` if it's an HTTP route, then `npm run docs:sync-openapi`.

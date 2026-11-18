@@ -8,15 +8,16 @@
   "implicitDependencies": ["shared-types"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
+      "executor": "@angular/build:application",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/web",
+        "outputPath": {
+          "base": "dist/web",
+          "browser": ""
+        },
         "index": "apps/web/src/index.html",
-        "main": "apps/web/src/main.ts",
         "tsConfig": "apps/web/tsconfig.app.json",
-        "verbose": true,
         "polyfills": ["zone.js"],
         "assets": [
           {
@@ -24,7 +25,8 @@
             "input": "apps/web/public"
           }
         ],
-        "styles": ["apps/web/src/styles.css"]
+        "styles": ["apps/web/src/styles.css"],
+        "browser": "apps/web/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -142,7 +144,7 @@
       "dependsOn": ["build"],
       "options": {
         "buildTarget": "web:build",
-        "staticFilePath": "dist/web/browser",
+        "staticFilePath": "dist/web",
         "spa": true
       }
     },

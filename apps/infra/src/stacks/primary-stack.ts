@@ -341,7 +341,7 @@ export class PrimaryStack extends Stack {
     const backendCode = Code.fromAsset(backendCodePath);
 
     const registerFn = new Function(this, 'RegisterFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.registerHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -354,7 +354,7 @@ export class PrimaryStack extends Stack {
     });
 
     const loginFn = new Function(this, 'LoginFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.loginHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -367,7 +367,7 @@ export class PrimaryStack extends Stack {
     });
 
     const refreshFn = new Function(this, 'RefreshFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.refreshHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -379,7 +379,7 @@ export class PrimaryStack extends Stack {
     });
 
     const productsFn = new Function(this, 'ProductsFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.productsHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -388,7 +388,7 @@ export class PrimaryStack extends Stack {
     });
 
     const createOrderFn = new Function(this, 'CreateOrderFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.createOrderHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -400,7 +400,7 @@ export class PrimaryStack extends Stack {
     });
 
     const listOrdersFn = new Function(this, 'ListOrdersFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.listOrdersHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -412,7 +412,7 @@ export class PrimaryStack extends Stack {
     });
 
     const orderStreamFn = new Function(this, 'OrderStreamFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.orderStreamHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -547,7 +547,7 @@ export class PrimaryStack extends Stack {
     });
 
     const optionsFn = new Function(this, 'OptionsFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.optionsHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -1268,7 +1268,7 @@ export class PrimaryStack extends Stack {
     });
 
     const orderEmailFn = new Function(this, 'OrderEmailFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.orderEmailHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
@@ -1283,7 +1283,7 @@ export class PrimaryStack extends Stack {
     });
 
     const orderLakeFn = new Function(this, 'OrderLakeFn', {
-      runtime: Runtime.NODEJS_20_X,
+      runtime: Runtime.NODEJS_24_X,
       handler: 'main.orderLakeHandler',
       code: backendCode,
       tracing: Tracing.ACTIVE,
