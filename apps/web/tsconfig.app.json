@@ -16,6 +16,14 @@
     "src/app/testing/auth-test-utils.ts",
     "src/vitest.setup.ts"
   ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  },
   "references": [
     {
       "path": "../../libs/shared-types/tsconfig.lib.json"
