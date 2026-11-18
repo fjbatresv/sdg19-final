@@ -87,6 +87,9 @@
         "development": {
           "buildTarget": "web:build:development"
         }
+      },
+      "readyWhen": {
+        "signal": true
       }
     },
     "lint": {
@@ -133,15 +136,15 @@
     "serve-static": {
       "continuous": true,
       "executor": "@nx/web:file-server",
+      "readyWhen": {
+        "signal": true
+      },
+      "dependsOn": ["build"],
       "options": {
         "buildTarget": "web:build",
         "staticFilePath": "dist/web/browser",
         "spa": true
-      },
-      "readyWhen": {
-        "signal": true
-      },
-      "dependsOn": ["build"]
+      }
     },
     "typecheck": {
       "executor": "nx:run-commands",
