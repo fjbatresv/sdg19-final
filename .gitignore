@@ -57,3 +57,4 @@ doc-coverage/
 docs-site/.astro/
 
 .nx/migrate-runs
+.claude/worktrees
