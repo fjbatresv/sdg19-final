@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OrdersService, OrderSummary } from '../services/orders.service';
 
@@ -10,6 +10,7 @@ import { OrdersService, OrderSummary } from '../services/orders.service';
   selector: 'app-orders',
   standalone: true,
   imports: [CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './orders.component.html',
 })
 export class OrdersComponent {
