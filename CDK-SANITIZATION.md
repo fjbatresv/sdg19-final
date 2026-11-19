@@ -37,7 +37,7 @@ git push origin main
 
 - `.git/hooks/pre-commit` - Regeneración y sanitización automática
 - `.git/hooks/pre-push` - Verificación de seguridad
-- `sanitize-cdk-out.sh` - Script de sanitización
+- `sanitize-cdk-out.sh` - Script de sanitización. No contiene datos reales: lee `SANITIZE_ACCOUNT_IDS` / `SANITIZE_DOMAINS` (o `AWS_ACCOUNT_ID` / `ROOT_DOMAIN_NAME`) y además normaliza cualquier account ID dentro de ARNs a `123456789012`.
 - `.snyk` - Configuración de Snyk para escaneo selectivo
 
 ## ✅ Beneficios
@@ -53,10 +53,10 @@ git push origin main
 Si necesitas verificar manualmente:
 
 ```bash
-# Regenerar y sanitizar
+# Regenerar y sanitizar (los valores reales sólo viven en tu entorno)
 npx cdk synth
-./sanitize-cdk-out.sh
+SANITIZE_ACCOUNT_IDS="<account-id>" SANITIZE_DOMAINS="<tu-dominio>" ./sanitize-cdk-out.sh
 
 # Verificar sanitización
-grep -r "605134457500\|javierba3\.com" cdk.out/ || echo "✅ Sanitizado correctamente"
+grep -rE "<account-id>|<tu-dominio>" cdk.out/ || echo "✅ Sanitizado correctamente"
 ```

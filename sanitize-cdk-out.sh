@@ -1,29 +1,60 @@
 #!/bin/bash
+# Sanitiza cdk.out antes de commitearlo (escaneo Snyk).
+#
+# No contiene valores reales: los datos a ocultar llegan por variables de entorno.
+#   SANITIZE_ACCOUNT_IDS  IDs de cuenta AWS separados por espacio/coma
+#                         (por defecto: AWS_ACCOUNT_ID / CDK_DEFAULT_ACCOUNT)
+#   SANITIZE_DOMAINS      Dominios separados por espacio/coma
+#                         (por defecto: ROOT_DOMAIN_NAME / ROOT_DOMAIN)
+# Además, cualquier account ID de 12 dígitos dentro de un ARN se reemplaza
+# siempre por 123456789012 como red de seguridad.
+set -euo pipefail
 
-# Script para sanitizar cdk.out antes de commit para Snyk
-# Reemplaza información sensible con valores genéricos
+PLACEHOLDER_ACCOUNT=123456789012
+PLACEHOLDER_DOMAIN=example.com
+OUT_DIR=${CDK_OUT_DIR:-cdk.out}
 
-echo "🧹 Sanitizando cdk.out para Snyk..."
+echo "🧹 Sanitizando ${OUT_DIR} para Snyk..."
 
-if [ ! -d "cdk.out" ]; then
-    echo "❌ Directorio cdk.out no encontrado"
-    exit 1
+if [ ! -d "$OUT_DIR" ]; then
+  echo "❌ Directorio ${OUT_DIR} no encontrado"
+  exit 1
 fi
 
-# Reemplazar Account ID
-echo "🔄 Reemplazando Account ID..."
-find cdk.out -name "*.json" -exec sed -i.bak 's/605134457500/123456789012/g' {} +
+accounts=${SANITIZE_ACCOUNT_IDS:-${AWS_ACCOUNT_ID:-${CDK_DEFAULT_ACCOUNT:-}}}
+domains=${SANITIZE_DOMAINS:-${ROOT_DOMAIN_NAME:-${ROOT_DOMAIN:-}}}
 
-# Reemplazar dominio personal
-echo "🔄 Reemplazando dominio..."
-find cdk.out -name "*.json" -exec sed -i.bak 's/javierba3\.com/example.com/g' {} +
+replace() {
+  # $1 = expresión sed (ERE)
+  find "$OUT_DIR" -name '*.json' -exec sed -E -i.bak "$1" {} +
+}
 
-# Reemplazar buckets CDK específicos
+for acct in ${accounts//,/ }; do
+  if [[ ! $acct =~ ^[0-9]{12}$ ]]; then
+    echo "❌ Account ID inválido en SANITIZE_ACCOUNT_IDS"
+    exit 1
+  fi
+  [ "$acct" = "$PLACEHOLDER_ACCOUNT" ] && continue
+  echo "🔄 Reemplazando account ID configurado..."
+  replace "s/${acct}/${PLACEHOLDER_ACCOUNT}/g"
+done
+
+for domain in ${domains//,/ }; do
+  if [[ ! $domain =~ ^[A-Za-z0-9.-]+\.[A-Za-z]{2,}$ ]]; then
+    echo "❌ Dominio inválido en SANITIZE_DOMAINS"
+    exit 1
+  fi
+  [ "$domain" = "$PLACEHOLDER_DOMAIN" ] && continue
+  echo "🔄 Reemplazando dominio configurado..."
+  replace "s/${domain//./\\.}/${PLACEHOLDER_DOMAIN}/g"
+done
+
+echo "🔄 Normalizando account IDs en ARNs..."
+replace "s/(arn:aws[a-z-]*:[a-z0-9-]*:[a-z0-9-]*:)[0-9]{12}:/\\1${PLACEHOLDER_ACCOUNT}:/g"
+
 echo "🔄 Reemplazando buckets CDK..."
-find cdk.out -name "*.json" -exec sed -i.bak 's/cdk-hnb659fds/cdk-bootstrap/g' {} +
+replace 's/cdk-hnb659fds/cdk-bootstrap/g'
 
-# Limpiar archivos backup
-find cdk.out -name "*.bak" -delete
+find "$OUT_DIR" -name '*.bak' -delete
 
 echo "✅ Sanitización completada"
-echo "🔍 Ahora puedes commitear cdk.out para Snyk"
