@@ -47,7 +47,9 @@ jobs:
           OWNER: ${{ github.repository_owner }}
         run: |
           if [ -n "$CUSTOM_DOMAIN" ]; then
-            if ! printf '%s' "$CUSTOM_DOMAIN" | grep -Eq '^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$'; then
+            # Bash regex matches the whole string, so embedded newlines fail.
+            domain_re='^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$'
+            if [[ ! "$CUSTOM_DOMAIN" =~ $domain_re ]]; then
               echo "PAGES_CUSTOM_DOMAIN has an invalid format" >&2
               exit 1
             fi
