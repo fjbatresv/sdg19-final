@@ -248,7 +248,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-2",
-     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+     "S3Key": "6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d.zip"
     },
     "Timeout": 900,
     "MemorySize": 128,
@@ -259,7 +259,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs22.x",
+    "Runtime": "nodejs24.x",
     "Description": {
      "Fn::Join": [
       "",
@@ -278,14 +278,14 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19ReplicaStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
-    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:path": "asset.6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d",
     "aws:asset:property": "Code"
    }
   },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5WMsW7CMBCGn4XMzjVymNiAbgwgMlYIGeeKnMR2lTsDkeV3R8ED7djp/rvv/k+CXNZQLdSdSt325WAuEBtWuhfqTufYW4K4w0lsv90OpySohrgJukeeTzl9xcKah3HFqvjtmQVUwwsR5Nd1YP+JAzLuLx1qpiKdREYHPxg9va15/4c7FxpWjBbdS52S2AZib49IPowaZ/07/0GH0d9Mi+NGEYo1EXLD6mrcde7sA/8ETsL5FqGjj5uUICuoFh0ZU47BsbEIxzyf2EMJv1UBAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/5WMwU7DMAyGn2U9pwYypEnctnHbYdN6RAhlqZncNgmqnY0qyrujLofBkZN/+/P/adCrFTwuzJVr2/b1QCdIjRjbK3Plj9Q7hrTDSW0//Q6nrHgJaRNtjzKfSnpLlaNv8tVL9dszC3gJN8RQXtdRwisOKLg/dWiFq/yuCjqEgex0t5b9H+5SaMQIOvQ3dc5qG1mCOyKHOFqc9ff8Bx3GcKEWx41hVGtmlEbMmfx57uyjfEXJyocWoeOHi34GreFp0TFRPUYv5BCOZf4A+0ivrVUBAAA="
    },
    "Metadata": {
     "aws:cdk:path": "Sdg19ReplicaStack/CDKMetadata/Default"
@@ -387,7 +387,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-2",
-     "S3Key": "d2191f6f199b95d1c044799f514b1ceca87200b3014c43c34839aad03dc69b8c.zip"
+     "S3Key": "e85f121a37e8f08b699ed379d86800b70a9e3204de932db16379efc4eb8a7605.zip"
     },
     "Timeout": 900,
     "MemorySize": 128,
@@ -398,14 +398,14 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs22.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "CustomCrossRegionExportWriterCustomResourceProviderRoleC951B1E1"
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider/Handler",
-    "aws:asset:path": "asset.d2191f6f199b95d1c044799f514b1ceca87200b3014c43c34839aad03dc69b8c",
+    "aws:asset:path": "asset.e85f121a37e8f08b699ed379d86800b70a9e3204de932db16379efc4eb8a7605",
     "aws:asset:property": "Code"
    }
   }

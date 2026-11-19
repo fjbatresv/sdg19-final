@@ -1,6 +1,37 @@
 {
   "/Sdg19PrimaryStack": [
     {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)",
+        "...node internals..."
+      ]
+    },
+    {
+      "type": "aws:cdk:warning",
+      "data": "No cross-stack-reference strength configured, defaulting to \"strong\". We recommend you set feature flag \"@aws-cdk/core:defaultCrossStackReferences\" to \"both\", then deploy everywhere, then set it to \"weak\". Alternatively, set it to \"strong\" explicitly to lock in the current producer-protecting behavior. (See: https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/README.md#reference-strength) [ack: @aws-cdk/core:crossStackReferencesDefaultStrong]",
+      "trace": [
+        "Annotations.addMessage (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/annotations.js:1:4179)",
+        "Annotations.addWarningV2 (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/annotations.js:1:2785)",
+        "resolveValue (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:7188)",
+        "resolveReferencesInElements (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:5056)",
+        "resolveReferences (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/private/refs.js:1:4718)",
+        "prepareApp (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/private/prepare-app.js:1:1240)",
+        "synthesize (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/private/synthesis.js:1:2625)",
+        "App.synth (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/stage.js:1:5061)",
+        "App.synth (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/app.js:1:5364)",
+        "process.<anonymous> (/Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/core/lib/app.js:1:4274)",
+        "process.wrapper (node:events:639:12)",
+        "process.emit (node:events:514:28)"
+      ]
+    },
+    {
+      "type": "aws:cdk:templateFile",
+      "data": "Sdg19PrimaryStack.template.json"
+    },
+    {
       "type": "aws:cdk:stack-tags",
       "data": [
         {
@@ -24,84 +55,210 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "WebAcl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:463:20)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/AWSCloudFrontPartitionHostedZoneIdMap": [
     {
       "type": "aws:cdk:logicalId",
       "data": "AWSCloudFrontPartitionHostedZoneIdMap"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ARecord2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:584:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/DataLakeDatabase": [
     {
       "type": "aws:cdk:logicalId",
       "data": "DataLakeDatabase"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:638:30)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/DataLakeOrdersTable": [
     {
       "type": "aws:cdk:logicalId",
       "data": "DataLakeOrdersTable"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:644:27)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersFirehose": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersFirehose"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:757:28)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderEmailTemplate": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderEmailTemplate"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:974:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ApiUrl": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ApiUrl"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1189:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/UserPoolId": [
     {
       "type": "aws:cdk:logicalId",
       "data": "UserPoolId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1192:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/UserPoolClientId": [
     {
       "type": "aws:cdk:logicalId",
       "data": "UserPoolClientId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1195:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/TableName": [
     {
       "type": "aws:cdk:logicalId",
       "data": "TableName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1198:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebBucketName": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1201:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebDistributionId": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebDistributionId"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1204:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/DataBucketName": [
     {
       "type": "aws:cdk:logicalId",
       "data": "DataBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1207:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/EmailsBucketName": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1210:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/Custom::CrossRegionExportReaderCustomResourceProvider": [
@@ -114,138 +271,341 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CheckBootstrapVersion": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/DataKey/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "DataKey17AFBB84"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Key2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:120:21)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/MainTable/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "MainTable74195DAB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Table2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:123:19)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersTopic/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersTopic47790A41"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Topic2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:141:25)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersQueueDLQ/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersQueueDLQB05DAA0E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:146:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersQueue/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersQueue3DFA1D51"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:150:25)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersLakeQueueDLQ/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersLakeQueueDLQ7E963BA6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:159:21)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersLakeQueue/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersLakeQueue83376934"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Queue2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:163:29)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/UserPool/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "UserPool6BA7E5F2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPool2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:172:22)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/UserPoolClient/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "UserPoolClient2F5918F7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new UserPoolClient2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:185:28)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ApiAccessLogs/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ApiAccessLogsE9DF007D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:193:21)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiF5A9A8A7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new HttpApi2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:203:17)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/RegisterFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "RegisterFnA997AE2F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:249:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/LoginFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "LoginFn9B45172B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:261:21)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/RefreshFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "RefreshFnFA748627"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:273:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ProductsFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ProductsFn8FFABC69"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:284:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CreateOrderFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CreateOrderFnDC0D005D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:292:27)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ListOrdersFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ListOrdersFn6F2838C6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:303:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderStreamFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderStreamFn89192B53"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:314:27)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OptionsFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OptionsFn22CF12D2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:437:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/Certificate/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "Certificate4E7ABB08"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Certificate2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:449:25)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebBucket/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebBucket12880F5B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:454:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -258,66 +618,161 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebCachePolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebCachePolicyA235B87B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new CachePolicy2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:490:28)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ProductsCachePolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ProductsCachePolicy6F1FF7B9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new CachePolicy2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:500:33)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ApiCorsResponsePolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ApiCorsResponsePolicy0338CEA0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ResponseHeadersPolicy2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:510:35)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebDistribution/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebDistribution59C46482"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Distribution2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:531:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ApiDistribution/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ApiDistribution1DFA7F7C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Distribution2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:556:29)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebAliasRecord/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebAliasRecordB1E87459"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ARecord2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:584:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ApiAliasRecord/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ApiAliasRecordBCE933A3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new ARecord2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:589:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ReplicationRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ReplicationRoleCE149CEC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:594:29)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/DataBucket/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "DataBucketE3889A50"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:625:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -330,24 +785,60 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersStream464CF62B"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Stream2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:633:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersFirehoseRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersFirehoseRoleEE9F194E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Role2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:691:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersFirehoseLogs/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersFirehoseLogs3E6CDFB5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:754:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/LogsBucket/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "LogsBucket9C4D8843"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:831:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -362,6 +853,15 @@
       "data": "EmailsBucket616D9B95"
     },
     {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:844:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
+    },
+    {
       "type": "aws:cdk:analytics:mixin",
       "data": {
         "mixin": "aws-cdk-lib.aws_s3.mixins.BucketAutoDeleteObjects"
@@ -372,270 +872,682 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsBucketSizeAlarm1C3A78F1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Alarm2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:916:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/EmailsReplicationBytesPendingAlarm/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicationBytesPendingAlarm11402B52"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Alarm2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:933:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/EmailsReplicationOpsPendingAlarm/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicationOpsPendingAlarmB472F306"
-    }
-  ],
-  "/Sdg19PrimaryStack/SesDomainIdentity/DkimDnsToken1": [
+    },
     {
-      "type": "aws:cdk:logicalId",
-      "data": "SesDomainIdentityDkimDnsToken198D008AB"
-    }
-  ],
-  "/Sdg19PrimaryStack/SesDomainIdentity/DkimDnsToken2": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "SesDomainIdentityDkimDnsToken26E1A6FB3"
-    }
-  ],
-  "/Sdg19PrimaryStack/SesDomainIdentity/DkimDnsToken3": [
-    {
-      "type": "aws:cdk:logicalId",
-      "data": "SesDomainIdentityDkimDnsToken3BD252D07"
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Alarm2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:950:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/SesDomainIdentity/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "SesDomainIdentity9A66B56D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new EmailIdentity2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:970:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/Sdg19PrimaryStack/SesDomainIdentity/DkimDnsToken1": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SesDomainIdentityDkimDnsToken198D008AB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new EmailIdentity2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:970:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/Sdg19PrimaryStack/SesDomainIdentity/DkimDnsToken2": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SesDomainIdentityDkimDnsToken26E1A6FB3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new EmailIdentity2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:970:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
+    }
+  ],
+  "/Sdg19PrimaryStack/SesDomainIdentity/DkimDnsToken3": [
+    {
+      "type": "aws:cdk:logicalId",
+      "data": "SesDomainIdentityDkimDnsToken3BD252D07"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new EmailIdentity2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:970:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderEmailFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderEmailFn25E3BD4D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1107:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderLakeFn/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderLakeFnF5943FA5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1121:25)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CloudTrailLogs/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CloudTrailLogsBBCFF69F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new LogGroup2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1178:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CloudTrail/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CloudTrailA62D711D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Trail2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1181:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CDKMetadata/Default": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/Custom::CrossRegionExportReaderCustomResourceProvider/Role": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomCrossRegionExportReaderCustomResourceProviderRole10531BBD"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/Custom::CrossRegionExportReaderCustomResourceProvider/Handler": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomCrossRegionExportReaderCustomResourceProviderHandler46647B68"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersQueue/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersQueuePolicy060934B1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addSubscription in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:371:17)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersQueue/Sdg19PrimaryStackOrdersTopic30D02781/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersQueueSdg19PrimaryStackOrdersTopic30D02781786D76E2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addSubscription in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:371:17)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersLakeQueue/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersLakeQueuePolicy2F5C0EB3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addSubscription in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:376:17)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersLakeQueue/Sdg19PrimaryStackOrdersTopic30D02781/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersLakeQueueSdg19PrimaryStackOrdersTopic30D027812DF45777"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addSubscription in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:376:17)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ApiAccessLogs/Policy/ResourcePolicy": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ApiAccessLogsPolicyResourcePolicy4D577253"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addToResourcePolicy in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:196:13)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/$default/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApidefault62F57253"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:223:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--register/RegisterIntegration-Permission": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthregisterRegisterIntegrationPermission86BC8E45"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:399:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--register/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthregisterBB9BB35F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:399:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--login/LoginIntegration-Permission": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthloginLoginIntegrationPermission8F5F7DF8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:404:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--login/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthlogin634C8840"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:404:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--refresh/RefreshIntegration-Permission": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthrefreshRefreshIntegrationPermissionDD074EC2"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:409:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--refresh/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthrefreshA8D26950"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:409:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/GET--products/ProductsIntegration-Permission": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiGETproductsProductsIntegrationPermission1FAE3A72"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:414:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/GET--products/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiGETproductsDD9BD677"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:414:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--orders/CreateOrderIntegration-Permission": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTordersCreateOrderIntegrationPermissionF8D91C1E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:419:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--orders/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTordersE6D287A8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:419:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/UserPoolJwtAuthorizer/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiUserPoolJwtAuthorizer9512187D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:419:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/GET--orders/ListOrdersIntegration-Permission": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiGETordersListOrdersIntegrationPermission02FC766A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:428:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/GET--orders/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiGETorders4E114900"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:428:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/OPTIONS--{proxy+}/OptionsIntegration-Permission": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiOPTIONSproxyOptionsIntegrationPermissionE754ECE1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:444:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/OPTIONS--{proxy+}/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiOPTIONSproxy49C71BEB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:444:9)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/RegisterFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "RegisterFnServiceRole60DD91DA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:249:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/LoginFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "LoginFnServiceRole693ED621"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:261:21)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/RefreshFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "RefreshFnServiceRole1AFCCCE5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:273:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ProductsFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ProductsFnServiceRoleA9750689"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:284:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CreateOrderFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CreateOrderFnServiceRole7E513123"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:292:27)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ListOrdersFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ListOrdersFnServiceRoleC9CADE33"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:303:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderStreamFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderStreamFnServiceRoleD210570F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:314:27)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderStreamFn/DynamoDBEventSource:Sdg19PrimaryStackMainTableE82CC0BB/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderStreamFnDynamoDBEventSourceSdg19PrimaryStackMainTableE82CC0BBCC09E615"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventSource in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:325:19)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OptionsFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OptionsFnServiceRole67E51491"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:437:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebBucket/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebBucketPolicy95D08FAA"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:454:23)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)"
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -648,18 +1560,42 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "WebBucketAutoDeleteObjectsCustomResource9C1A079F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ReplicationRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ReplicationRoleDefaultPolicy80AD15BB"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:598:21)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/DataBucket/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "DataBucketPolicy3231C704"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:625:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)"
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -672,18 +1608,42 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "DataBucketAutoDeleteObjectsCustomResource9FB51BF3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrdersFirehoseRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrdersFirehoseRoleDefaultPolicy22D47B42"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:695:18)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/LogsBucket/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "LogsBucketPolicyD70D9252"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:831:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)"
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -696,12 +1656,27 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "LogsBucketAutoDeleteObjectsCustomResource7D54FB85"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/EmailsBucket/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsBucketPolicyB6FCC6C8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:844:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)"
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -714,168 +1689,396 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsBucketAutoDeleteObjectsCustomResourceB6A3471E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/SesDomainIdentity/MailFromMxRecord/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "SesDomainIdentityMailFromMxRecordE03CFE9A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new EmailIdentity2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:970:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/SesDomainIdentity/MailFromTxtRecord/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "SesDomainIdentityMailFromTxtRecord101F3240"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new EmailIdentity2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:970:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderEmailFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderEmailFnServiceRole59C3C6B3"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1107:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderEmailFn/SqsEventSource:Sdg19PrimaryStackOrdersQueueFA8EDFFA/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderEmailFnSqsEventSourceSdg19PrimaryStackOrdersQueueFA8EDFFA21BFECCE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventSource in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1132:18)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderLakeFn/ServiceRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderLakeFnServiceRole340128DE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1121:25)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderLakeFn/SqsEventSource:Sdg19PrimaryStackOrdersLakeQueueEEE155E5/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderLakeFnSqsEventSourceSdg19PrimaryStackOrdersLakeQueueEEE155E52B285396"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...PropertyInjectable.addEventSource in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1137:17)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CloudTrail/LogsRole/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CloudTrailLogsRole9F6E6663"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Trail2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1181:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ExportsReader/Resource/Default": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ExportsReader8B249524"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--register/RegisterIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthregisterRegisterIntegrationC123DAC5"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:399:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--login/LoginIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthloginLoginIntegrationD65971B9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:404:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--auth--refresh/RefreshIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTauthrefreshRefreshIntegration6C4A89A0"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:409:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/GET--products/ProductsIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiGETproductsProductsIntegrationCCC91A05"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:414:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/POST--orders/CreateOrderIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiPOSTordersCreateOrderIntegrationB2641A0E"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:419:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/GET--orders/ListOrdersIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiGETordersListOrdersIntegrationFB6AF4D6"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:428:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/HttpApi/OPTIONS--{proxy+}/OptionsIntegration/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "HttpApiOPTIONSproxyOptionsIntegrationDE6BB321"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        ".../Users/javierbatres/Projects/sdg19/node_modules/aws-cdk-lib/aws-apigatewayv2/lib/http/api.js:1:96 in aws-cdk-lib...",
+        "Array.map (:)",
+        "...PropertyInjectable.<anonymous> in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:444:9)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/RegisterFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "RegisterFnServiceRoleDefaultPolicy17CEC328"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:249:24)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/LoginFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "LoginFnServiceRoleDefaultPolicy129EE1D4"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:261:21)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/RefreshFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "RefreshFnServiceRoleDefaultPolicyEE68F60F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:273:23)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ProductsFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ProductsFnServiceRoleDefaultPolicy7F31E07D"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:284:24)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CreateOrderFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CreateOrderFnServiceRoleDefaultPolicyB5FFA7EE"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:292:27)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/ListOrdersFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ListOrdersFnServiceRoleDefaultPolicyBE7B98F8"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:303:26)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderStreamFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderStreamFnServiceRoleDefaultPolicy42FF25A9"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:314:27)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OptionsFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OptionsFnServiceRoleDefaultPolicy28EE69DC"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:437:23)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/WebDistribution/Origin1/S3OriginAccessControl/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "WebDistributionOrigin1S3OriginAccessControl83AD2F73"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Distribution2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:531:26)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderEmailFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderEmailFnServiceRoleDefaultPolicy24A9A9C7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1107:26)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/OrderLakeFn/ServiceRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "OrderLakeFnServiceRoleDefaultPolicyD1CC19E7"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Function2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1121:25)"
+      ]
     }
   ],
   "/Sdg19PrimaryStack/CloudTrail/LogsRole/DefaultPolicy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CloudTrailLogsRoleDefaultPolicyD9019B15"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Trail2 in aws-cdk-lib...",
+        "new PrimaryStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/primary-stack.js:1181:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:17:22)",
+        "...node internals..."
+      ]
     }
   ]
 }

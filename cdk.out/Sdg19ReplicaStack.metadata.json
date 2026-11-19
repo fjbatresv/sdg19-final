@@ -1,6 +1,19 @@
 {
   "/Sdg19ReplicaStack": [
     {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:14:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)",
+        "...node internals..."
+      ]
+    },
+    {
+      "type": "aws:cdk:templateFile",
+      "data": "Sdg19ReplicaStack.template.json"
+    },
+    {
       "type": "aws:cdk:stack-tags",
       "data": [
         {
@@ -24,12 +37,30 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicaBucketName"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new ReplicaStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/replica-stack.js:57:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:14:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/EmailsReplicaKmsKeyArn": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicaKmsKeyArn"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "new ReplicaStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/replica-stack.js:60:5)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:14:22)",
+        "...node internals...",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/main.js:44:18)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider": [
@@ -42,24 +73,56 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "BootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/CheckBootstrapVersion": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CheckBootstrapVersion"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/EmailsReplicaKey/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicaKeyF79649DF"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Key2 in aws-cdk-lib...",
+        "new ReplicaStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/replica-stack.js:32:24)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:14:22)",
+        "...node internals..."
+      ]
     }
   ],
   "/Sdg19ReplicaStack/EmailsReplicaBucket/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicaBucket67B3049C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new ReplicaStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/replica-stack.js:35:33)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:14:22)",
+        "...node internals..."
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -72,36 +135,79 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/CDKMetadata/Default": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CDKMetadata"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib, node internals...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider/Role": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomCrossRegionExportWriterCustomResourceProviderRoleC951B1E1"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider/Handler": [
     {
       "type": "aws:cdk:logicalId",
       "data": "CustomCrossRegionExportWriterCustomResourceProviderHandlerD8786E8A"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/EmailsReplicaBucket/Policy/Resource": [
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicaBucketPolicy747BF05C"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...new Bucket2 in aws-cdk-lib...",
+        "new ReplicaStack (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/stacks/replica-stack.js:35:33)",
+        "<anonymous> (/Users/javierbatres/Projects/sdg19/apps/infra/dist/apps/infra/src/main.js:14:22)"
+      ]
     },
     {
       "type": "aws:cdk:analytics:mixin",
@@ -114,12 +220,26 @@
     {
       "type": "aws:cdk:logicalId",
       "data": "EmailsReplicaBucketAutoDeleteObjectsCustomResource57CD3A97"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ],
   "/Sdg19ReplicaStack/ExportsWriteruseast10F67B507/Resource/Default": [
     {
       "type": "aws:cdk:logicalId",
       "data": "ExportsWriteruseast10F67B507DDE2E818"
+    },
+    {
+      "type": "aws:cdk:creationStack",
+      "data": [
+        "...aws-cdk-lib...",
+        "(no user code in 10 frames, use --stack-trace-limit to capture more)"
+      ]
     }
   ]
 }

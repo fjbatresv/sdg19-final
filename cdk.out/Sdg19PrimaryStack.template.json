@@ -1248,7 +1248,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -1267,7 +1267,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -1289,7 +1289,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/RegisterFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1380,7 +1380,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -1399,7 +1399,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -1421,7 +1421,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/LoginFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1512,7 +1512,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -1528,7 +1528,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -1550,7 +1550,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/RefreshFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1631,7 +1631,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Handler": "main.productsHandler",
     "Role": {
@@ -1640,7 +1640,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -1662,7 +1662,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/ProductsFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1790,7 +1790,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -1806,7 +1806,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -1828,7 +1828,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/CreateOrderFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1948,7 +1948,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -1964,7 +1964,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -1986,7 +1986,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/ListOrdersFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2136,7 +2136,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -2152,7 +2152,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -2174,7 +2174,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/OrderStreamFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2284,7 +2284,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Handler": "main.optionsHandler",
     "Role": {
@@ -2293,7 +2293,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -2315,7 +2315,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/OptionsFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2584,7 +2584,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+     "S3Key": "6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d.zip"
     },
     "Timeout": 900,
     "MemorySize": 128,
@@ -2595,7 +2595,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs22.x",
+    "Runtime": "nodejs24.x",
     "Description": {
      "Fn::Join": [
       "",
@@ -2614,7 +2614,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
-    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:path": "asset.6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d",
     "aws:asset:property": "Code"
    }
   },
@@ -4350,6 +4350,28 @@
     "aws:cdk:path": "Sdg19PrimaryStack/EmailsReplicationOpsPendingAlarm/Resource"
    }
   },
+  "SesDomainIdentity9A66B56D": {
+   "Type": "AWS::SES::EmailIdentity",
+   "Properties": {
+    "EmailIdentity": "example.com",
+    "MailFromAttributes": {
+     "MailFromDomain": "mail.example.com"
+    },
+    "Tags": [
+     {
+      "Key": "project",
+      "Value": "sdg19-final"
+     },
+     {
+      "Key": "reason",
+      "Value": "sdg19"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "Sdg19PrimaryStack/SesDomainIdentity/Resource"
+   }
+  },
   "SesDomainIdentityDkimDnsToken198D008AB": {
    "Type": "AWS::Route53::RecordSet",
    "Properties": {
@@ -4423,28 +4445,6 @@
    },
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/SesDomainIdentity/DkimDnsToken3"
-   }
-  },
-  "SesDomainIdentity9A66B56D": {
-   "Type": "AWS::SES::EmailIdentity",
-   "Properties": {
-    "EmailIdentity": "example.com",
-    "MailFromAttributes": {
-     "MailFromDomain": "mail.example.com"
-    },
-    "Tags": [
-     {
-      "Key": "project",
-      "Value": "sdg19-final"
-     },
-     {
-      "Key": "reason",
-      "Value": "sdg19"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "Sdg19PrimaryStack/SesDomainIdentity/Resource"
    }
   },
   "SesDomainIdentityMailFromMxRecordE03CFE9A": {
@@ -4647,7 +4647,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -4671,7 +4671,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -4693,7 +4693,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/OrderEmailFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -4854,7 +4854,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d.zip"
+     "S3Key": "bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780.zip"
     },
     "Environment": {
      "Variables": {
@@ -4870,7 +4870,7 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs20.x",
+    "Runtime": "nodejs24.x",
     "Tags": [
      {
       "Key": "project",
@@ -4892,7 +4892,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/OrderLakeFn/Resource",
-    "aws:asset:path": "asset.e08bfc778ab03098d0ebc633d417c62323e21da77db960c1717e5c64a8910b5d",
+    "aws:asset:path": "asset.bd04652572257ee848ece9daa6bbad821d12ad1e5188bec52dbe432e14871780",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -5057,7 +5057,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/9VVTVPbMBD9LeUsVCZpL72FhBYGGGiSTg8dhpHljVliS652lZBq9N87kvNhoD1way/et28/bD171wM5+DCUJ+/Umo51uTyusZBhxkovxRTIeqdBqDXdh2VDMlzCRowX5hI2UZQboxpbFjLMVVFD4jOIggzJMLct6kxmMPMFaYctozWJ7ftR0E+S4asHn9t0IF9vbY16syc7NwptK4NsZfhG4G6trVPGHu/AuEYw3A91TBS1rUiGK1t9cda3KWOPd6c+3Pk5E4VqsVIMa7VZDWQ4Z25HLabEZJI7Y1Xlg3QgUVPruUMXhqFyaqfDC/eQN/L8YB3+Apdb770oatUUpZJhvDC34BokSsWfvdG7Lnt8tgLDs/z016pt0VQp/JqNAlUjw9R27zHbgwC7g9PwXhEBkxwlI2gow6nXS+BTRSA6mAo69CMcNfiE5ujTUf/rSl8TDWUOkexSR57tBGpguCkeQTMdRfHfVt9tlTgI2PffoEpXMGPF0IB544P9S8V3UWhwjAvUiVRGVeBkGB+4pFLPjWKtFquBHC/MdyhG4yuha+vLhbOGZRgr/dCbz747BWqtITgHVYKjZ0P8h8AEiR0WPg/LbHjjsEIz0hqIxtaw6xbLX+h+cRQuTe7HoQyjKWjryu6mCc2AxfXTlp0/cYeiWKIBQkrr1oFquoWRUBRV7SEP+ESxKtJwHbbrtmyBDh4sQdJoAjWuwG22jbJWa8X6QYZRrVxunUEUBCTDWaOwvijBMHJW5xUxh6at84vIzdgprGWYJ5PDCcQo8h5IWy5vFk9sm/1fo7c5X4RunV1hCe50e7Dearrx3HqOwtgS5CO9Xw0GcnAiT949EuKx84axATnt7G+zun48vAYAAA=="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/9VVTXPTMBD9LeSsCkhgOsPNdQrttJ2GJAwHptOR5Y2jxpaMdpU0aPTfGcn5cFs49AYX79u3H7aeveshH56e8ndvxAZPZLk6qVXB/YyEXLEpoHFWAhMbvPerBrm/gi3LF/oKtoGVWy0aUxbcz0VRQ+QTCAw1cj83rZKJTGDmCpRWtaSMjmzfDwx/IvdfHbjUpgPpOjG1ktsD2bmBSVNpRYb7bwh2YkwdMw54D/JagaZ+qGMCq02F3F+b6os1ro0ZB7w/9fHOT5nARKsqQbAR2/WQ+wuiNmtVTIwmujMSVTpIByI1NY46dKkJKiv2Ojxzj3mZo6Wx6hfY1PrgBVaLpigF9/lCT8A2CjEWf3Za7rsc8PkaNM3S09+ItlW6iuGXbGBKNNxPTfcekz0KsD84ju4FIhDyLBqGI+7PnFwBnQkE1sFY0KEfftCoR6UHnwb9ryt+TTjiKYS8S80cmTHUQHBbPIAkHAT231bf7ZQ4Ctj3X6FKVzAjQdCAfuWD/UvFd4FJsKQWSkZSaFGB5T4/clGlnhvYRizWQ54v9Hcosvyaydq4cmGNJu5zIZe9+ey7U8DWaIQLECVYfDLEfwiMFZJVhUvDMhvdWlUpnUkJiLnRZLvF8he6XxyYjZP7ccR9NgVpbNndNKIZELt53LHzR+pQYCulARXGdWtBNN3CiCiwqnaQBnwsSBRxuI7bdVe2UBaWBiFqNIZarcFud42SVhtBcsl9VgubWicQGAJyf94IVV+WoElRUucFMYemrdOLSM3IClVzP48mhSMIgaU9ELdc2iwOyTSHv0Zvcz4LTaxZqxLs2e5gvdV066h1FJg2JfAHfLsefuDDIX//5gGVOrFOk2qATzv7GyrTKgK8BgAA"
    },
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/CDKMetadata/Default"
@@ -5147,7 +5147,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-bootstrap-assets-123456789012-us-east-1",
-     "S3Key": "f06f7035054cb2aada184c7c251ec5cb31fb6b5e975284939b9ff097603ea769.zip"
+     "S3Key": "72ae571d685f17a6d58dd21ffdf2f0f2fcc45102bdc4916e15129abb2525b48f.zip"
     },
     "Timeout": 900,
     "MemorySize": 128,
@@ -5158,14 +5158,14 @@
       "Arn"
      ]
     },
-    "Runtime": "nodejs22.x"
+    "Runtime": "nodejs24.x"
    },
    "DependsOn": [
     "CustomCrossRegionExportReaderCustomResourceProviderRole10531BBD"
    ],
    "Metadata": {
     "aws:cdk:path": "Sdg19PrimaryStack/Custom::CrossRegionExportReaderCustomResourceProvider/Handler",
-    "aws:asset:path": "asset.f06f7035054cb2aada184c7c251ec5cb31fb6b5e975284939b9ff097603ea769",
+    "aws:asset:path": "asset.72ae571d685f17a6d58dd21ffdf2f0f2fcc45102bdc4916e15129abb2525b48f",
     "aws:asset:property": "Code"
    }
   }
