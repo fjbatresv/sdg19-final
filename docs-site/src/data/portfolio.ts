@@ -264,7 +264,7 @@ const en: PortfolioCopy = {
       {
         tag: 'SAST',
         title: 'CodeQL + SonarCloud',
-        body: 'security-extended queries on TypeScript and on the workflows themselves.',
+        body: 'Static analysis of the TypeScript code and of the GitHub Actions workflows themselves, plus SonarCloud quality gates.',
       },
       {
         tag: 'Supply chain',
@@ -496,7 +496,7 @@ const es: PortfolioCopy = {
       {
         tag: 'SAST',
         title: 'CodeQL + SonarCloud',
-        body: 'Consultas security-extended sobre TypeScript y sobre los propios workflows.',
+        body: 'Análisis estático del código TypeScript y de los propios workflows de GitHub Actions, más quality gates de SonarCloud.',
       },
       {
         tag: 'Supply chain',
