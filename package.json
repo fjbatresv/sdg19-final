@@ -63,7 +63,13 @@
     "libs/*",
     "packages/*"
   ],
-  "overrides": {},
+  "overrides": {
+    "minimatch": "^11.0.9",
+    "glob": "^14.0.6",
+    "typedoc": {
+      "minimatch": "10.2.6"
+    }
+  },
   "dependencies": {
     "@angular/common": "~22.2.0",
     "@angular/compiler": "~22.2.0",
