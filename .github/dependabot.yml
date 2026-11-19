@@ -8,13 +8,54 @@ updates:
       day: 'monday'
       time: '09:00'
     open-pull-requests-limit: 10
+    versioning-strategy: increase
+    # Wait a few days after a release before proposing it (supply-chain safety).
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
     groups:
-      runtime-deps:
+      # Security fixes land together in one PR.
+      security-updates:
+        applies-to: security-updates
+        patterns:
+          - '*'
+      # Families that must move in lockstep (peer-pinned to each other).
+      angular:
         applies-to: version-updates
-        update-types:
-          - 'minor'
-          - 'patch'
-      dev-deps:
+        patterns:
+          - '@angular/*'
+          - '@angular-devkit/*'
+          - '@schematics/angular'
+          - 'angular-eslint'
+          - 'zone.js'
+      nx:
+        applies-to: version-updates
+        patterns:
+          - 'nx'
+          - '@nx/*'
+      astro:
+        applies-to: version-updates
+        patterns:
+          - 'astro'
+          - '@astrojs/*'
+      aws:
+        applies-to: version-updates
+        patterns:
+          - 'aws-cdk'
+          - 'aws-cdk-lib'
+          - 'constructs'
+          - '@aws-sdk/*'
+      lint-test:
+        applies-to: version-updates
+        patterns:
+          - 'eslint'
+          - '@eslint/*'
+          - 'typescript-eslint'
+          - '@typescript-eslint/*'
+          - 'vitest'
+          - '@vitest/*'
+          - 'prettier'
+      minor-and-patch:
         applies-to: version-updates
         update-types:
           - 'minor'
@@ -24,13 +65,21 @@ updates:
       include: 'scope'
 
   - package-ecosystem: 'github-actions'
-    directory: '/'
+    directories:
+      - '/'
+      - '/.github/actions/*'
     target-branch: 'main'
     schedule:
       interval: 'weekly'
       day: 'monday'
       time: '09:30'
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 3
+    groups:
+      github-actions:
+        patterns:
+          - '*'
     commit-message:
       prefix: 'chore'
       include: 'scope'

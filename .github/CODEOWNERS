@@ -1,0 +1,7 @@
+# Default owner for everything in the repository.
+* @fjbatresv
+
+# Security-sensitive paths: CI/CD, IAM/OIDC bootstrap and infrastructure.
+/.github/ @fjbatresv
+/oidc_role/ @fjbatresv
+/apps/infra/ @fjbatresv
