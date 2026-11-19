@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { unified } from '@astrojs/markdown-remark';
 import remarkMermaid from '../tools/docs/remark-mermaid.mjs';
 
 const base = process.env.ASTRO_BASE ?? '/';
@@ -9,7 +10,7 @@ export default defineConfig({
   base,
   outDir: '../dist/docs-site',
   markdown: {
-    remarkPlugins: [remarkMermaid],
+    processor: unified({ remarkPlugins: [remarkMermaid] }),
   },
   integrations: [
     starlight({

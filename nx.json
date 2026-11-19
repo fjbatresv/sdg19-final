@@ -23,6 +23,13 @@
           "watchDepsName": "watch-deps"
         }
       }
+    },
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      },
+      "include": ["apps/web/**/*"]
     }
   ],
   "sync": {
@@ -38,15 +45,6 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
-    },
-    "@nx/eslint:lint": {
-      "cache": true,
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore",
-        "{workspaceRoot}/eslint.config.mjs"
-      ]
     },
     "@angular/build:unit-test": {
       "cache": true,
@@ -65,5 +63,8 @@
       "style": "css",
       "unitTestRunner": "vitest-angular"
     }
+  },
+  "affected": {
+    "legacy": true
   }
 }

@@ -8,14 +8,16 @@
   "implicitDependencies": ["shared-types"],
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@angular/build:application",
+      "outputs": ["{options.outputPath.base}"],
+      "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/web",
+        "outputPath": {
+          "base": "dist/web",
+          "browser": ""
+        },
         "index": "apps/web/src/index.html",
-        "main": "apps/web/src/main.ts",
         "tsConfig": "apps/web/tsconfig.app.json",
-        "verbose": true,
         "polyfills": ["zone.js"],
         "assets": [
           {
@@ -23,7 +25,8 @@
             "input": "apps/web/public"
           }
         ],
-        "styles": ["apps/web/src/styles.css"]
+        "styles": ["apps/web/src/styles.css"],
+        "browser": "apps/web/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -73,12 +76,12 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
       "configurations": {
         "production": {
           "buildTarget": "web:build:production"
@@ -87,10 +90,22 @@
           "buildTarget": "web:build:development"
         }
       },
-      "defaultConfiguration": "development"
+      "readyWhen": {
+        "signal": true
+      }
     },
     "lint": {
-      "executor": "@nx/eslint:lint"
+      "inputs": [
+        "default",
+        "^default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        "{workspaceRoot}/tools/eslint-rules/**/*",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     },
     "test": {
       "executor": "@angular/build:unit-test",
@@ -103,15 +118,15 @@
       "configurations": {
         "ci": {
           "watch": false,
-        "coverage": true,
-        "coverageInclude": ["src/**/*.ts"],
-        "coverageExclude": [
-          "src/**/*.spec.ts",
-          "src/**/*.test.ts",
-          "src/main.ts"
-        ],
-        "coverageReporters": ["lcov", "text", "text-summary"],
-        "coverageThresholds": {
+          "coverage": true,
+          "coverageInclude": ["src/**/*.ts"],
+          "coverageExclude": [
+            "src/**/*.spec.ts",
+            "src/**/*.test.ts",
+            "src/main.ts"
+          ],
+          "coverageReporters": ["lcov", "text", "text-summary"],
+          "coverageThresholds": {
             "lines": 80,
             "statements": 80,
             "branches": 80,
@@ -123,9 +138,13 @@
     "serve-static": {
       "continuous": true,
       "executor": "@nx/web:file-server",
+      "readyWhen": {
+        "signal": true
+      },
+      "dependsOn": ["build"],
       "options": {
         "buildTarget": "web:build",
-        "staticFilePath": "dist/web/browser",
+        "staticFilePath": "dist/web",
         "spa": true
       }
     },

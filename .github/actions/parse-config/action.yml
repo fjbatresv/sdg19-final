@@ -65,6 +65,33 @@ runs:
           echo "config_json missing aws_role_name" >&2
           exit 1
         fi
+
+        # Validate formats before exporting: values are written to GITHUB_ENV /
+        # GITHUB_OUTPUT, so anything with newlines or unexpected characters could
+        # inject extra variables into later steps.
+        validate() {
+          if ! printf '%s' "$2" | grep -Eq "^$3\$" || [ "$(printf '%s' "$2" | wc -l)" -ne 0 ]; then
+            echo "config_json field '$1' has an invalid format" >&2
+            exit 1
+          fi
+        }
+        DOMAIN_RE='([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}'
+        validate aws_account_id "$AWS_ACCOUNT_ID" '[0-9]{12}'
+        validate aws_region_primary "$AWS_REGION_PRIMARY" '[a-z]{2}(-gov)?-[a-z]+-[0-9]'
+        validate aws_region_replica "$AWS_REGION_REPLICA" '[a-z]{2}(-gov)?-[a-z]+-[0-9]'
+        validate hosted_zone_id "$HOSTED_ZONE_ID" 'Z[A-Z0-9]{1,32}'
+        validate domains.root "$ROOT_DOMAIN_NAME" "$DOMAIN_RE"
+        validate domains.api "$API_DOMAIN_NAME" "$DOMAIN_RE"
+        validate domains.web "$WEB_DOMAIN_NAME" "$DOMAIN_RE"
+        validate ses.from "$SES_FROM_ADDRESS" "[A-Za-z0-9._%+-]+@([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}"
+        validate ses.mail_from "$SES_MAIL_FROM_DOMAIN" "$DOMAIN_RE"
+        validate enable_lambda_vpc "$ENABLE_LAMBDA_VPC" '(true|false)'
+        # Optional IAM path (/a/b/) + role name; IAM limits the name (not the path) to 64.
+        validate aws_role_name "$AWS_ROLE_NAME" '([A-Za-z0-9+=,.@_-]+/){0,20}[A-Za-z0-9+=,.@_-]{1,64}'
+        if [ -n "$EMAILS_REPLICA_KMS_KEY_ARN" ]; then
+          validate emails_replica_kms_key_arn "$EMAILS_REPLICA_KMS_KEY_ARN" 'arn:aws[a-z-]*:kms:[a-z0-9-]+:[0-9]{12}:(key|alias)/[A-Za-z0-9/_-]+'
+        fi
+
         AWS_ROLE_ARN="arn:aws:iam::${AWS_ACCOUNT_ID}:role/${AWS_ROLE_NAME}"
 
         {

@@ -6,39 +6,46 @@ on:
       - main
   pull_request:
 
-permissions:
-  actions: read
-  contents: read
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
-  NX_CLOUD: "false"
+  NX_CLOUD: 'false'
+  NX_DAEMON: 'false'
+  NX_ISOLATE_PLUGINS: 'false'
 
 jobs:
   main:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: step-security/harden-runner@aebdcf6156ab6691adf63218240e476564a1ed4c # v2.23.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           filter: tree:0
           fetch-depth: 0
+          persist-credentials: false
 
-      # This enables task distribution via Nx Cloud
-      # Run this command as early as possible, before dependencies are installed
-      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
-      - run: npx nx start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
-        if: env.NX_CLOUD != 'false'
-
-      # Cache node_modules
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
-          node-version: 24
-          cache: 'npm'
+          node-version-file: .nvmrc
+          cache: npm
 
       - run: npm ci
 
-      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-      - run: NODE_OPTIONS=--experimental-require-module NX_DAEMON=false NX_ISOLATE_PLUGINS=false npx nx run-many -t lint test build typecheck e2e-ci
-      - run: npx nx run docs:check
-      # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
-      - run: npx nx fix-ci
-        if: always() && env.NX_CLOUD != 'false'
+      - name: Audit dependencies (fail on high/critical)
+        run: npm audit --audit-level=high
+
+      - name: Lint, test, build, typecheck
+        run: npx nx run-many -t lint test build typecheck
+
+      - name: Docs check
+        run: npx nx run docs:check

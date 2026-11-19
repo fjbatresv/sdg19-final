@@ -224,7 +224,8 @@ en otra cuenta y reutilizar este pipeline:
 
 Reemplaza los placeholders:
 - `$ACCOUNT_ID` por el ID de la cuenta destino.
-- `repo:<user>/<repository name>:*` por el repo real (owner/nombre).
+- `repo:<user>/<repository name>:environment:aws` por el repo real (owner/nombre).
+  Solo los jobs del environment `aws` pueden asumir el role (ver `DEPLOY.md`).
 
 Luego crea el role con ese trust policy y adjunta la policy de permisos.
 El `aws_role_name` en el `config_json` debe coincidir con el nombre de ese role.

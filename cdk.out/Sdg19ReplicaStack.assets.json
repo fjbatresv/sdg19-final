@@ -1,46 +1,46 @@
 {
-  "version": "52.0.0",
+  "version": "55.0.0",
   "files": {
-    "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6": {
+    "6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d": {
       "displayName": "Sdg19ReplicaStack/Custom::S3AutoDeleteObjectsCustomResourceProvider Code",
       "source": {
-        "path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+        "path": "asset.6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d",
         "packaging": "zip"
       },
       "destinations": {
-        "123456789012-us-east-2-2d5a1772": {
+        "123456789012-us-east-2-d07c53a1": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
-          "objectKey": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "objectKey": "6dba3da2af96b69a187d689b326e5272b9abc8671c0427845a8bed243e02877d.zip",
           "region": "us-east-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
         }
       }
     },
-    "d2191f6f199b95d1c044799f514b1ceca87200b3014c43c34839aad03dc69b8c": {
+    "e85f121a37e8f08b699ed379d86800b70a9e3204de932db16379efc4eb8a7605": {
       "displayName": "Sdg19ReplicaStack/Custom::CrossRegionExportWriterCustomResourceProvider Code",
       "source": {
-        "path": "asset.d2191f6f199b95d1c044799f514b1ceca87200b3014c43c34839aad03dc69b8c",
+        "path": "asset.e85f121a37e8f08b699ed379d86800b70a9e3204de932db16379efc4eb8a7605",
         "packaging": "zip"
       },
       "destinations": {
-        "123456789012-us-east-2-abd111d4": {
+        "123456789012-us-east-2-69c17fc5": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
-          "objectKey": "d2191f6f199b95d1c044799f514b1ceca87200b3014c43c34839aad03dc69b8c.zip",
+          "objectKey": "e85f121a37e8f08b699ed379d86800b70a9e3204de932db16379efc4eb8a7605.zip",
           "region": "us-east-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
         }
       }
     },
-    "a2ff3bfdd654fcb145b021f6c262ce33f29b2aacb7fd05d2244a54737234344e": {
+    "1ad5b7b3f2e2f97d473ae3f7547d79a231dcf6b051818c5c606c51fdbfe2533b": {
       "displayName": "Sdg19ReplicaStack Template",
       "source": {
         "path": "Sdg19ReplicaStack.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "123456789012-us-east-2-718cb8a6": {
+        "123456789012-us-east-2-a4ba4640": {
           "bucketName": "cdk-bootstrap-assets-123456789012-us-east-2",
-          "objectKey": "a2ff3bfdd654fcb145b021f6c262ce33f29b2aacb7fd05d2244a54737234344e.json",
+          "objectKey": "1ad5b7b3f2e2f97d473ae3f7547d79a231dcf6b051818c5c606c51fdbfe2533b.json",
           "region": "us-east-2",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::123456789012:role/cdk-bootstrap-file-publishing-role-123456789012-us-east-2"
         }

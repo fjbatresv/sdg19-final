@@ -33,11 +33,37 @@ Referencia: `oidc_role/identity-provider.json`.
 2. Selecciona el provider creado y el audience `sts.amazonaws.com`.
 3. Reemplaza los placeholders en `oidc_role/trust-relationship.json`:
    - `$ACCOUNT_ID`
-   - `repo:<user>/<repository name>:*`
+   - `repo:<user>/<repository name>:environment:aws`
 4. Crea el role con ese trust policy.
 5. Adjunta la policy de permisos `oidc_role/permission-policy.json` luego de
    reemplazar el `ACCOUNT_ID`.
 6. El nombre del role debe coincidir con `aws_role_name` en el workflow.
+
+### Environment `aws` (GitHub)
+
+Los jobs de `deploy.yml` y `destroy.yml` que asumen el role corren en el
+environment `aws`, por lo que el `sub` del token OIDC es
+`repo:<user>/<repo>:environment:aws`. Con el trust policy actualizado, solo
+los jobs que corren en ese environment pueden asumir el role. La restriccion
+de ramas (`main`) y la aprobacion requerida las aplica el environment, no IAM:
+cualquier workflow de `main` que use `environment: aws` y sea aprobado obtiene
+el mismo `sub`.
+
+1. Settings -> Environments -> `aws` (se crea solo en la primera ejecución, o
+   créalo antes).
+2. Activa **Required reviewers** para aprobar cada deploy/destroy.
+3. En **Deployment branches and tags** limita a `main`.
+
+> Si tu role existente aún usa `repo:<user>/<repo>:*`, sigue funcionando, pero
+> actualiza el trust policy al valor de arriba para cerrar el acceso desde
+> otras ramas.
+
+### Validación del `config_json`
+
+La action `.github/actions/parse-config` valida el formato de cada campo
+(cuenta de 12 dígitos, regiones, dominios, email SES, nombre de role, ARN KMS)
+antes de exportarlos, y rechaza valores con saltos de línea para evitar
+inyección de variables en `GITHUB_ENV`.
 
 ## Verificación rápida
 

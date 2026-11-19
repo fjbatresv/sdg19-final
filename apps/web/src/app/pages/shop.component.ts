@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { OrdersService } from '../services/orders.service';
 import { ProductsService } from '../services/products.service';
@@ -26,6 +26,7 @@ interface CartItem {
   selector: 'app-shop',
   standalone: true,
   imports: [CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './shop.component.html',
 })
 export class ShopComponent {
