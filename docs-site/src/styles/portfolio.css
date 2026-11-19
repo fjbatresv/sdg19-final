@@ -1155,6 +1155,136 @@ code {
   }
 }
 
+/* ---------- Contact ---------- */
+.contact {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(var(--space-8), 10vw, var(--space-10));
+  /* Blueprint grid echoing the hero, on the inverse sheet. */
+  background-image:
+    linear-gradient(var(--inverse-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--inverse-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+}
+
+.contact__inner {
+  position: relative;
+  display: grid;
+  gap: var(--space-5);
+  padding: clamp(var(--space-6), 5vw, var(--space-8));
+  background: var(--inverse-bg);
+  border: 1.5px solid var(--ink);
+}
+
+/* Registration marks on the corners of the contact "drawing". */
+.contact__inner::before,
+.contact__inner::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 0 solid var(--signal);
+}
+
+.contact__inner::before {
+  top: -10px;
+  left: -10px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+
+.contact__inner::after {
+  right: -10px;
+  bottom: -10px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+}
+
+.contact__title {
+  display: grid;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: clamp(2rem, 5.6vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.contact__accent {
+  color: var(--signal);
+}
+
+.contact__lead {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 1.08rem;
+}
+
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  margin-top: var(--space-3);
+}
+
+.contact__mail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.contact__mail a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink);
+  text-underline-offset: 5px;
+  text-decoration-color: var(--signal);
+  overflow-wrap: anywhere;
+}
+
+.contact__mail a:hover {
+  color: var(--signal);
+}
+
+.btn--xl {
+  min-height: 56px;
+  padding: 0 var(--space-6);
+  font-size: 1.08rem;
+}
+
+/* Prominent author link in the top bar. */
+.chip--cta {
+  gap: var(--space-2);
+  background: var(--signal);
+  border-color: var(--signal);
+  color: var(--paper);
+}
+
+.chip--cta .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.chip--cta:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+@media (max-width: 419px) {
+  .brand__name {
+    display: none;
+  }
+}
+
 /* ---------- Footer ---------- */
 .footer {
   border-top: 1.5px solid var(--ink);

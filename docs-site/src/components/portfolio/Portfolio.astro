@@ -1,6 +1,6 @@
 ---
 import type { PortfolioCopy } from '../../data/portfolio';
-import { REPO_URL } from '../../data/portfolio';
+import { AUTHOR_EMAIL, AUTHOR_URL, REPO_URL } from '../../data/portfolio';
 import ArchitectureDiagram from './ArchitectureDiagram.astro';
 
 interface Props {
@@ -9,7 +9,8 @@ interface Props {
 
 const { copy } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
-const otherLang = copy.lang === 'en' ? `${base}portfolio/es/` : `${base}portfolio/`;
+const home = copy.lang === 'es' ? `${base}es/` : base;
+const otherLang = copy.lang === 'en' ? `${base}es/` : base;
 const docsHref = (href: string, external?: boolean) => (external ? href : `${base}${href}`);
 const sheetNo = copy.lang === 'en' ? 'A-01' : 'A-01·ES';
 const pad = (n: number) => String(n + 1).padStart(2, '0');
@@ -27,7 +28,7 @@ const withCode = (text: string) =>
 
 <header class="topbar">
   <div class="topbar__inner wrap">
-    <a class="brand" href={`${base}portfolio/${copy.lang === 'es' ? 'es/' : ''}`} aria-label="SDG19">
+    <a class="brand" href={home} aria-label="SDG19">
       <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
         <rect x="1.5" y="1.5" width="29" height="29" rx="2"></rect>
         <path d="M8 22 L16 8 L24 22 M11 17 H21"></path>
@@ -39,9 +40,13 @@ const withCode = (text: string) =>
       <a href="#flows">{copy.nav.flows}</a>
       <a href="#decisions">{copy.nav.decisions}</a>
       <a href="#quality">{copy.nav.quality}</a>
-      <a href={base}>{copy.nav.docs}</a>
+      <a href={`${base}docs/`}>{copy.nav.docs}</a>
     </nav>
     <div class="topbar__actions">
+      <a class="chip chip--cta" href={AUTHOR_URL} rel="noopener" aria-label={copy.nav.contactLabel}>
+        <span>{copy.nav.contact}</span>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+      </a>
       <a
         class="chip"
         href={otherLang}
@@ -82,7 +87,7 @@ const withCode = (text: string) =>
       </div>
       <p class="hero__lead">{copy.hero.lead}</p>
       <div class="hero__ctas">
-        <a class="btn btn--primary" href={base}>
+        <a class="btn btn--primary" href={`${base}docs/`}>
           {copy.hero.primaryCta}
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </a>
@@ -258,6 +263,30 @@ const withCode = (text: string) =>
       }
     </ul>
   </section>
+
+  <!-- 07 CONTACT -->
+  <section id="contact" class="contact section--inverse" aria-labelledby="contact-title" data-reveal>
+    <div class="wrap">
+      <div class="contact__inner">
+      <p class="eyebrow">{copy.contact.eyebrow}</p>
+      <h2 id="contact-title" class="contact__title">
+        <span>{copy.contact.title[0]}</span>
+        <span class="contact__accent">{copy.contact.title[1]}</span>
+      </h2>
+      <p class="contact__lead">{copy.contact.lead}</p>
+      <div class="contact__actions">
+        <a class="btn btn--primary btn--xl" href={AUTHOR_URL} rel="noopener">
+          {copy.contact.cta}
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg>
+        </a>
+        <p class="contact__mail">
+          <span>{copy.contact.emailLabel}</span>
+          <a class="mono" href={`mailto:${AUTHOR_EMAIL}`}>{AUTHOR_EMAIL}</a>
+        </p>
+      </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <footer class="footer">
@@ -269,6 +298,8 @@ const withCode = (text: string) =>
       <a href={REPO_URL} rel="noopener">{copy.footer.source}</a>
       <span aria-hidden="true">·</span>
       <a href={`${REPO_URL}/blob/main/LICENSE.md`} rel="noopener">{copy.footer.license}</a>
+      <span aria-hidden="true">·</span>
+      <a href={AUTHOR_URL} rel="noopener">{copy.footer.author}</a>
     </p>
   </div>
 </footer>

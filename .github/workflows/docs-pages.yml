@@ -38,18 +38,42 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Repo variable PAGES_CUSTOM_DOMAIN (e.g. sdg19.example.com) switches the
+      # site to the domain root; without it the site lives under /<repo>/.
+      - name: Resolve Pages host and base path
+        env:
+          CUSTOM_DOMAIN: ${{ vars.PAGES_CUSTOM_DOMAIN }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            if ! printf '%s' "$CUSTOM_DOMAIN" | grep -Eq '^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$'; then
+              echo "PAGES_CUSTOM_DOMAIN has an invalid format" >&2
+              exit 1
+            fi
+            site="https://$CUSTOM_DOMAIN"
+            base="/"
+          else
+            site="https://${OWNER,,}.github.io"
+            base="/$REPO_NAME/"
+          fi
+          {
+            echo "ASTRO_SITE=$site"
+            echo "ASTRO_BASE=$base"
+            echo "COMPODOC_BASE_PATH=${base}compodoc/"
+            echo "PAGES_CNAME=$CUSTOM_DOMAIN"
+          } >> "$GITHUB_ENV"
+
       - name: Generate Compodoc and enforce coverage
         run: npx nx run web:docs:check
 
       - name: Patch Compodoc base href for GitHub Pages
-        run: COMPODOC_BASE_PATH=/${{ github.event.repository.name }}/compodoc/ node tools/compodoc/patch-base.js
+        run: node tools/compodoc/patch-base.js
 
       - name: Generate TypeDoc and OpenAPI
         run: npm run docs:check
 
       - name: Build Starlight site
-        env:
-          ASTRO_BASE: /${{ github.event.repository.name }}/
         run: npm run docs:build
 
       - name: Assemble GitHub Pages site
@@ -58,6 +82,7 @@ jobs:
           cp -R dist/docs-site/. dist/gh-pages/
           cp -R dist/compodoc/web/. dist/gh-pages/compodoc/
           cp -R docs/api-typedoc/. dist/gh-pages/api-typedoc/
+          if [ -n "$PAGES_CNAME" ]; then printf '%s\n' "$PAGES_CNAME" > dist/gh-pages/CNAME; fi
 
       - name: Configure Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
