@@ -29,7 +29,7 @@ Hardening de los workflows:
 
 - Dependabot (security updates agrupadas, cooldown de 3-7 dias).
 - `npm audit --audit-level=high` bloquea CI.
-- Dependency Review en PRs y CodeQL (`security-extended`).
+- Dependency Review en PRs y CodeQL (default setup de GitHub).
 - SonarCloud con coverage >= 80% por app.
 - Riesgos aceptados documentados en `SECURITY.md` (minimatch empaquetado en
   `aws-cdk-lib` y el usado por TypeDoc; solo tooling, no runtime).
