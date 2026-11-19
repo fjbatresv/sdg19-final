@@ -43,8 +43,11 @@ Referencia: `oidc_role/identity-provider.json`.
 
 Los jobs de `deploy.yml` y `destroy.yml` que asumen el role corren en el
 environment `aws`, por lo que el `sub` del token OIDC es
-`repo:<user>/<repo>:environment:aws`. El trust policy acepta **solo** ese
-`sub`: ninguna otra rama, PR o workflow puede asumir el role.
+`repo:<user>/<repo>:environment:aws`. Con el trust policy actualizado, solo
+los jobs que corren en ese environment pueden asumir el role. La restriccion
+de ramas (`main`) y la aprobacion requerida las aplica el environment, no IAM:
+cualquier workflow de `main` que use `environment: aws` y sea aprobado obtiene
+el mismo `sub`.
 
 1. Settings -> Environments -> `aws` (se crea solo en la primera ejecución, o
    créalo antes).

@@ -83,10 +83,11 @@ runs:
         validate domains.root "$ROOT_DOMAIN_NAME" "$DOMAIN_RE"
         validate domains.api "$API_DOMAIN_NAME" "$DOMAIN_RE"
         validate domains.web "$WEB_DOMAIN_NAME" "$DOMAIN_RE"
-        validate ses.from "$SES_FROM_ADDRESS" "[A-Za-z0-9._%+-]+@$DOMAIN_RE"
+        validate ses.from "$SES_FROM_ADDRESS" "[A-Za-z0-9._%+-]+@([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}"
         validate ses.mail_from "$SES_MAIL_FROM_DOMAIN" "$DOMAIN_RE"
         validate enable_lambda_vpc "$ENABLE_LAMBDA_VPC" '(true|false)'
-        validate aws_role_name "$AWS_ROLE_NAME" '[A-Za-z0-9+=,.@_/-]{1,64}'
+        # Optional IAM path (/a/b/) + role name; IAM limits the name (not the path) to 64.
+        validate aws_role_name "$AWS_ROLE_NAME" '([A-Za-z0-9+=,.@_-]+/){0,20}[A-Za-z0-9+=,.@_-]{1,64}'
         if [ -n "$EMAILS_REPLICA_KMS_KEY_ARN" ]; then
           validate emails_replica_kms_key_arn "$EMAILS_REPLICA_KMS_KEY_ARN" 'arn:aws[a-z-]*:kms:[a-z0-9-]+:[0-9]{12}:(key|alias)/[A-Za-z0-9/_-]+'
         fi
