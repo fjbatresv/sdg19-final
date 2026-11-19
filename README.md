@@ -120,11 +120,12 @@ npx nx run web:build:production
 La documentación vive en `docs-site/` (Astro Starlight) y `docs/api-typedoc/`
 (TypeDoc).
 
-GitHub Pages publica las docs en:
+GitHub Pages publica el sitio en (al activar el dominio propio, las URLs
+`github.io` redirigen a `https://sdg19.fjbatresv.com/`):
 
-- Sitio principal (Starlight): https://fjbatresv.github.io/sdg19-final/
-- Landing de portafolio (EN/ES): https://fjbatresv.github.io/sdg19-final/portfolio/ · https://fjbatresv.github.io/sdg19-final/portfolio/es/
-- API reference / playground: https://fjbatresv.github.io/sdg19-final/api-reference/
+- Landing de portafolio (EN/ES, raíz del sitio): https://fjbatresv.github.io/sdg19-final/ · https://fjbatresv.github.io/sdg19-final/es/
+- Documentación (Starlight): https://fjbatresv.github.io/sdg19-final/docs/
+- API reference / playground: https://fjbatresv.github.io/sdg19-final/docs/api-reference/
 - Compodoc (frontend): https://fjbatresv.github.io/sdg19-final/compodoc/
 - TypeDoc (backend): https://fjbatresv.github.io/sdg19-final/api-typedoc/
 
@@ -159,9 +160,9 @@ npm run docs:preview
 
 Guías en Starlight:
 
-- Astro Starlight: `docs-site/src/content/docs/astro.mdx`
-- Compodoc: `docs-site/src/content/docs/compodoc.md`
-- TypeDoc: `docs-site/src/content/docs/typedoc.mdx`
+- Astro Starlight: `docs-site/src/content/docs/docs/astro.mdx`
+- Compodoc: `docs-site/src/content/docs/docs/compodoc.md`
+- TypeDoc: `docs-site/src/content/docs/docs/typedoc.mdx`
 
 ### Frontend Docs (Compodoc)
 
@@ -175,7 +176,7 @@ npx nx run web:docs:coverage
 npx nx run web:docs:check
 ```
 
-Guia completa: `docs-site/src/content/docs/compodoc.md`.
+Guia completa: `docs-site/src/content/docs/docs/compodoc.md`.
 
 ## Testing y coverage
 

@@ -3,7 +3,7 @@ title: Emails
 description: Plantilla SES y almacenamiento en S3.
 ---
 
-import Mermaid from '../../_components/Mermaid.astro';
+import Mermaid from '../../../_components/Mermaid.astro';
 
 El sistema de correos procesa las órdenes desde SQS y envía via SES. Antes de
 enviar, valida el formato de email y guarda una copia en S3 con estado `pending`

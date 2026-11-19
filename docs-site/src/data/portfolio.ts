@@ -1,11 +1,13 @@
 /**
- * Bilingual copy for the portfolio landing (`/portfolio/` and `/portfolio/es/`).
+ * Bilingual copy for the landing at the site root (`/` and `/es/`).
  * Facts mirror ARCHITECTURE.md, FLOWS.md, SECURITY.md and the *-COST.md files;
  * keep them in sync when the architecture changes.
  */
 export type Lang = 'en' | 'es';
 
 export const REPO_URL = 'https://github.com/fjbatresv/sdg19-final';
+export const AUTHOR_URL = 'https://fjbatresv.com';
+export const AUTHOR_EMAIL = 'fjbatresv@gmail.com';
 
 interface Stat {
   value: string;
@@ -40,6 +42,8 @@ export interface PortfolioCopy {
     langSwitch: string;
     langSwitchLabel: string;
     themeLabel: string;
+    contact: string;
+    contactLabel: string;
   };
   sheet: {
     label: string;
@@ -83,7 +87,20 @@ export interface PortfolioCopy {
     title: string;
     links: { label: string; desc: string; href: string; external?: boolean }[];
   };
-  footer: { built: string; by: string; source: string; license: string };
+  contact: {
+    eyebrow: string;
+    title: [string, string];
+    lead: string;
+    cta: string;
+    emailLabel: string;
+  };
+  footer: {
+    built: string;
+    by: string;
+    source: string;
+    license: string;
+    author: string;
+  };
 }
 
 const en: PortfolioCopy = {
@@ -105,6 +122,9 @@ const en: PortfolioCopy = {
     langSwitch: 'ES',
     langSwitchLabel: 'Ver en español',
     themeLabel: 'Toggle color theme',
+    contact: 'fjbatresv.com',
+    contactLabel:
+      'Visit fjbatresv.com, the author’s site (opens external site)',
   },
   sheet: {
     label: 'Drawing title block',
@@ -285,12 +305,12 @@ const en: PortfolioCopy = {
       {
         label: 'Architecture guide',
         desc: 'Starlight docs: infra, flows, costs, deploy',
-        href: '',
+        href: 'docs/',
       },
       {
         label: 'API reference',
         desc: 'OpenAPI contract with an interactive playground',
-        href: 'api-reference/',
+        href: 'docs/api-reference/',
       },
       {
         label: 'Backend (TypeDoc)',
@@ -310,11 +330,19 @@ const en: PortfolioCopy = {
       },
     ],
   },
+  contact: {
+    eyebrow: '07 — Contact',
+    title: ['Need this built', 'for your product?'],
+    lead: 'I design and ship cloud-native systems end to end: architecture, infrastructure as code, APIs, frontend and the pipeline that keeps them safe. Let’s talk about yours.',
+    cta: 'Visit fjbatresv.com',
+    emailLabel: 'or write to',
+  },
   footer: {
     built: 'Built with Angular 22, Nx 24, AWS CDK and Astro.',
     by: 'Designed and engineered by Javier Batres.',
     source: 'Source',
     license: 'MIT License',
+    author: 'fjbatresv.com',
   },
 };
 
@@ -337,6 +365,8 @@ const es: PortfolioCopy = {
     langSwitch: 'EN',
     langSwitchLabel: 'View in English',
     themeLabel: 'Cambiar tema de color',
+    contact: 'fjbatresv.com',
+    contactLabel: 'Visitar fjbatresv.com, el sitio del autor (sitio externo)',
   },
   sheet: {
     label: 'Cajetín del plano',
@@ -517,12 +547,12 @@ const es: PortfolioCopy = {
       {
         label: 'Guía de arquitectura',
         desc: 'Docs Starlight: infra, flujos, costos, deploy',
-        href: '',
+        href: 'docs/',
       },
       {
         label: 'Referencia de API',
         desc: 'Contrato OpenAPI con playground interactivo',
-        href: 'api-reference/',
+        href: 'docs/api-reference/',
       },
       {
         label: 'Backend (TypeDoc)',
@@ -542,11 +572,19 @@ const es: PortfolioCopy = {
       },
     ],
   },
+  contact: {
+    eyebrow: '07 — Contacto',
+    title: ['¿Necesitas algo así', 'para tu producto?'],
+    lead: 'Diseño y entrego sistemas cloud-native de punta a punta: arquitectura, infraestructura como código, APIs, frontend y el pipeline que los mantiene seguros. Hablemos del tuyo.',
+    cta: 'Visitar fjbatresv.com',
+    emailLabel: 'o escríbeme a',
+  },
   footer: {
     built: 'Construido con Angular 22, Nx 24, AWS CDK y Astro.',
     by: 'Diseñado y desarrollado por Javier Batres.',
     source: 'Código',
     license: 'Licencia MIT',
+    author: 'fjbatresv.com',
   },
 };
 

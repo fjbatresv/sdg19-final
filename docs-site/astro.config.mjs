@@ -4,11 +4,42 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkMermaid from '../tools/docs/remark-mermaid.mjs';
 
 const base = process.env.ASTRO_BASE ?? '/';
+// Custom domain (e.g. https://sdg19.fjbatresv.com) or the default github.io host.
+const site = process.env.ASTRO_SITE ?? 'https://fjbatresv.github.io';
+
+// Docs moved from the site root to /docs/ when the landing became the root.
+// Keep the old URLs working (portfolio paths and every former doc slug).
+const movedDocs = [
+  // 'compodoc' is omitted: /compodoc/ now serves the generated Compodoc site.
+  'api-playground',
+  'api-reference',
+  'astro',
+  'changelog',
+  'code-docs',
+  'deploy',
+  'typedoc',
+  'backend/overview',
+  'backend/email',
+  'infra/overview',
+  'infra/costs',
+  'infra/data-lake',
+  'infra/security',
+];
+// Astro does not prefix redirect destinations with `base`, so do it here.
+const withBase = (path) => `${base.replace(/\/$/, '')}${path}`;
+const redirects = {
+  '/portfolio': withBase('/'),
+  '/portfolio/es': withBase('/es/'),
+  ...Object.fromEntries(
+    movedDocs.map((slug) => [`/${slug}`, withBase(`/docs/${slug}/`)]),
+  ),
+};
 
 export default defineConfig({
-  site: 'https://fjbatresv.github.io',
+  site,
   base,
   outDir: '../dist/docs-site',
+  redirects,
   markdown: {
     processor: unified({ remarkPlugins: [remarkMermaid] }),
   },
@@ -21,8 +52,8 @@ export default defineConfig({
         {
           label: 'Inicio',
           items: [
-            { label: 'Overview', slug: 'index' },
-            { label: 'Portfolio', link: '/portfolio/' },
+            { label: 'Overview', slug: 'docs' },
+            { label: 'Portfolio', link: '/' },
             {
               label: 'Compodoc (web)',
               link: '/compodoc/',
@@ -38,39 +69,37 @@ export default defineConfig({
         {
           label: 'Documentación',
           items: [
-            { label: 'Astro Starlight', slug: 'astro' },
-            { label: 'Compodoc (web)', slug: 'compodoc' },
-            { label: 'TypeDoc (backend)', slug: 'typedoc' },
-            { label: 'Code Docs', slug: 'code-docs' },
+            { label: 'Astro Starlight', slug: 'docs/astro' },
+            { label: 'Compodoc (web)', slug: 'docs/compodoc' },
+            { label: 'TypeDoc (backend)', slug: 'docs/typedoc' },
+            { label: 'Code Docs', slug: 'docs/code-docs' },
           ],
         },
         {
           label: 'Infraestructura',
           items: [
-            { label: 'Infraestructura', slug: 'infra/overview' },
-            { label: 'Costos', slug: 'infra/costs' },
-            { label: 'Seguridad', slug: 'infra/security' },
+            { label: 'Infraestructura', slug: 'docs/infra/overview' },
+            { label: 'Costos', slug: 'docs/infra/costs' },
+            { label: 'Seguridad', slug: 'docs/infra/security' },
           ],
         },
         {
           label: 'Backend',
           items: [
-            { label: 'Overview', slug: 'backend/overview' },
-            { label: 'Data Lake', slug: 'infra/data-lake' },
-            { label: 'Email', slug: 'backend/email' },
+            { label: 'Overview', slug: 'docs/backend/overview' },
+            { label: 'Data Lake', slug: 'docs/infra/data-lake' },
+            { label: 'Email', slug: 'docs/backend/email' },
           ],
         },
         {
           label: 'Deployment',
-          items: [
-            { label: 'Deploy', slug: 'deploy' },
-          ],
+          items: [{ label: 'Deploy', slug: 'docs/deploy' }],
         },
         {
           label: 'API',
           items: [
-            { label: 'Reference', slug: 'api-reference' },
-            { label: 'Playground', slug: 'api-playground' },
+            { label: 'Reference', slug: 'docs/api-reference' },
+            { label: 'Playground', slug: 'docs/api-playground' },
           ],
         },
       ],

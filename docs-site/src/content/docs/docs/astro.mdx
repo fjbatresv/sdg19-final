@@ -1,0 +1,65 @@
+---
+title: Astro Starlight (portal principal)
+---
+
+El portal principal de documentación se construye con Astro Starlight y vive en
+`docs-site/`.
+
+## Desarrollo local
+
+```bash
+npm run docs:dev
+```
+
+Este comando sincroniza el OpenAPI hacia `docs-site/public/openapi.yaml` y
+levanta el servidor local.
+
+## Build estático
+
+```bash
+npm run docs:build
+```
+
+Salida: `dist/docs-site/`.
+
+## Preview del build
+
+```bash
+npm run docs:preview
+```
+
+## Estructura y base path en GitHub Pages
+
+- `/` y `/es/`: landing de portafolio (páginas Astro en `src/pages/`).
+- `/docs/`: esta documentación (contenido en `src/content/docs/docs/`).
+- `/compodoc/` y `/api-typedoc/`: sitios generados por Compodoc y TypeDoc.
+- Las URLs anteriores (`/portfolio/`, `/deploy/`, `/infra/...`) redirigen a la
+  nueva ubicación (`redirects` en `astro.config.mjs`).
+
+El workflow `docs-pages.yml` calcula `ASTRO_BASE`/`ASTRO_SITE`:
+
+- Sin la variable de repositorio `PAGES_CUSTOM_DOMAIN`: el sitio vive bajo
+  `/sdg19-final/` en `fjbatresv.github.io`.
+- Con `PAGES_CUSTOM_DOMAIN=sdg19.fjbatresv.com`: base `/` en ese dominio.
+
+### Activar el dominio propio
+
+1. DNS de `fjbatresv.com`: registro `CNAME` `sdg19` → `fjbatresv.github.io`.
+2. Variable de repositorio: `gh variable set PAGES_CUSTOM_DOMAIN --body sdg19.fjbatresv.com`.
+3. Settings → Pages → Custom domain `sdg19.fjbatresv.com` (o
+   `gh api -X PUT repos/<owner>/<repo>/pages -f cname=sdg19.fjbatresv.com`)
+   y, cuando el certificado esté listo, *Enforce HTTPS*.
+4. Re-ejecuta el workflow *Docs (Starlight + Compodoc)*.
+
+## Sincronizar OpenAPI
+
+```bash
+npm run docs:sync-openapi
+```
+
+Si el contrato cambia, ejecuta la sincronización antes del build.
+
+## Actualización de contenido
+
+- Mantén `docs-site/` alineado con `README.md`, `ARCHITECTURE.md` y `FLOWS.md`.
+- Actualiza los diagramas Mermaid cuando cambie el flujo de correos o data lake.

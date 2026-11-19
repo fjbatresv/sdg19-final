@@ -13,8 +13,8 @@ interface Props {
 const { copy } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 const site = Astro.site ?? new URL('https://fjbatresv.github.io');
-const enPath = `${base}portfolio/`;
-const esPath = `${base}portfolio/es/`;
+const enPath = base;
+const esPath = `${base}es/`;
 const canonical = new URL(copy.lang === 'es' ? esPath : enPath, site).href;
 const ogImage = new URL(`${base}assets/og-sdg19.png`, site).href;
 ---
