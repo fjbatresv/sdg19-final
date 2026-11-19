@@ -1,0 +1,125 @@
+---
+/**
+ * Standalone layout for the portfolio landing (no Starlight chrome).
+ * Handles theme bootstrapping before paint, fonts, SEO and hreflang alternates.
+ */
+import type { PortfolioCopy } from '../data/portfolio';
+import '../styles/portfolio.css';
+
+interface Props {
+  copy: PortfolioCopy;
+}
+
+const { copy } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const site = Astro.site ?? new URL('https://fjbatresv.github.io');
+const enPath = `${base}portfolio/`;
+const esPath = `${base}portfolio/es/`;
+const canonical = new URL(copy.lang === 'es' ? esPath : enPath, site).href;
+const ogImage = new URL(`${base}assets/og-sdg19.png`, site).href;
+---
+
+<!doctype html>
+<html lang={copy.htmlLang} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{copy.meta.title}</title>
+    <meta name="description" content={copy.meta.description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={new URL(enPath, site).href} />
+    <link rel="alternate" hreflang="es" href={new URL(esPath, site).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL(enPath, site).href} />
+    <link rel="icon" href={`${base}assets/favicon.svg`} type="image/svg+xml" />
+    <meta name="theme-color" content="#f3f0e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1626" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={copy.meta.title} />
+    <meta property="og:description" content={copy.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={copy.lang === 'es' ? 'es_ES' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={copy.meta.title} />
+    <meta name="twitter:description" content={copy.meta.description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
+
+    <script is:inline>
+      // Resolve theme before first paint to avoid a flash of the wrong theme.
+      (function () {
+        var root = document.documentElement;
+        root.classList.remove('no-js');
+        root.classList.add('js');
+        var stored = null;
+        try {
+          stored = localStorage.getItem('sdg19-theme');
+        } catch (e) {}
+        var theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        root.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var toggle = document.querySelector('[data-theme-toggle]');
+        if (toggle) {
+          var sync = function () {
+            toggle.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+          };
+          sync();
+          toggle.addEventListener('click', function () {
+            root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            try {
+              localStorage.setItem('sdg19-theme', root.dataset.theme);
+            } catch (e) {}
+            sync();
+          });
+        }
+
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var diagram = document.querySelector('[data-diagram]');
+        if (diagram && reduce && diagram.pauseAnimations) diagram.pauseAnimations();
+
+        var reveal = document.querySelectorAll('[data-reveal]');
+        if (reduce || !('IntersectionObserver' in window)) {
+          reveal.forEach(function (el) {
+            el.classList.add('is-visible');
+          });
+          return;
+        }
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                io.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.08 },
+        );
+        reveal.forEach(function (el) {
+          io.observe(el);
+        });
+      })();
+    </script>
+  </body>
+</html>

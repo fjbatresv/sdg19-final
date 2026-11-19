@@ -123,6 +123,7 @@ La documentación vive en `docs-site/` (Astro Starlight) y `docs/api-typedoc/`
 GitHub Pages publica las docs en:
 
 - Sitio principal (Starlight): https://fjbatresv.github.io/sdg19-final/
+- Landing de portafolio (EN/ES): https://fjbatresv.github.io/sdg19-final/portfolio/ · https://fjbatresv.github.io/sdg19-final/portfolio/es/
 - API reference / playground: https://fjbatresv.github.io/sdg19-final/api-reference/
 - Compodoc (frontend): https://fjbatresv.github.io/sdg19-final/compodoc/
 - TypeDoc (backend): https://fjbatresv.github.io/sdg19-final/api-typedoc/
