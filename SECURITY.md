@@ -47,15 +47,15 @@ Advisories), including:
 
 ## Supply Chain & Scanning
 
-| Control                                                           | Where                                     |
-| ----------------------------------------------------------------- | ----------------------------------------- |
-| Dependabot security + grouped version updates (3–7 day cooldown)  | `.github/dependabot.yml`                  |
-| `npm audit --audit-level=high` blocks CI                          | `.github/workflows/ci.yml`                |
-| Dependency review on PRs (fails on high, denies GPL-3.0/AGPL-3.0) | `.github/workflows/dependency-review.yml` |
-| CodeQL default setup for TypeScript/JavaScript and workflows      | Repository settings (Code scanning)       |
-| SonarCloud quality gate, coverage ≥ 80% per app                   | `.github/workflows/sonar.yml`             |
-| Secret scanning + push protection                                 | Repository settings                       |
-| `engine-strict`, pinned registry                                  | `.npmrc`                                  |
+| Control                                                           | Where                                              |
+| ----------------------------------------------------------------- | -------------------------------------------------- |
+| Dependabot security + grouped version updates (3–7 day cooldown)  | `.github/dependabot.yml`                           |
+| `npm audit --audit-level=high` blocks CI                          | `.github/workflows/ci.yml`                         |
+| Dependency review on PRs (fails on high, denies GPL-3.0/AGPL-3.0) | `.github/workflows/dependency-review.yml`          |
+| CodeQL default setup for TypeScript/JavaScript and workflows      | Repository settings (Code scanning)                |
+| Coverage ≥ 80% per app (Vitest thresholds) + SonarCloud analysis  | `vitest.config.ts` / `.github/workflows/sonar.yml` |
+| Secret scanning + push protection                                 | Repository settings                                |
+| `engine-strict`, pinned registry                                  | `.npmrc`                                           |
 
 ### Accepted risks
 

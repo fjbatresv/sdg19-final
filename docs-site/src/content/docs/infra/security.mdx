@@ -14,8 +14,11 @@ description: Controles de seguridad en infraestructura.
 ## CI/CD
 
 GitHub Actions usa OIDC para asumir roles de deploy sin llaves estaticas.
-Solo los jobs del environment protegido `aws` pueden asumir el role (trust
-policy fijado a `repo:<owner>/<repo>:environment:aws`). Ver `DEPLOY.md` para el
+Una vez actualizado el trust policy a `repo:<owner>/<repo>:environment:aws`,
+solo los jobs del environment protegido `aws` pueden asumir el role (mientras el
+role conserve el trust anterior `repo:<owner>/<repo>:*`, cualquier job del repo
+puede hacerlo). La restriccion a `main` y la aprobacion las aplica el
+environment. Ver `DEPLOY.md` para el
 flujo de configuracion.
 
 Hardening de los workflows:
@@ -30,6 +33,6 @@ Hardening de los workflows:
 - Dependabot (security updates agrupadas, cooldown de 3-7 dias).
 - `npm audit --audit-level=high` bloquea CI.
 - Dependency Review en PRs y CodeQL (default setup de GitHub).
-- SonarCloud con coverage >= 80% por app.
+- Coverage >= 80% por app (umbrales de Vitest) y analisis en SonarCloud.
 - Riesgos aceptados documentados en `SECURITY.md` (minimatch empaquetado en
   `aws-cdk-lib` y el usado por TypeDoc; solo tooling, no runtime).

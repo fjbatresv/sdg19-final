@@ -24,6 +24,15 @@ fi
 accounts=${SANITIZE_ACCOUNT_IDS:-${AWS_ACCOUNT_ID:-${CDK_DEFAULT_ACCOUNT:-}}}
 domains=${SANITIZE_DOMAINS:-${ROOT_DOMAIN_NAME:-${ROOT_DOMAIN:-}}}
 
+if [ -z "$accounts" ] || [ -z "$domains" ]; then
+  if [ "${SANITIZE_STRICT:-false}" = "true" ]; then
+    echo "❌ Define SANITIZE_ACCOUNT_IDS y SANITIZE_DOMAINS (SANITIZE_STRICT=true)"
+    exit 1
+  fi
+  echo "⚠️  SANITIZE_ACCOUNT_IDS/SANITIZE_DOMAINS no definidos: solo se normalizan ARNs."
+  echo "    Si cdk.out se generó con valores reales, exporta ambas variables."
+fi
+
 replace() {
   # $1 = expresión sed (ERE)
   find "$OUT_DIR" -name '*.json' -exec sed -E -i.bak "$1" {} +

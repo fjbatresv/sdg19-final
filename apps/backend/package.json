@@ -20,6 +20,7 @@
             "cjs"
           ],
           "bundle": true,
+          "target": "node24",
           "main": "apps/backend/src/main.ts",
           "tsConfig": "apps/backend/tsconfig.app.json",
           "assets": [
@@ -27,7 +28,6 @@
           ],
           "esbuildOptions": {
             "sourcemap": true,
-            "target": "node24",
             "outExtension": {
               ".js": ".js"
             }

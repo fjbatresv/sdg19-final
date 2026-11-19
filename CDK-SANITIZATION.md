@@ -55,8 +55,10 @@ Si necesitas verificar manualmente:
 ```bash
 # Regenerar y sanitizar (los valores reales sólo viven en tu entorno)
 npx cdk synth
-SANITIZE_ACCOUNT_IDS="<account-id>" SANITIZE_DOMAINS="<tu-dominio>" ./sanitize-cdk-out.sh
+# Exporta tus valores reales (no se commitean), p. ej. en tu shell o direnv
+export SANITIZE_ACCOUNT_IDS="111122223333" SANITIZE_DOMAINS="midominio.com"
+./sanitize-cdk-out.sh
 
-# Verificar sanitización
-grep -rE "<account-id>|<tu-dominio>" cdk.out/ || echo "✅ Sanitizado correctamente"
+# Verificar sanitización con los mismos valores
+grep -rE "${SANITIZE_ACCOUNT_IDS// /|}|${SANITIZE_DOMAINS// /|}" cdk.out/ || echo "✅ Sanitizado correctamente"
 ```
