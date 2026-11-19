@@ -1,0 +1,274 @@
+---
+import type { PortfolioCopy } from '../../data/portfolio';
+import { REPO_URL } from '../../data/portfolio';
+import ArchitectureDiagram from './ArchitectureDiagram.astro';
+
+interface Props {
+  copy: PortfolioCopy;
+}
+
+const { copy } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const otherLang = copy.lang === 'en' ? `${base}portfolio/es/` : `${base}portfolio/`;
+const docsHref = (href: string, external?: boolean) => (external ? href : `${base}${href}`);
+const sheetNo = copy.lang === 'en' ? 'A-01' : 'A-01·ES';
+const pad = (n: number) => String(n + 1).padStart(2, '0');
+
+// Renders `inline code` spans inside copy without allowing arbitrary HTML.
+const withCode = (text: string) =>
+  text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+---
+
+<a class="skip-link" href="#main">{copy.nav.skip}</a>
+
+<header class="topbar">
+  <div class="topbar__inner wrap">
+    <a class="brand" href={`${base}portfolio/${copy.lang === 'es' ? 'es/' : ''}`} aria-label="SDG19">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="1.5" y="1.5" width="29" height="29" rx="2"></rect>
+        <path d="M8 22 L16 8 L24 22 M11 17 H21"></path>
+      </svg>
+      <span class="brand__name">SDG19</span>
+    </a>
+    <nav class="topnav" aria-label={copy.nav.primaryLabel}>
+      <a href="#architecture">{copy.nav.architecture}</a>
+      <a href="#flows">{copy.nav.flows}</a>
+      <a href="#decisions">{copy.nav.decisions}</a>
+      <a href="#quality">{copy.nav.quality}</a>
+      <a href={base}>{copy.nav.docs}</a>
+    </nav>
+    <div class="topbar__actions">
+      <a
+        class="chip"
+        href={otherLang}
+        hreflang={copy.lang === 'en' ? 'es' : 'en'}
+        lang={copy.lang === 'en' ? 'es' : 'en'}
+        aria-label={copy.nav.langSwitchLabel}>{copy.nav.langSwitch}</a
+      >
+      <button class="chip chip--icon" type="button" data-theme-toggle aria-label={copy.nav.themeLabel}>
+        <svg class="icon icon--sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path
+            d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+          ></path>
+        </svg>
+        <svg class="icon icon--moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero__copy">
+      <p class="eyebrow hero__kicker">{copy.hero.kicker}</p>
+      <h1 id="hero-title" class="hero__title">
+        <span class="hero__line">{copy.hero.title[0]}</span>
+        <span class="hero__line hero__line--accent">{copy.hero.title[1]}</span>
+      </h1>
+      <div class="dimension" aria-hidden="true">
+        <span class="dimension__tick"></span>
+        <span class="dimension__rule"></span>
+        <span class="dimension__value">{copy.sheet.dimension}</span>
+        <span class="dimension__rule"></span>
+        <span class="dimension__tick"></span>
+      </div>
+      <p class="hero__lead">{copy.hero.lead}</p>
+      <div class="hero__ctas">
+        <a class="btn btn--primary" href={base}>
+          {copy.hero.primaryCta}
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+        </a>
+        <a class="btn btn--ghost" href={REPO_URL} rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9 19c-4 1.5-4-2-6-2.5m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"
+            ></path>
+          </svg>
+          {copy.hero.secondaryCta}
+        </a>
+      </div>
+    </div>
+
+    <aside class="titleblock" aria-label={copy.sheet.label}>
+      <dl>
+        <div class="titleblock__cell titleblock__cell--wide">
+          <dt>{copy.sheet.projectLabel}</dt>
+          <dd>{copy.sheet.project}</dd>
+        </div>
+        <div class="titleblock__cell">
+          <dt>{copy.sheet.sheet}</dt>
+          <dd class="mono">{sheetNo}</dd>
+        </div>
+        <div class="titleblock__cell">
+          <dt>{copy.sheet.rev}</dt>
+          <dd class="mono">2026.11</dd>
+        </div>
+        <div class="titleblock__cell titleblock__cell--wide">
+          <dt>{copy.sheet.stackLabel}</dt>
+          <dd class="mono">Angular 22 · Nx 24 · CDK</dd>
+        </div>
+        <div class="titleblock__cell titleblock__cell--wide">
+          <dt>{copy.sheet.scaleLabel}</dt>
+          <dd class="mono">{copy.sheet.scale}</dd>
+        </div>
+      </dl>
+    </aside>
+
+    <ul class="stats" role="list">
+      {
+        copy.hero.stats.map((s) => (
+          <li class="stat">
+            <span class="stat__value">{s.value}</span>
+            <span class="stat__label">{s.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- 01 BRIEF -->
+  <section class="section wrap" aria-labelledby="brief-title" data-reveal>
+    <header class="section__head">
+      <p class="eyebrow">{copy.problem.eyebrow}</p>
+      <h2 id="brief-title">{copy.problem.title}</h2>
+    </header>
+    <ul class="grid grid--4 cells" role="list">
+      {
+        copy.problem.requirements.map((r) => (
+          <li class="cell">
+            <p class="tag">{r.tag}</p>
+            <h3>{r.title}</h3>
+            <p set:html={withCode(r.body)} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- 02 ARCHITECTURE -->
+  <section id="architecture" class="section wrap" aria-labelledby="arch-title" data-reveal>
+    <header class="section__head section__head--split">
+      <div>
+        <p class="eyebrow">{copy.architecture.eyebrow}</p>
+        <h2 id="arch-title">{copy.architecture.title}</h2>
+      </div>
+      <p class="section__lead">{copy.architecture.lead}</p>
+    </header>
+    <ArchitectureDiagram copy={copy.architecture} />
+  </section>
+
+  <!-- 03 FLOWS -->
+  <section id="flows" class="section wrap" aria-labelledby="flows-title" data-reveal>
+    <header class="section__head">
+      <p class="eyebrow">{copy.flows.eyebrow}</p>
+      <h2 id="flows-title">{copy.flows.title}</h2>
+    </header>
+    <div class="grid grid--3 flows">
+      {
+        copy.flows.items.map((f, i) => (
+          <article class={`flow flow--${f.id}`}>
+            <p class="flow__index mono">F-{pad(i)}</p>
+            <h3>{f.title}</h3>
+            <ol class="flow__steps">
+              {f.steps.map((step) => (
+                <li>{step}</li>
+              ))}
+            </ol>
+            <p class="flow__note">{f.note}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 04 DECISIONS -->
+  <section id="decisions" class="section wrap" aria-labelledby="decisions-title" data-reveal>
+    <header class="section__head">
+      <p class="eyebrow">{copy.decisions.eyebrow}</p>
+      <h2 id="decisions-title">{copy.decisions.title}</h2>
+    </header>
+    <ul class="grid grid--3 cells" role="list">
+      {
+        copy.decisions.items.map((d, i) => (
+          <li class="cell cell--decision">
+            <p class="cell__meta">
+              <span class="mono">D-{pad(i)}</span>
+              <span class="tag">{d.tag}</span>
+            </p>
+            <h3>{d.title}</h3>
+            <p set:html={withCode(d.body)} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <!-- 05 QUALITY -->
+  <section id="quality" class="section section--inverse" aria-labelledby="quality-title" data-reveal>
+    <div class="wrap">
+      <header class="section__head section__head--split">
+        <div>
+          <p class="eyebrow">{copy.quality.eyebrow}</p>
+          <h2 id="quality-title">{copy.quality.title}</h2>
+        </div>
+        <p class="section__lead">{copy.quality.lead}</p>
+      </header>
+      <ul class="grid grid--4 cells" role="list">
+        {
+          copy.quality.items.map((q) => (
+            <li class="cell">
+              <p class="tag">{q.tag}</p>
+              <h3>{q.title}</h3>
+              <p set:html={withCode(q.body)} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 06 DOCS -->
+  <section id="docs" class="section wrap" aria-labelledby="docs-title" data-reveal>
+    <header class="section__head">
+      <p class="eyebrow">{copy.docs.eyebrow}</p>
+      <h2 id="docs-title">{copy.docs.title}</h2>
+    </header>
+    <ul class="doclinks" role="list">
+      {
+        copy.docs.links.map((l, i) => (
+          <li>
+            <a class="doclink" href={docsHref(l.href, l.external)} rel={l.external ? 'noopener' : undefined}>
+              <span class="doclink__index mono">{pad(i)}</span>
+              <span class="doclink__label">{l.label}</span>
+              <span class="doclink__desc">{l.desc}</span>
+              <svg class="icon doclink__arrow" viewBox="0 0 24 24" aria-hidden="true">
+                <path d={l.external ? 'M7 17L17 7M9 7h8v8' : 'M5 12h14M13 6l6 6-6 6'} />
+              </svg>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <p class="footer__brand mono">SDG19 · {sheetNo} · REV 2026.11</p>
+    <p>{copy.footer.built}</p>
+    <p>{copy.footer.by}</p>
+    <p class="footer__links">
+      <a href={REPO_URL} rel="noopener">{copy.footer.source}</a>
+      <span aria-hidden="true">·</span>
+      <a href={`${REPO_URL}/blob/main/LICENSE.md`} rel="noopener">{copy.footer.license}</a>
+    </p>
+  </div>
+</footer>

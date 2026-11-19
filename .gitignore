@@ -61,3 +61,5 @@ docs-site/.astro/
 .claude/settings.local.json
 .nx/polygraph
 .nx/self-healing
+# Playwright MCP screenshots/snapshots
+.playwright-mcp/

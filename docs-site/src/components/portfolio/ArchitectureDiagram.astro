@@ -1,0 +1,188 @@
+---
+/**
+ * Blueprint-style SVG of the SDG19 architecture.
+ * Nodes sit on a 170px column grid; edges are orthogonal paths. Animated
+ * "order" pulses travel beneath the nodes (so they disappear while a service
+ * processes them) and are paused for prefers-reduced-motion in Landing.astro.
+ */
+import type { PortfolioCopy } from '../../data/portfolio';
+
+interface Props {
+  copy: PortfolioCopy['architecture'];
+}
+const { copy } = Astro.props;
+
+type Kind = 'edge' | 'compute' | 'data' | 'messaging' | 'identity' | 'replica';
+interface Node {
+  x: number;
+  y: number;
+  code: string;
+  label: string;
+  sub?: string;
+  kind: Kind;
+}
+
+const W = 136;
+const H = 52;
+
+const nodes: Node[] = [
+  { x: 260, y: 80, code: 'CF', label: 'CloudFront', sub: 'web', kind: 'edge' },
+  { x: 430, y: 80, code: 'S3', label: 'WebBucket', sub: 'Angular SPA', kind: 'data' },
+  { x: 430, y: 180, code: 'IdP', label: 'Cognito', sub: 'User Pool · JWT', kind: 'identity' },
+  { x: 260, y: 280, code: 'CF', label: 'CloudFront', sub: 'api', kind: 'edge' },
+  { x: 430, y: 280, code: 'APIGW', label: 'HTTP API', sub: 'JWT authorizer', kind: 'edge' },
+  { x: 600, y: 280, code: 'λ', label: 'API Lambdas', sub: '7 handlers · 1 bundle', kind: 'compute' },
+  { x: 770, y: 280, code: 'DDB', label: 'DynamoDB', sub: 'single-table + GSI1', kind: 'data' },
+  { x: 430, y: 400, code: 'λ', label: 'order-stream', sub: 'stream → publish', kind: 'compute' },
+  { x: 90, y: 400, code: 'SNS', label: 'orders topic', sub: 'fan-out', kind: 'messaging' },
+  { x: 260, y: 500, code: 'SQS', label: 'email queue', sub: '+ DLQ', kind: 'messaging' },
+  { x: 430, y: 500, code: 'λ', label: 'order-email', sub: 'no PII copies', kind: 'compute' },
+  { x: 600, y: 500, code: 'SES', label: 'SES template', sub: 'DKIM · MAIL FROM', kind: 'messaging' },
+  { x: 770, y: 500, code: 'S3', label: 'EmailsBucket', sub: 'KMS · 10 yr', kind: 'data' },
+  { x: 1110, y: 500, code: 'S3', label: 'Replica', sub: 'own KMS key', kind: 'replica' },
+  { x: 260, y: 620, code: 'SQS', label: 'lake queue', sub: '+ DLQ', kind: 'messaging' },
+  { x: 430, y: 620, code: 'λ', label: 'order-lake', sub: 'put records', kind: 'compute' },
+  { x: 600, y: 620, code: 'KDS', label: 'Kinesis', sub: 'data stream · KMS', kind: 'messaging' },
+  { x: 770, y: 620, code: 'KDF', label: 'Firehose', sub: '→ Parquet', kind: 'messaging' },
+  { x: 940, y: 620, code: 'S3', label: 'DataBucket', sub: 'partitioned by hour', kind: 'data' },
+];
+
+const request = [
+  'M90 256 V80 H192',
+  'M114 280 H192',
+  'M328 80 H362',
+  'M328 280 H362',
+  'M498 280 H532',
+  'M668 280 H702',
+];
+const auth = ['M430 206 V254'];
+const events = [
+  'M770 306 V400 H498',
+  'M362 400 H158',
+  'M90 426 V500 H192',
+  'M90 426 V620 H192',
+  'M328 500 H362',
+  'M498 500 H532',
+  'M430 474 V456 H770 V474',
+  'M328 620 H362',
+  'M498 620 H532',
+  'M668 620 H702',
+  'M838 620 H872',
+];
+const replica = ['M838 500 H1042'];
+
+const pulses = [
+  { d: 'M90 280 H770', times: '0;0.32;1', points: '0;1;1', cls: 'pulse pulse--req' },
+  { d: 'M770 280 V400 H90 V500 H600', times: '0;0.32;0.82;1', points: '0;0;1;1', cls: 'pulse pulse--evt' },
+  { d: 'M770 280 V400 H90 V620 H940', times: '0;0.32;0.94;1', points: '0;0;1;1', cls: 'pulse pulse--evt' },
+];
+---
+
+<figure class="diagram" aria-labelledby="diagram-caption">
+  <div class="diagram__scroll" tabindex="0" role="region" aria-label={copy.diagramTitle}>
+    <svg
+      data-diagram
+      viewBox="0 0 1200 680"
+      role="img"
+      aria-labelledby="diagram-title diagram-desc"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title id="diagram-title">{copy.diagramTitle}</title>
+      <desc id="diagram-desc">{copy.diagramDesc}</desc>
+      <defs>
+        <marker id="arrow-req" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" class="arrow arrow--req"></path>
+        </marker>
+        <marker id="arrow-evt" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" class="arrow arrow--evt"></path>
+        </marker>
+      </defs>
+
+      <!-- Region frames -->
+      <rect class="frame" x="24" y="24" width="1000" height="640" rx="2"></rect>
+      <text class="frame__label" x="40" y="46">REGION us-east-1</text>
+      <rect class="frame frame--replica" x="1034" y="452" width="152" height="96" rx="2"></rect>
+      <text class="frame__label" x="1040" y="444">REGION us-east-2</text>
+
+      <!-- Edge bracket -->
+      <rect class="edge-zone" x="184" y="44" width="152" height="272" rx="2"></rect>
+      <text class="frame__label frame__label--edge" x="192" y="40">EDGE · ROUTE 53 · WAF</text>
+
+      <!-- Lane annotation -->
+      <text class="lane" x="560" y="392">DynamoDB Stream</text>
+
+      <!-- Edges -->
+      {request.map((d) => <path class="edge edge--req" d={d} marker-end="url(#arrow-req)" />)}
+      {auth.map((d) => <path class="edge edge--auth" d={d} marker-end="url(#arrow-req)" />)}
+      {events.map((d) => <path class="edge edge--evt" d={d} marker-end="url(#arrow-evt)" />)}
+      {replica.map((d) => <path class="edge edge--replica" d={d} marker-end="url(#arrow-evt)" />)}
+
+      <!-- Pulses travel beneath nodes -->
+      {
+        pulses.map((p) => (
+          <circle r="5" class={p.cls}>
+            <animateMotion
+              dur="6s"
+              repeatCount="indefinite"
+              path={p.d}
+              keyTimes={p.times}
+              keyPoints={p.points}
+              calcMode="linear"
+            />
+          </circle>
+        ))
+      }
+
+      <!-- User -->
+      <g class="node node--user">
+        <circle cx="90" cy="280" r="24"></circle>
+        <path class="node__glyph" d="M90 272 m-6 0 a6 6 0 1 0 12 0 a6 6 0 1 0 -12 0 M78 296 q12 -16 24 0"></path>
+        <text class="node__sub" x="90" y="324" text-anchor="middle">{copy.usersLabel}</text>
+      </g>
+
+      <!-- Nodes -->
+      {
+        nodes.map((n) => (
+          <g class={`node node--${n.kind}`}>
+            <rect x={n.x - W / 2} y={n.y - H / 2} width={W} height={H} rx="3" />
+            <text class="node__code" x={n.x - W / 2 + 8} y={n.y - H / 2 + 13}>
+              {n.code}
+            </text>
+            <text class="node__label" x={n.x} y={n.y + 4} text-anchor="middle">
+              {n.label}
+            </text>
+            {n.sub && (
+              <text class="node__sub" x={n.x} y={n.y + 18} text-anchor="middle">
+                {n.sub}
+              </text>
+            )}
+          </g>
+        ))
+      }
+
+      <!-- Legend -->
+      <g class="legend" transform="translate(852 64)">
+        <text class="legend__title" x="0" y="0">{copy.legendTitle}</text>
+        <line class="edge edge--req" x1="0" y1="24" x2="28" y2="24"></line>
+        <text class="legend__item" x="38" y="28">{copy.legendRequest}</text>
+        <line class="edge edge--evt" x1="0" y1="52" x2="28" y2="52"></line>
+        <text class="legend__item" x="38" y="56">{copy.legendEvent}</text>
+        <line class="edge edge--replica" x1="0" y1="80" x2="28" y2="80"></line>
+        <text class="legend__item" x="38" y="84">{copy.legendReplica}</text>
+        {
+          copy.legendNotes.map((note, i) => (
+            <text class="legend__note" x="0" y={122 + i * 19}>
+              {note}
+            </text>
+          ))
+        }
+      </g>
+    </svg>
+  </div>
+  <figcaption id="diagram-caption" class="diagram__caption">
+    <details>
+      <summary>{copy.listToggle}</summary>
+      <p>{copy.diagramDesc}</p>
+    </details>
+  </figcaption>
+</figure>

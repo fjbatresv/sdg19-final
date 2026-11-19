@@ -22,6 +22,7 @@ export default defineConfig({
           label: 'Inicio',
           items: [
             { label: 'Overview', slug: 'index' },
+            { label: 'Portfolio', link: '/portfolio/' },
             {
               label: 'Compodoc (web)',
               link: '/compodoc/',
