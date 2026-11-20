@@ -101,6 +101,10 @@ jobs:
     timeout-minutes: 5
     permissions: {}
     steps:
+      - uses: step-security/harden-runner@aebdcf6156ab6691adf63218240e476564a1ed4c # v2.23.0
+        with:
+          egress-policy: audit
+
       - name: Check SonarCloud result
         env:
           RESULT: ${{ needs.sonarcloud.result }}
