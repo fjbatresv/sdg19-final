@@ -3,6 +3,7 @@
  * Standalone layout for the portfolio landing (no Starlight chrome).
  * Handles theme bootstrapping before paint, fonts, SEO and hreflang alternates.
  */
+import { Font } from 'astro:assets';
 import { AUTHOR_URL, REPO_URL, type PortfolioCopy } from '../data/portfolio';
 import '../styles/portfolio.css';
 
@@ -81,12 +82,12 @@ const jsonLd = {
     <meta name="twitter:image:alt" content={copy.meta.title} />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,400..900;1,62..125,400..900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    <Font
+      cssVariable="--font-archivo"
+      preload={[{ subset: 'latin', style: 'normal' }, { subset: 'latin', style: 'italic' }]}
     />
+    <Font cssVariable="--font-plex" preload={[{ subset: 'latin', style: 'normal', weight: 400 }]} />
+    <Font cssVariable="--font-jetbrains" />
 
     <script is:inline>
       // Resolve theme before first paint to avoid a flash of the wrong theme.

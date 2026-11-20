@@ -1,4 +1,4 @@
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { unified } from '@astrojs/markdown-remark';
 import remarkMermaid from '../tools/docs/remark-mermaid.mjs';
@@ -40,6 +40,38 @@ export default defineConfig({
   base,
   outDir: '../dist/docs-site',
   redirects,
+  // Self-hosted fonts for the landing (no render-blocking third-party CSS);
+  // Astro also generates metric-matched fallbacks to avoid layout shift.
+  fonts: [
+    {
+      name: 'Archivo',
+      cssVariable: '--font-archivo',
+      provider: fontProviders.google(),
+      weights: ['400 900'],
+      styles: ['normal', 'italic'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['sans-serif'],
+      options: { experimental: { variableAxis: { wdth: [['62', '125']] } } },
+    },
+    {
+      name: 'IBM Plex Sans',
+      cssVariable: '--font-plex',
+      provider: fontProviders.google(),
+      weights: [400, 500, 600],
+      styles: ['normal', 'italic'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['sans-serif'],
+    },
+    {
+      name: 'JetBrains Mono',
+      cssVariable: '--font-jetbrains',
+      provider: fontProviders.google(),
+      weights: ['400 600'],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+      fallbacks: ['monospace'],
+    },
+  ],
   markdown: {
     processor: unified({ remarkPlugins: [remarkMermaid] }),
   },
