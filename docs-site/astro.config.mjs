@@ -5,7 +5,7 @@ import remarkMermaid from '../tools/docs/remark-mermaid.mjs';
 
 const base = process.env.ASTRO_BASE ?? '/';
 // Custom domain (e.g. https://sdg19.fjbatresv.com) or the default github.io host.
-const site = process.env.ASTRO_SITE ?? 'https://fjbatresv.github.io';
+const site = process.env.ASTRO_SITE ?? 'https://sdg19.fjbatresv.com';
 
 // Docs moved from the site root to /docs/ when the landing became the root.
 // Keep the old URLs working (portfolio paths and every former doc slug).
@@ -48,6 +48,12 @@ export default defineConfig({
       title: 'SDG19 Final',
       description: 'Documentación de la solución y su arquitectura.',
       favicon: '/assets/favicon.svg',
+      // Docs are written in Spanish: sets <html lang="es"> and og:locale.
+      defaultLocale: 'root',
+      locales: { root: { label: 'Español', lang: 'es' } },
+      components: {
+        Head: './src/components/starlight/Head.astro',
+      },
       sidebar: [
         {
           label: 'Inicio',

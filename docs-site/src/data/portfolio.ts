@@ -109,7 +109,7 @@ const en: PortfolioCopy = {
   meta: {
     title: 'SDG19 — Serverless commerce on AWS | Portfolio',
     description:
-      'Event-driven, multi-region serverless e-commerce on AWS: CloudFront + WAF, Cognito, API Gateway, Lambda, DynamoDB streams, SNS/SQS fan-out, SES and a Kinesis → Firehose Parquet data lake. Built with Angular, Nx and AWS CDK.',
+      'Event-driven serverless e-commerce on AWS: Cognito, API Gateway, Lambda, DynamoDB streams, SNS/SQS fan-out, SES and a Parquet data lake. Angular, Nx, CDK.',
   },
   nav: {
     skip: 'Skip to content',
@@ -352,7 +352,7 @@ const es: PortfolioCopy = {
   meta: {
     title: 'SDG19 — Comercio serverless en AWS | Portafolio',
     description:
-      'E-commerce serverless, orientado a eventos y multi-región en AWS: CloudFront + WAF, Cognito, API Gateway, Lambda, DynamoDB Streams, fan-out SNS/SQS, SES y un data lake Kinesis → Firehose en Parquet. Construido con Angular, Nx y AWS CDK.',
+      'E-commerce serverless orientado a eventos en AWS: Cognito, API Gateway, Lambda, DynamoDB Streams, fan-out SNS/SQS, SES y data lake en Parquet. Angular y CDK.',
   },
   nav: {
     skip: 'Saltar al contenido',
