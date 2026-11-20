@@ -4,10 +4,12 @@
    ========================================================================== */
 
 :root {
-  --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
-  --font-body: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  /* --font-archivo/--font-plex/--font-jetbrains come from Astro's Fonts API
+     (self-hosted + metric-matched fallbacks), see astro.config.mjs. */
+  --font-display: var(--font-archivo), 'Helvetica Neue', Arial, sans-serif;
+  --font-body: var(--font-plex), 'Helvetica Neue', Arial, sans-serif;
   --font-mono:
-    'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    var(--font-jetbrains), ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   --space-1: 4px;
   --space-2: 8px;

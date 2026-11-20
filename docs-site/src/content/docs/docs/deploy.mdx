@@ -1,6 +1,6 @@
 ---
 title: Deploy
-description: Pasos previos y despliegue con CDK.
+description: "Guía de despliegue de SDG19 con AWS CDK y GitHub Actions: Hosted Zone en Route 53, rol OIDC, inputs del workflow y requisitos previos."
 ---
 
 Para configurar el deploy:
@@ -9,7 +9,7 @@ Para configurar el deploy:
 2. Crear el Identity Provider OIDC de GitHub Actions.
 3. Crear el role y adjuntar la policy de permisos.
 
-### Requisitos
+## Requisitos
 
 - Hosted Zone y subdominios configurados (root, api, web).
 - OIDC provider de GitHub Actions.
@@ -17,7 +17,7 @@ Para configurar el deploy:
 - Variables/inputs para el pipeline (account, regiones, dominios, SES).
 - Remitente SES con formato valido (ej. `no-reply@tu-dominio.com`).
 
-### Inputs esperados (workflow deploy)
+## Inputs esperados (workflow deploy)
 
 El workflow `deploy.yml` consume un `config_json` con los valores de despliegue:
 
@@ -41,7 +41,7 @@ El workflow `deploy.yml` consume un `config_json` con los valores de despliegue:
 }
 ```
 
-### Referencias
+## Referencias
 
 - `DEPLOY.md`: pasos completos y configuración detallada.
 - `oidc_role/`: JSON para crear el OIDC provider, trust policy y permisos.

@@ -89,3 +89,25 @@ jobs:
             -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/*.spec.ts,**/*.test.ts,**/*.spec.js,**/*.test.js
             -Dsonar.javascript.lcov.reportPaths=coverage/apps/${{ matrix.app }}/lcov.info
             -Dsonar.typescript.lcov.reportPaths=coverage/apps/${{ matrix.app }}/lcov.info
+
+  # Single, stable check name for the ruleset. Matrix jobs skipped on Dependabot
+  # PRs never report their expanded names, so requiring them would block those
+  # PRs; this gate passes when the analysis succeeded or was skipped on purpose.
+  sonar-gate:
+    name: sonar
+    if: always()
+    needs: sonarcloud
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - uses: step-security/harden-runner@aebdcf6156ab6691adf63218240e476564a1ed4c # v2.23.0
+        with:
+          egress-policy: audit
+
+      - name: Check SonarCloud result
+        env:
+          RESULT: ${{ needs.sonarcloud.result }}
+        run: |
+          echo "sonarcloud: $RESULT"
+          [ "$RESULT" = "success" ] || [ "$RESULT" = "skipped" ]

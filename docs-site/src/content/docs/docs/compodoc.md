@@ -1,10 +1,11 @@
 ---
 title: Compodoc (Frontend)
+description: "Documentación del frontend Angular con Compodoc: generarla en local, validar la cobertura de documentación en CI y publicarla en Pages."
 ---
 
-![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/compodoc/images/coverage-badge-documentation.svg)
+<img src="https://sdg19.fjbatresv.com/compodoc/images/coverage-badge-documentation.svg" alt="Frontend Coverage" width="135" height="20" />
 
-Disponible en GitHub Pages: <https://fjbatresv.github.io/sdg19-final/compodoc/>
+Disponible en GitHub Pages: <https://sdg19.fjbatresv.com/compodoc/>
 
 ## Generar documentación local
 

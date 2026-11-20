@@ -120,18 +120,18 @@ npx nx run web:build:production
 La documentación vive en `docs-site/` (Astro Starlight) y `docs/api-typedoc/`
 (TypeDoc).
 
-GitHub Pages publica el sitio en (al activar el dominio propio, las URLs
-`github.io` redirigen a `https://sdg19.fjbatresv.com/`):
+GitHub Pages publica el sitio en el dominio propio `sdg19.fjbatresv.com` (las
+URLs antiguas `fjbatresv.github.io/sdg19-final/` redirigen con 301):
 
-- Landing de portafolio (EN/ES, raíz del sitio): https://fjbatresv.github.io/sdg19-final/ · https://fjbatresv.github.io/sdg19-final/es/
-- Documentación (Starlight): https://fjbatresv.github.io/sdg19-final/docs/
-- API reference / playground: https://fjbatresv.github.io/sdg19-final/docs/api-reference/
-- Compodoc (frontend): https://fjbatresv.github.io/sdg19-final/compodoc/
-- TypeDoc (backend): https://fjbatresv.github.io/sdg19-final/api-typedoc/
+- Landing de portafolio (EN/ES, raíz del sitio): https://sdg19.fjbatresv.com/ · https://sdg19.fjbatresv.com/es/
+- Documentación (Starlight): https://sdg19.fjbatresv.com/docs/
+- API reference / playground: https://sdg19.fjbatresv.com/docs/api-reference/
+- Compodoc (frontend): https://sdg19.fjbatresv.com/compodoc/
+- TypeDoc (backend): https://sdg19.fjbatresv.com/api-typedoc/
 
 Badges de documentación:
 
-- Compodoc coverage: <https://fjbatresv.github.io/sdg19-final/compodoc/images/coverage-badge-documentation.svg>
+- Compodoc coverage: <https://sdg19.fjbatresv.com/compodoc/images/coverage-badge-documentation.svg>
 - Docs Pages workflow: <https://github.com/fjbatresv/sdg19-final/actions/workflows/docs-pages.yml>
 
 ```bash
@@ -166,9 +166,9 @@ Guías en Starlight:
 
 ### Frontend Docs (Compodoc)
 
-![Frontend Coverage](https://fjbatresv.github.io/sdg19-final/compodoc/images/coverage-badge-documentation.svg)
+![Frontend Coverage](https://sdg19.fjbatresv.com/compodoc/images/coverage-badge-documentation.svg)
 
-Publicado en GitHub Pages: https://fjbatresv.github.io/sdg19-final/
+Publicado en GitHub Pages: https://sdg19.fjbatresv.com/compodoc/
 
 ```bash
 npx nx run web:docs
