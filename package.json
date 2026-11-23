@@ -41,7 +41,7 @@
     "@vitest/coverage-v8": "^4.1.12",
     "angular-eslint": "22.8.0",
     "astro": "^7.4.13",
-    "aws-cdk": "^2.1148.1",
+    "aws-cdk": "^2.1149.0",
     "aws-cdk-lib": "^2.277.0",
     "constructs": "^10.8.1",
     "esbuild": "^0.28.2",
