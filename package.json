@@ -31,7 +31,7 @@
     "@nx/js": "24.0.6",
     "@nx/node": "24.0.6",
     "@nx/web": "24.0.6",
-    "@schematics/angular": "~22.2.0",
+    "@schematics/angular": "~22.3.0",
     "@swc-node/register": "~1.12.1",
     "@swc/core": "~1.16.22",
     "@swc/helpers": "~0.5.24",
